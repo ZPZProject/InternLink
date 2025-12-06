@@ -8,7 +8,7 @@ Celem dokumentu jest przedstawienie wymagań funkcjonalnych i niefunkcjonalnych 
 
 ### 1.2 Zakres systemu
 
-System umożliwia obsługę całego procesu praktyk: od publikacji ofert, poprzez aplikowanie studentów i zatwierdzanie dokumentów, aż po ocenę końcową i archiwizację danych.
+System umożliwia obsługę całego procesu praktyk: od publikacji ofert, poprzez aplikowanie studentów i zatwierdzanie dokumentów, aż po ocenę końcową.
 
 ## 2. Identyfikacja interesariuszy
 
@@ -17,7 +17,7 @@ System umożliwia obsługę całego procesu praktyk: od publikacji ofert, poprze
 | Student                      | osoba odbywająca praktyki             | dostęp do ofert, możliwość aplikacji, monitorowanie statusu, przesyłanie dokumentów |
 | Opiekun praktyk / Wykładowca | osoba zatwierdzająca przebieg praktyk | przegląd dokumentów, ocena praktyk, komunikacja ze studentem                        |
 | Pracodawca / Firma           | organizacja oferująca praktyki        | publikacja ofert, przegląd aplikacji, potwierdzanie odbycia praktyki                |
-| Administrator uczelniany     | zarządza platformą                    | moderacja użytkowników, konfiguracja, raporty                                       |
+| Administrator                | zarządza platformą                    | moderacja użytkowników, konfiguracja, raporty                                       |
 | Dział IT                     | utrzymanie techniczne                 | stabilność, bezpieczeństwo, backup                                                  |
 | Uczelnia / Władze            | nadzorują procesy                     | raporty, statystyki, zgodność z procedurami                                         |
 
@@ -67,29 +67,29 @@ graph LR
 
     %% ACTORS
     Student(["👤 Student"]):::actor
-    Employer(["👤 Employer"]):::actor
-    Supervisor(["👤 Supervisor"]):::actor
+    Employer(["👤 Pracodawca"]):::actor
+    Supervisor(["👤 Opiekun"]):::actor
     Admin(["👤 Administrator"]):::actor
 
     %% STUDENT USE CASES
-    UC1["Browse internship offers"]:::usecase
-    UC2["Apply for internship"]:::usecase
-    UC3["Upload documents"]:::usecase
-    UC4["View application status"]:::usecase
+    UC1["Przeglądanie ofert praktyk"]:::usecase
+    UC2["Aplikowanie na praktyki"]:::usecase
+    UC3["Przesyłanie dokumentów"]:::usecase
+    UC4["Srawdzanie statusu aplikacji"]:::usecase
 
     %% EMPLOYER USE CASES
-    UC5["Add / Edit internship offer"]:::usecase
-    UC6["Manage student applications"]:::usecase
-    UC7["Approve / Reject application"]:::usecase
+    UC5["Dodawanie / edytowanie ofert praktyk"]:::usecase
+    UC6["Zarządzanie aplikacjami"]:::usecase
+    UC7["Zatwierdzanie / odrzucanie aplikacji"]:::usecase
 
     %% SUPERVISOR USE CASES
-    UC8["Approve / Reject documents"]:::usecase
-    UC9["Evaluate internship"]:::usecase
-    UC10["Generate reports"]:::usecase
+    UC8["Zatwierdzanie / odrzucanie dokumentów"]:::usecase
+    UC9["Ocena praktyk"]:::usecase
+    UC10["Generowanie raportów"]:::usecase
 
     %% ADMINISTRATOR USE CASES
-    UC11["Manage user accounts"]:::usecase
-    UC12["System configuration"]:::usecase
+    UC11["Zarządzanie kontami urzytkowników"]:::usecase
+    UC12["Konfiguracja systemu"]:::usecase
 
     %% RELATIONS — STUDENT
     Student --> UC1
