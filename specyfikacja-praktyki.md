@@ -482,4 +482,4 @@ Niniejsza specyfikacja zawiera:
 ✅ Sekcję ograniczeń i założeń projektowych.  
 ✅ Diagram klas przedstawiający strukturę logiczną systemu.
 
-Dokument stanowi solidną bazę do dalszego projektowania architektury systemu, implementacji oraz tworzenia przypadków testowych. Specyfikacja uwzględnia zarówno aspekty funkcjonalne, jak i niefunkcjonalne, zapewniając holistyczne spojrzenie na wymagania systemu zarządzania praktykami studenckimi.
+Niniejsze opracowanie tworzy trwały fundament pod przyszłe prace nad architekturą, realizację techniczną oraz przygotowanie scenariuszy testowych. Dokumentacja ta pokrywa obszary funkcjonalne i niefunkcjonalne, oferując kompleksowy obraz założeń dla platformy obsługi praktyk studenckich.
