@@ -29,7 +29,6 @@
     "./tooltip": "./src/components/tooltip.tsx",
     "./dialog": "./src/components/dialog.tsx",
     "./label": "./src/components/label.tsx",
-    "./form": "./src/components/form.tsx",
     "./sidebar": "./src/components/sidebar.tsx",
     "./separator": "./src/components/separator.tsx",
     "./sheet": "./src/components/sheet.tsx",
@@ -49,7 +48,9 @@
     "./combobox": "./src/components/combobox.tsx",
     "./progress": "./src/components/progress.tsx",
     "./dropdown-menu": "./src/components/dropdown-menu.tsx",
-    "./chart": "./src/components/chart.tsx"
+    "./chart": "./src/components/chart.tsx",
+    "./radio-group": "./src/components/radio-group.tsx",
+    "./field": "./src/components/field.tsx"
   },
   "dependencies": {
     "@base-ui/react": "^1.1.0",
