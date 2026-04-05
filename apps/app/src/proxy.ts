@@ -1,4 +1,8 @@
-import type { NextRequest } from "next/server";
+import {
+  createAuthMiddleware,
+  type ProtectedPath,
+} from "@v1/supabase/middleware";
+import { NextResponse } from "next/server";
 import { createI18nMiddleware } from "next-international/middleware";
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from "./locales";
 
@@ -8,9 +12,22 @@ const I18nMiddleware = createI18nMiddleware({
   urlMappingStrategy: "rewrite",
 });
 
-export function proxy(request: NextRequest) {
-  return I18nMiddleware(request);
-}
+const protectedPaths: ProtectedPath[] = [
+  // home
+  {
+    path: "/home",
+    test: (user) => user !== null,
+    onFail: (request) => NextResponse.redirect(new URL("/login", request.url)),
+  },
+  // login/register
+  {
+    path: ["/login", "/register"],
+    test: (user) => user === null,
+    onFail: (request) => NextResponse.redirect(new URL("/home", request.url)),
+  },
+];
+
+export const proxy = await createAuthMiddleware(protectedPaths, I18nMiddleware);
 
 export const config = {
   matcher: [
