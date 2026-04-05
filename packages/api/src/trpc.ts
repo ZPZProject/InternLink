@@ -143,12 +143,41 @@ export const protectedProcedure = t.procedure
     }
     return next({
       ctx: {
-        // infers the `session` as non-nullable
         user: ctx.user,
         session: {
           ...ctx.session,
           user: ctx.session.user,
         },
+      },
+    });
+  })
+  .use(async ({ ctx, next }) => {
+    const { data: profile, error } = await ctx.supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", ctx.user.id)
+      .maybeSingle();
+
+    if (error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: error.message,
+      });
+    }
+    if (!profile) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Profile not found",
+      });
+    }
+    if (!profile.is_active) {
+      throw new TRPCError({ code: "FORBIDDEN", message: "Account is inactive" });
+    }
+
+    return next({
+      ctx: {
+        ...ctx,
+        profile,
       },
     });
   });
