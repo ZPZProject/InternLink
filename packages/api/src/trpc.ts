@@ -171,7 +171,10 @@ export const protectedProcedure = t.procedure
       });
     }
     if (!profile.is_active) {
-      throw new TRPCError({ code: "FORBIDDEN", message: "Account is inactive" });
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "Account is inactive",
+      });
     }
 
     return next({
