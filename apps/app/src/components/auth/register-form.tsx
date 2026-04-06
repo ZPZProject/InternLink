@@ -13,6 +13,7 @@ import {
   FieldLegend,
   FieldSet,
 } from "@v1/ui/field";
+import { Icons } from "@v1/ui/icons";
 import { Input } from "@v1/ui/input";
 import { RadioGroup, RadioGroupItem } from "@v1/ui/radio-group";
 import { toast } from "@v1/ui/sonner";
@@ -24,7 +25,7 @@ import { z } from "zod";
 import { useTRPC } from "@/trpc/react";
 
 const registerSchema = z.object({
-  email: z.string().email("Enter a valid email"),
+  email: z.email("Enter a valid email"),
   password: z.string().min(8, "At least 8 characters"),
   first_name: z.string().trim().max(120).optional(),
   last_name: z.string().trim().max(120).optional(),
@@ -34,9 +35,9 @@ const registerSchema = z.object({
 type RegisterValues = z.infer<typeof registerSchema>;
 
 const ROLE_OPTIONS = [
-  { value: "student" as const, title: "Student" },
-  { value: "employer" as const, title: "Employer" },
-  { value: "supervisor" as const, title: "Supervisor" },
+  { value: "student" as const, title: "Student", Icon: Icons.Student },
+  { value: "employer" as const, title: "Employer", Icon: Icons.Employer },
+  { value: "supervisor" as const, title: "Supervisor", Icon: Icons.Supervisor },
 ];
 
 export function RegisterForm() {
@@ -106,7 +107,7 @@ export function RegisterForm() {
                 onBlur={field.onBlur}
                 ref={field.ref}
               >
-                {ROLE_OPTIONS.map(({ value, title }) => {
+                {ROLE_OPTIONS.map(({ value, title, Icon }) => {
                   const itemId = `${formId}-role-${value}`;
                   return (
                     <Field
@@ -115,20 +116,30 @@ export function RegisterForm() {
                       data-invalid={fieldState.invalid ? true : undefined}
                       className={cn(
                         "rounded-lg border border-input bg-background p-2.5 transition-colors",
-                        "has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/5 dark:has-[[data-state=checked]]:border-primary/20 dark:has-[[data-state=checked]]:bg-primary/10",
+                        "has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/5 dark:has-data-[state=checked]:border-primary/20 dark:has-data-[state=checked]:bg-primary/10",
                       )}
                     >
-                      <RadioGroupItem
-                        value={value}
-                        id={itemId}
-                        aria-invalid={fieldState.invalid}
-                        disabled={busy}
-                      />
+                      <div className="sr-only">
+                        <RadioGroupItem
+                          value={value}
+                          id={itemId}
+                          aria-invalid={fieldState.invalid}
+                          disabled={busy}
+                        />
+                      </div>
+
                       <FieldLabel
                         htmlFor={itemId}
-                        className="min-w-0 flex-1 cursor-pointer font-normal leading-snug"
+                        className={cn(
+                          "min-w-0 flex-1 cursor-pointer font-normal leading-snug grid place-items-center gap-1",
+                          {
+                            "text-primary": value === field.value,
+                            "text-muted-foreground": value !== field.value,
+                          },
+                        )}
                       >
-                        {title}
+                        <Icon className="size-6" />
+                        <span>{title}</span>
                       </FieldLabel>
                     </Field>
                   );
@@ -154,6 +165,7 @@ export function RegisterForm() {
                   autoComplete="given-name"
                   aria-invalid={fieldState.invalid}
                   disabled={busy}
+                  placeholder="John"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -175,6 +187,7 @@ export function RegisterForm() {
                   autoComplete="family-name"
                   aria-invalid={fieldState.invalid}
                   disabled={busy}
+                  placeholder="Doe"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -197,6 +210,7 @@ export function RegisterForm() {
                 autoComplete="email"
                 aria-invalid={fieldState.invalid}
                 disabled={busy}
+                placeholder="john.doe@example.com"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -216,6 +230,7 @@ export function RegisterForm() {
                 autoComplete="new-password"
                 aria-invalid={fieldState.invalid}
                 disabled={busy}
+                placeholder="••••••••"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>

@@ -14,7 +14,7 @@ const callbackNextSchema = z
   );
 
 export const authSignUpSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z.string().min(8),
   role: z.enum(["student", "employer", "supervisor"]),
   first_name: z.string().trim().max(120).optional(),
@@ -23,6 +23,6 @@ export const authSignUpSchema = z.object({
 });
 
 export const authSignInSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z.string().min(1),
 });

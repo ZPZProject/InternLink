@@ -1,5 +1,6 @@
 import {
   Bold,
+  Briefcase,
   Calendar,
   Camera,
   Check,
@@ -12,6 +13,7 @@ import {
   Flame,
   Folder,
   Globe,
+  GraduationCap,
   Heading2,
   HelpCircle,
   Image,
@@ -25,6 +27,7 @@ import {
   Monitor,
   Moon,
   PenSquare,
+  Shield,
   Square,
   Sun,
   ThumbsDown,
@@ -71,6 +74,10 @@ export const Icons = {
   ListOrdered,
   Image,
   Locale: Globe,
+  Employer: Briefcase,
+  Student: GraduationCap,
+  Supervisor: User,
+  Admin: Shield,
 };
 
 export type { LucideIcon } from "lucide-react";

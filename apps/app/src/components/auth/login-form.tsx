@@ -14,7 +14,7 @@ import { z } from "zod";
 import { useTRPC } from "@/trpc/react";
 
 const loginSchema = z.object({
-  email: z.string().email("Enter a valid email"),
+  email: z.email("Enter a valid email"),
   password: z.string().min(1, "Password is required"),
 });
 
@@ -71,6 +71,7 @@ export function LoginForm() {
                 autoComplete="email"
                 aria-invalid={fieldState.invalid}
                 disabled={busy}
+                placeholder="john.doe@example.com"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -90,6 +91,7 @@ export function LoginForm() {
                 autoComplete="current-password"
                 aria-invalid={fieldState.invalid}
                 disabled={busy}
+                placeholder="••••••••"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
