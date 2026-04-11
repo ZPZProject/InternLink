@@ -14,12 +14,7 @@ export default async function OfferDetailPage({ params }: Props) {
 
   return (
     <div className="space-y-6">
-      <Button
-        asChild
-        variant="ghost"
-        size="sm"
-        className="-ml-2 h-auto px-2 py-1"
-      >
+      <Button asChild variant="link" size="sm">
         <Link href="/offers">← Back to offers</Link>
       </Button>
 

@@ -1,6 +1,6 @@
+import { Button } from "@v1/ui/button";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-
 import { OfferForm } from "@/components/offers/offer-form";
 import { caller } from "@/trpc/server";
 
@@ -27,12 +27,9 @@ export default async function EditOfferPage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <Link
-        className="text-muted-foreground hover:text-foreground text-sm underline"
-        href="/employer/offers"
-      >
-        ← Back to my offers
-      </Link>
+      <Button variant="link" asChild>
+        <Link href="/employer/offers">← Back to my offers</Link>
+      </Button>
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Edit offer</h1>
         <p className="text-muted-foreground mt-1 text-sm">
