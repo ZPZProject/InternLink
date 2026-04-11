@@ -58,22 +58,15 @@ async function getEmployerCompanyContext(ctx: EmployerCtx) {
 
   return {
     companyId: member.company_id,
-    approvalStatus: company.approval_status,
   };
 }
 
 async function assertCanManageOffer(ctx: EmployerCtx, offer: OfferRow) {
-  const { companyId, approvalStatus } = await getEmployerCompanyContext(ctx);
+  const { companyId } = await getEmployerCompanyContext(ctx);
   if (offer.company_id !== companyId) {
     throw new TRPCError({
       code: "FORBIDDEN",
       message: "This offer belongs to another company",
-    });
-  }
-  if (approvalStatus !== "approved") {
-    throw new TRPCError({
-      code: "FORBIDDEN",
-      message: "Your company must be approved before managing offers",
     });
   }
 }
@@ -203,16 +196,7 @@ export const offersRouter = createTRPCRouter({
   create: employerProcedure
     .input(offersCreateSchema)
     .mutation(async ({ ctx, input }) => {
-      const { companyId, approvalStatus } =
-        await getEmployerCompanyContext(ctx);
-
-      if (approvalStatus !== "approved") {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message:
-            "Your company must be approved by an administrator before you can publish internship offers.",
-        });
-      }
+      const { companyId } = await getEmployerCompanyContext(ctx);
 
       const { data, error } = await ctx.supabase
         .from("internship_offers")

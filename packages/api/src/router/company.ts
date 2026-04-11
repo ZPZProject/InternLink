@@ -201,13 +201,6 @@ export const companyRouter = createTRPCRouter({
         });
       }
 
-      if (company.approval_status !== "approved") {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You can only join an approved company",
-        });
-      }
-
       const { error: e2 } = await ctx.supabase.from("company_members").insert({
         profile_id: ctx.user.id,
         company_id: input.company_id,

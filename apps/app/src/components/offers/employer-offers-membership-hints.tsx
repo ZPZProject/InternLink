@@ -11,29 +11,17 @@ export function EmployerOffersMembershipHints() {
     trpc.company.myMembership.queryOptions(),
   );
 
-  const approved = membership?.company.approval_status === "approved";
+  if (membership) {
+    return null;
+  }
 
   return (
-    <>
-      {!membership ? (
-        <p className="text-muted-foreground text-sm">
-          Complete{" "}
-          <Link className="text-primary underline" href="/employer/onboarding">
-            company onboarding
-          </Link>{" "}
-          first.
-        </p>
-      ) : null}
-
-      {membership && !approved ? (
-        <p className="text-muted-foreground text-sm">
-          Your company ({membership.company.name}) is{" "}
-          <span className="text-foreground font-medium capitalize">
-            {membership.company.approval_status}
-          </span>
-          . An administrator must approve it before you can create offers.
-        </p>
-      ) : null}
-    </>
+    <p className="text-muted-foreground text-sm">
+      Complete{" "}
+      <Link className="text-primary underline" href="/employer/onboarding">
+        company onboarding
+      </Link>{" "}
+      first.
+    </p>
   );
 }

@@ -1,6 +1,6 @@
 import { Button } from "@v1/ui/button";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { OfferForm } from "@/components/offers/offer-form";
 import { caller } from "@/trpc/server";
 
@@ -10,13 +10,10 @@ export default async function EditOfferPage({ params }: Props) {
   const { id } = await params;
 
   const membership = await caller.company.myMembership();
-  if (membership?.company.approval_status !== "approved") {
-    redirect("/employer/offers");
-  }
 
   const offer = await caller.offers.byId({ id });
 
-  if (offer.company_id !== membership.member.company_id) {
+  if (offer.company_id !== membership?.member.company_id) {
     notFound();
   }
 

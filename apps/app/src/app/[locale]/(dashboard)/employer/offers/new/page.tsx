@@ -1,6 +1,6 @@
 import { Button } from "@v1/ui/button";
 import Link from "next/link";
-import { NewOfferCreateForm } from "@/components/offers/new-offer-create-form";
+import { OfferForm } from "@/components/offers/offer-form";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 
 export default function NewOfferPage() {
@@ -18,7 +18,7 @@ export default function NewOfferPage() {
             This listing will be visible to students when marked active.
           </p>
         </div>
-        <NewOfferCreateForm />
+        <OfferForm mode="create" />
       </div>
     </HydrateClient>
   );
