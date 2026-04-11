@@ -1,5 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
-import { type NextRequest, NextResponse } from "next/server";
+import type { NextRequest, NextResponse } from "next/server";
 import type { Client, User } from "../types";
 import type { Database } from "../types/db";
 
@@ -92,9 +92,7 @@ export const updateSession = async (
 
   const profile = user ? await getProfileByUserId(supabase, user.id) : null;
   const auth =
-    user && profile
-      ? ({ ...user, ...profile } as UserWithProfile)
-      : null;
+    user && profile ? ({ ...user, ...profile } as UserWithProfile) : null;
 
   return { response, supabase, auth };
 };
@@ -129,16 +127,17 @@ export const createAuthMiddleware = async (
     ...config,
   }));
 
-  return async function middleware(request: NextRequest) {
-    const forward = NextResponse.next();
-
+  return async function middleware(
+    request: NextRequest,
+    response: NextResponse,
+  ) {
     const {
       auth,
       response: updatedResponse,
       supabase,
     } = await updateSession(
       request,
-      I18nMiddleware ? I18nMiddleware(request) : forward,
+      I18nMiddleware ? I18nMiddleware(request) : response,
     );
 
     const matchingPath = regexpProtectedPaths.find(({ match }) =>

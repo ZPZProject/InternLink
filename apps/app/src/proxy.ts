@@ -3,7 +3,6 @@ import {
   getEmployerHasCompanyMembership,
   type ProtectedPath,
 } from "@v1/supabase/middleware";
-import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { createI18nMiddleware } from "next-international/middleware";
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from "./locales";
@@ -40,7 +39,9 @@ const protectedPaths: ProtectedPath[] = [
       if (!auth) {
         return NextResponse.redirect(new URL("/login", request.url));
       }
-      return NextResponse.redirect(new URL("/employer/onboarding", request.url));
+      return NextResponse.redirect(
+        new URL("/employer/onboarding", request.url),
+      );
     },
   },
   {
@@ -60,16 +61,14 @@ const protectedPaths: ProtectedPath[] = [
       if (auth.role !== "employer") {
         return NextResponse.redirect(new URL("/home", request.url));
       }
-      return NextResponse.redirect(new URL("/employer/onboarding", request.url));
+      return NextResponse.redirect(
+        new URL("/employer/onboarding", request.url),
+      );
     },
   },
 ];
 
-const runProxy = await createAuthMiddleware(protectedPaths, I18nMiddleware);
-
-export function proxy(request: NextRequest) {
-  return runProxy(request);
-}
+export const proxy = await createAuthMiddleware(protectedPaths, I18nMiddleware);
 
 export const config = {
   matcher: [
