@@ -1,5 +1,5 @@
 import { EmployerCompanyStatus } from "@/components/employer/employer-company-status";
-import { EmployerOnboardingForm } from "@/components/employer/employer-onboarding-form";
+import { EmployerOnboarding } from "@/components/employer/employer-onboarding";
 import { caller } from "@/trpc/server";
 
 export default async function EmployerOnboardingPage() {
@@ -9,5 +9,5 @@ export default async function EmployerOnboardingPage() {
     return <EmployerCompanyStatus company={membership.company} />;
   }
 
-  return <EmployerOnboardingForm />;
+  return <EmployerOnboarding />;
 }

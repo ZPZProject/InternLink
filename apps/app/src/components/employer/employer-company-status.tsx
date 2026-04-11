@@ -25,8 +25,7 @@ export function EmployerCompanyStatus({ company }: { company: Company }) {
       </p>
       {company.approval_status === "pending" ? (
         <p className="text-muted-foreground text-sm">
-          An administrator still needs to approve this company. You cannot
-          publish internship offers until then.
+          An administrator still needs to approve this company.
         </p>
       ) : null}
       {company.approval_status === "rejected" ? (

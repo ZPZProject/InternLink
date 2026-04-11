@@ -1,5 +1,14 @@
 import { z } from "zod/v4";
 
+export const companyGetSchema = z.object({
+  id: z.uuid(),
+});
+
+export const companyListSchema = z.object({
+  query: z.string().trim().max(200).optional(),
+  limit: z.number().int().min(1).max(50).optional().default(30),
+});
+
 export const companyListApprovedSchema = z.object({
   query: z.string().trim().max(200).optional(),
   limit: z.number().int().min(1).max(50).optional().default(30),

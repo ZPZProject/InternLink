@@ -2,8 +2,10 @@ import { TRPCError } from "@trpc/server";
 
 import {
   companyCreateSchema,
+  companyGetSchema,
   companyJoinSchema,
   companyListApprovedSchema,
+  companyListSchema,
 } from "../schemas/company";
 import {
   createTRPCRouter,
@@ -12,6 +14,48 @@ import {
 } from "../trpc";
 
 export const companyRouter = createTRPCRouter({
+  get: protectedProcedure
+    .input(companyGetSchema)
+    .query(async ({ ctx, input }) => {
+      const { data, error } = await ctx.supabase
+        .from("companies")
+        .select("*")
+        .eq("id", input.id)
+        .single();
+
+      if (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      }
+
+      return data;
+    }),
+
+  list: protectedProcedure
+    .input(companyListSchema)
+    .query(async ({ ctx, input }) => {
+      let q = ctx.supabase
+        .from("companies")
+        .select("id, name, approval_status")
+        .order("name", { ascending: true })
+        .limit(input.limit);
+
+      if (input.query && input.query.length > 0) {
+        q = q.ilike("name", `%${input.query}%`);
+      }
+
+      const { data, error } = await q;
+
+      if (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      }
+      return data ?? [];
+    }),
   listApproved: protectedProcedure
     .input(companyListApprovedSchema)
     .query(async ({ ctx, input }) => {
