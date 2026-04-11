@@ -1,3 +1,4 @@
+import { use } from "react";
 import { OffersFilters } from "@/components/offers/offers-filters";
 import { OffersPublicHeader } from "@/components/offers/offers-public-header";
 import { OffersPublicList } from "@/components/offers/offers-public-list";
@@ -6,13 +7,13 @@ import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 
 type SearchParams = Promise<{ q?: string; location?: string }>;
 
-export default async function OffersPage({
+export default function OffersPage({
   searchParams,
 }: {
   searchParams: SearchParams;
 }) {
-  const sp = await searchParams;
-  await prefetch(
+  const sp = use(searchParams);
+  prefetch(
     trpc.offers.list.queryOptions(offersPublicListInput(sp.q, sp.location)),
   );
 

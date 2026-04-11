@@ -3,8 +3,8 @@ import Link from "next/link";
 import { NewOfferCreateForm } from "@/components/offers/new-offer-create-form";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 
-export default async function NewOfferPage() {
-  await prefetch(trpc.company.myMembership.queryOptions());
+export default function NewOfferPage() {
+  prefetch(trpc.company.myMembership.queryOptions());
 
   return (
     <HydrateClient>
