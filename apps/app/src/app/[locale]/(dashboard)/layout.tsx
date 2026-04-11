@@ -1,4 +1,4 @@
-import { SignOutButton } from "@/components/auth/sign-out-button";
+import { InactiveAccountScreen } from "@/components/auth/inactive-account-screen";
 import { AppShell } from "@/components/shell/app-shell";
 import { caller } from "@/trpc/server";
 
@@ -10,15 +10,7 @@ export default async function DashboardLayout({
   const profile = await caller.profile.me();
 
   if (!profile.is_active) {
-    return (
-      <div className="bg-muted/30 flex min-h-screen flex-col items-center justify-center gap-4 p-6">
-        <p className="text-muted-foreground max-w-md text-center">
-          Your account is inactive. Contact an administrator if this is a
-          mistake.
-        </p>
-        <SignOutButton />
-      </div>
-    );
+    return <InactiveAccountScreen />;
   }
 
   return <AppShell profile={profile}>{children}</AppShell>;
