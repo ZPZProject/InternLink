@@ -130,7 +130,7 @@ export const createAuthMiddleware = async (
   return async function middleware(
     request: NextRequest,
     response: NextResponse,
-  ) {
+  ): Promise<NextResponse> {
     const {
       auth,
       response: updatedResponse,
@@ -151,11 +151,11 @@ export const createAuthMiddleware = async (
       const allowed = await matchingPath.test(failCtx, request);
 
       if (!allowed) {
-        return await Promise.resolve(matchingPath.onFail(request, failCtx));
+        return await matchingPath.onFail(request, failCtx);
       }
 
       if (matchingPath.onPass) {
-        return await Promise.resolve(matchingPath.onPass(request, failCtx));
+        return await matchingPath.onPass(request, failCtx);
       }
     }
 
