@@ -267,6 +267,7 @@ export type Database = {
           id: string;
           index_number: string | null;
           major: string | null;
+          school_id: string | null;
           updated_at: string;
           year_of_study: number | null;
         };
@@ -275,6 +276,7 @@ export type Database = {
           id: string;
           index_number?: string | null;
           major?: string | null;
+          school_id?: string | null;
           updated_at?: string;
           year_of_study?: number | null;
         };
@@ -283,6 +285,7 @@ export type Database = {
           id?: string;
           index_number?: string | null;
           major?: string | null;
+          school_id?: string;
           updated_at?: string;
           year_of_study?: number | null;
         };
@@ -292,6 +295,13 @@ export type Database = {
             columns: ["id"];
             isOneToOne: true;
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "student_profiles_school_id_fkey";
+            columns: ["school_id"];
+            isOneToOne: false;
+            referencedRelation: "schools";
             referencedColumns: ["id"];
           },
         ];

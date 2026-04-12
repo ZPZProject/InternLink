@@ -3,6 +3,7 @@ import { companyRouter } from "./router/company";
 import { offersRouter } from "./router/offers";
 import { profileRouter } from "./router/profile";
 import { schoolRouter } from "./router/school";
+import { studentRouter } from "./router/student";
 import { createTRPCRouter } from "./trpc";
 
 export const appRouter = createTRPCRouter({
@@ -11,6 +12,7 @@ export const appRouter = createTRPCRouter({
   offers: offersRouter,
   profile: profileRouter,
   school: schoolRouter,
+  student: studentRouter,
 });
 
 // export type definition of API

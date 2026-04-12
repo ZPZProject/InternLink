@@ -1,6 +1,7 @@
 import {
   createAuthMiddleware,
   getEmployerHasCompanyMembership,
+  getStudentProfileComplete,
   getSupervisorHasSchoolMembership,
   type ProtectedPath,
 } from "@v1/supabase/middleware";
@@ -14,12 +15,17 @@ const I18nMiddleware = createI18nMiddleware({
   urlMappingStrategy: "rewrite",
 });
 
-/** Paths that use the dashboard layout and require login; employers need a company; supervisors need a school. */
+/** Paths that use the dashboard layout and require login; employers need a company; students need student_profiles onboarding. */
 const dashboardPathPatterns: (string | RegExp)[] = [
   /\/home(\/|\?|$)/,
   /\/(en|pl)\/home(\/|\?|$)/,
   /\/offers(\/|$)/,
   /\/(en|pl)\/offers(\/|$)/,
+];
+
+const studentPathPatterns: RegExp[] = [
+  /\/student(\/|$)/,
+  /\/(en|pl)\/student(\/|$)/,
 ];
 
 const supervisorPathPatterns: RegExp[] = [
@@ -44,6 +50,9 @@ const protectedPaths: ProtectedPath[] = [
       if (ctx.auth.role === "supervisor") {
         return getSupervisorHasSchoolMembership(ctx.supabase, ctx.auth.id);
       }
+      if (ctx.auth.role === "student") {
+        return getStudentProfileComplete(ctx.supabase, ctx.auth.id);
+      }
       return true;
     },
     onFail: (request, { auth }) => {
@@ -58,6 +67,11 @@ const protectedPaths: ProtectedPath[] = [
       if (auth.role === "supervisor") {
         return NextResponse.redirect(
           new URL("/supervisor/onboarding", request.url),
+        );
+      }
+      if (auth.role === "student") {
+        return NextResponse.redirect(
+          new URL("/student/onboarding", request.url),
         );
       }
       return NextResponse.redirect(new URL("/home", request.url));
@@ -83,6 +97,26 @@ const protectedPaths: ProtectedPath[] = [
       return NextResponse.redirect(
         new URL("/employer/onboarding", request.url),
       );
+    },
+  },
+  {
+    path: studentPathPatterns,
+    test: async (ctx, request) => {
+      if (!ctx.auth) return false;
+      if (ctx.auth.role !== "student") return false;
+      if (request.nextUrl.pathname.includes("/student/onboarding")) {
+        return true;
+      }
+      return getStudentProfileComplete(ctx.supabase, ctx.auth.id);
+    },
+    onFail: (request, { auth }) => {
+      if (!auth) {
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
+      if (auth.role !== "student") {
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+      return NextResponse.redirect(new URL("/student/onboarding", request.url));
     },
   },
   {
