@@ -1,6 +1,7 @@
 import {
   createAuthMiddleware,
   getEmployerHasCompanyMembership,
+  getStudentProfileComplete,
   type ProtectedPath,
 } from "@v1/supabase/middleware";
 import { NextResponse } from "next/server";
@@ -13,12 +14,17 @@ const I18nMiddleware = createI18nMiddleware({
   urlMappingStrategy: "rewrite",
 });
 
-/** Paths that use the dashboard layout and require login; employers need a company (or onboarding). */
+/** Paths that use the dashboard layout and require login; employers need a company; students need student_profiles onboarding. */
 const dashboardPathPatterns: (string | RegExp)[] = [
   /\/home(\/|\?|$)/,
   /\/(en|pl)\/home(\/|\?|$)/,
   /\/offers(\/|$)/,
   /\/(en|pl)\/offers(\/|$)/,
+];
+
+const studentPathPatterns: RegExp[] = [
+  /\/student(\/|$)/,
+  /\/(en|pl)\/student(\/|$)/,
 ];
 
 const protectedPaths: ProtectedPath[] = [
@@ -32,16 +38,29 @@ const protectedPaths: ProtectedPath[] = [
     path: dashboardPathPatterns,
     test: async (ctx, _request) => {
       if (!ctx.auth) return false;
-      if (ctx.auth.role !== "employer") return true;
-      return getEmployerHasCompanyMembership(ctx.supabase, ctx.auth.id);
+      if (ctx.auth.role === "employer") {
+        return getEmployerHasCompanyMembership(ctx.supabase, ctx.auth.id);
+      }
+      if (ctx.auth.role === "student") {
+        return getStudentProfileComplete(ctx.supabase, ctx.auth.id);
+      }
+      return true;
     },
     onFail: (request, { auth }) => {
       if (!auth) {
         return NextResponse.redirect(new URL("/login", request.url));
       }
-      return NextResponse.redirect(
-        new URL("/employer/onboarding", request.url),
-      );
+      if (auth.role === "employer") {
+        return NextResponse.redirect(
+          new URL("/employer/onboarding", request.url),
+        );
+      }
+      if (auth.role === "student") {
+        return NextResponse.redirect(
+          new URL("/student/onboarding", request.url),
+        );
+      }
+      return NextResponse.redirect(new URL("/home", request.url));
     },
   },
   {
@@ -64,6 +83,26 @@ const protectedPaths: ProtectedPath[] = [
       return NextResponse.redirect(
         new URL("/employer/onboarding", request.url),
       );
+    },
+  },
+  {
+    path: studentPathPatterns,
+    test: async (ctx, request) => {
+      if (!ctx.auth) return false;
+      if (ctx.auth.role !== "student") return false;
+      if (request.nextUrl.pathname.includes("/student/onboarding")) {
+        return true;
+      }
+      return getStudentProfileComplete(ctx.supabase, ctx.auth.id);
+    },
+    onFail: (request, { auth }) => {
+      if (!auth) {
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
+      if (auth.role !== "student") {
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+      return NextResponse.redirect(new URL("/student/onboarding", request.url));
     },
   },
 ];
