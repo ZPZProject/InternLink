@@ -23,7 +23,12 @@ function navForRole(role: Profile["role"]): NavItem[] {
     ];
   }
   if (role === "supervisor") {
-    return [home, offers, { kind: "soon", label: "Reviews (soon)" }];
+    return [
+      home,
+      offers,
+      { kind: "link", href: "/supervisor/onboarding", label: "My school" },
+      { kind: "soon", label: "Reviews (soon)" },
+    ];
   }
   if (role === "admin") {
     return [home, offers, { kind: "soon", label: "Users (soon)" }];

@@ -1,6 +1,7 @@
 import {
   createAuthMiddleware,
   getEmployerHasCompanyMembership,
+  getSupervisorHasSchoolMembership,
   type ProtectedPath,
 } from "@v1/supabase/middleware";
 import { NextResponse } from "next/server";
@@ -13,12 +14,17 @@ const I18nMiddleware = createI18nMiddleware({
   urlMappingStrategy: "rewrite",
 });
 
-/** Paths that use the dashboard layout and require login; employers need a company (or onboarding). */
+/** Paths that use the dashboard layout and require login; employers need a company; supervisors need a school. */
 const dashboardPathPatterns: (string | RegExp)[] = [
   /\/home(\/|\?|$)/,
   /\/(en|pl)\/home(\/|\?|$)/,
   /\/offers(\/|$)/,
   /\/(en|pl)\/offers(\/|$)/,
+];
+
+const supervisorPathPatterns: RegExp[] = [
+  /\/supervisor(\/|$)/,
+  /\/(en|pl)\/supervisor(\/|$)/,
 ];
 
 const protectedPaths: ProtectedPath[] = [
@@ -32,16 +38,29 @@ const protectedPaths: ProtectedPath[] = [
     path: dashboardPathPatterns,
     test: async (ctx, _request) => {
       if (!ctx.auth) return false;
-      if (ctx.auth.role !== "employer") return true;
-      return getEmployerHasCompanyMembership(ctx.supabase, ctx.auth.id);
+      if (ctx.auth.role === "employer") {
+        return getEmployerHasCompanyMembership(ctx.supabase, ctx.auth.id);
+      }
+      if (ctx.auth.role === "supervisor") {
+        return getSupervisorHasSchoolMembership(ctx.supabase, ctx.auth.id);
+      }
+      return true;
     },
     onFail: (request, { auth }) => {
       if (!auth) {
         return NextResponse.redirect(new URL("/login", request.url));
       }
-      return NextResponse.redirect(
-        new URL("/employer/onboarding", request.url),
-      );
+      if (auth.role === "employer") {
+        return NextResponse.redirect(
+          new URL("/employer/onboarding", request.url),
+        );
+      }
+      if (auth.role === "supervisor") {
+        return NextResponse.redirect(
+          new URL("/supervisor/onboarding", request.url),
+        );
+      }
+      return NextResponse.redirect(new URL("/home", request.url));
     },
   },
   {
@@ -63,6 +82,28 @@ const protectedPaths: ProtectedPath[] = [
       }
       return NextResponse.redirect(
         new URL("/employer/onboarding", request.url),
+      );
+    },
+  },
+  {
+    path: supervisorPathPatterns,
+    test: async (ctx, request) => {
+      if (!ctx.auth) return false;
+      if (ctx.auth.role !== "supervisor") return false;
+      if (request.nextUrl.pathname.includes("/supervisor/onboarding")) {
+        return true;
+      }
+      return getSupervisorHasSchoolMembership(ctx.supabase, ctx.auth.id);
+    },
+    onFail: (request, { auth }) => {
+      if (!auth) {
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
+      if (auth.role !== "supervisor") {
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+      return NextResponse.redirect(
+        new URL("/supervisor/onboarding", request.url),
       );
     },
   },
