@@ -2,16 +2,16 @@
   "name": "@v1/supapi",
   "private": true,
   "scripts": {
-    "dev": "supabase start",
+    "dev": "bun run supabase start",
     "login": "supabase login",
-    "stop": "supabase stop",
-    "migrate": "supabase migration up",
-    "seed": "supabase db seed generate && supabase db seed run",
-    "seed:from-remote": "supabase db dump --linked --data-only -f supabase/seeds/remote-data.sql",
-    "reset": "supabase db reset",
-    "generate": "supabase gen types --lang=typescript --local --schema public > ../../packages/supabase/src/types/db.ts"
+    "stop": "bun run supabase stop",
+    "migrate": "bun run supabase migration up",
+    "seed": "bun run supabase db seed generate && bun run supabase db seed run",
+    "seed:from-remote": "bun run supabase db dump --linked --data-only -f supabase/seeds/remote-data.sql",
+    "reset": "bun run supabase db reset",
+    "generate": "bun run supabase gen types --lang=typescript --local --schema public > ../../packages/supabase/src/types/db.ts"
   },
   "dependencies": {
-    "supabase": "catalog:"
+    "supabase": "^2.89.1"
   }
 }
