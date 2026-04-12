@@ -2,6 +2,7 @@ import {
   createAuthMiddleware,
   getEmployerHasCompanyMembership,
   getStudentProfileComplete,
+  getSupervisorHasSchoolMembership,
   type ProtectedPath,
 } from "@v1/supabase/middleware";
 import { NextResponse } from "next/server";
@@ -27,6 +28,11 @@ const studentPathPatterns: RegExp[] = [
   /\/(en|pl)\/student(\/|$)/,
 ];
 
+const supervisorPathPatterns: RegExp[] = [
+  /\/supervisor(\/|$)/,
+  /\/(en|pl)\/supervisor(\/|$)/,
+];
+
 const protectedPaths: ProtectedPath[] = [
   {
     path: ["/login", "/register"],
@@ -41,6 +47,9 @@ const protectedPaths: ProtectedPath[] = [
       if (ctx.auth.role === "employer") {
         return getEmployerHasCompanyMembership(ctx.supabase, ctx.auth.id);
       }
+      if (ctx.auth.role === "supervisor") {
+        return getSupervisorHasSchoolMembership(ctx.supabase, ctx.auth.id);
+      }
       if (ctx.auth.role === "student") {
         return getStudentProfileComplete(ctx.supabase, ctx.auth.id);
       }
@@ -53,6 +62,11 @@ const protectedPaths: ProtectedPath[] = [
       if (auth.role === "employer") {
         return NextResponse.redirect(
           new URL("/employer/onboarding", request.url),
+        );
+      }
+      if (auth.role === "supervisor") {
+        return NextResponse.redirect(
+          new URL("/supervisor/onboarding", request.url),
         );
       }
       if (auth.role === "student") {
@@ -103,6 +117,28 @@ const protectedPaths: ProtectedPath[] = [
         return NextResponse.redirect(new URL("/home", request.url));
       }
       return NextResponse.redirect(new URL("/student/onboarding", request.url));
+    },
+  },
+  {
+    path: supervisorPathPatterns,
+    test: async (ctx, request) => {
+      if (!ctx.auth) return false;
+      if (ctx.auth.role !== "supervisor") return false;
+      if (request.nextUrl.pathname.includes("/supervisor/onboarding")) {
+        return true;
+      }
+      return getSupervisorHasSchoolMembership(ctx.supabase, ctx.auth.id);
+    },
+    onFail: (request, { auth }) => {
+      if (!auth) {
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
+      if (auth.role !== "supervisor") {
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+      return NextResponse.redirect(
+        new URL("/supervisor/onboarding", request.url),
+      );
     },
   },
 ];

@@ -114,6 +114,23 @@ export async function getEmployerHasCompanyMembership(
   return data !== null;
 }
 
+/** Whether this profile has a `school_members` row (supervisor linked to a school). */
+export async function getSupervisorHasSchoolMembership(
+  supabase: Client,
+  profileId: string,
+): Promise<boolean> {
+  const { data, error } = await supabase
+    .from("school_members")
+    .select("profile_id")
+    .eq("profile_id", profileId)
+    .maybeSingle();
+
+  if (error) {
+    return false;
+  }
+  return data !== null;
+}
+
 type StudentProfileOnboardingFields = Pick<
   Database["public"]["Tables"]["student_profiles"]["Row"],
   "school_id" | "index_number" | "major" | "year_of_study"
