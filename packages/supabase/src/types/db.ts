@@ -202,6 +202,65 @@ export type Database = {
         };
         Relationships: [];
       };
+      school_members: {
+        Row: {
+          created_at: string;
+          profile_id: string;
+          school_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          profile_id: string;
+          school_id: string;
+        };
+        Update: {
+          created_at?: string;
+          profile_id?: string;
+          school_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "school_members_school_id_fkey";
+            columns: ["school_id"];
+            isOneToOne: false;
+            referencedRelation: "schools";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      schools: {
+        Row: {
+          address: string | null;
+          approval_status: Database["public"]["Enums"]["school_approval_status"];
+          created_at: string;
+          created_by_profile_id: string | null;
+          id: string;
+          name: string;
+          updated_at: string;
+          website: string | null;
+        };
+        Insert: {
+          address?: string | null;
+          approval_status?: Database["public"]["Enums"]["school_approval_status"];
+          created_at?: string;
+          created_by_profile_id?: string | null;
+          id?: string;
+          name: string;
+          updated_at?: string;
+          website?: string | null;
+        };
+        Update: {
+          address?: string | null;
+          approval_status?: Database["public"]["Enums"]["school_approval_status"];
+          created_at?: string;
+          created_by_profile_id?: string | null;
+          id?: string;
+          name?: string;
+          updated_at?: string;
+          website?: string | null;
+        };
+        Relationships: [];
+      };
       student_profiles: {
         Row: {
           created_at: string;
@@ -247,6 +306,7 @@ export type Database = {
     Enums: {
       application_status: "pending" | "accepted" | "rejected" | "withdrawn";
       company_approval_status: "pending" | "approved" | "rejected";
+      school_approval_status: "pending" | "approved" | "rejected";
       user_role: "student" | "employer" | "supervisor" | "admin";
     };
     CompositeTypes: {
@@ -380,6 +440,7 @@ export const Constants = {
     Enums: {
       application_status: ["pending", "accepted", "rejected", "withdrawn"],
       company_approval_status: ["pending", "approved", "rejected"],
+      school_approval_status: ["pending", "approved", "rejected"],
       user_role: ["student", "employer", "supervisor", "admin"],
     },
   },
