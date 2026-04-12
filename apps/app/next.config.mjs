@@ -2,7 +2,7 @@ import './src/env.mjs';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	turbopack: {},
+	// turbopack: {},
 	transpilePackages: ['@v1/supabase'],
 	images: {
 		remotePatterns: [],
