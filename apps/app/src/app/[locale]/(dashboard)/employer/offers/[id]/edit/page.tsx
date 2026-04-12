@@ -1,4 +1,5 @@
 import { Button } from "@v1/ui/button";
+import { parseISO } from "date-fns";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { OfferForm } from "@/components/offers/offer-form";
@@ -42,9 +43,9 @@ export default async function EditOfferPage({ params }: Props) {
           requirements: offer.requirements ?? "",
           location: offer.location,
           number_of_positions: offer.number_of_positions,
-          start_date: offer.start_date,
-          end_date: offer.end_date,
-          application_deadline: deadline,
+          start_date: parseISO(offer.start_date),
+          end_date: parseISO(offer.end_date),
+          application_deadline: deadline ? parseISO(deadline) : undefined,
           is_active: offer.is_active,
         }}
       />
