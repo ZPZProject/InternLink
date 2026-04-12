@@ -194,3 +194,13 @@ export const employerProcedure = protectedProcedure.use(({ ctx, next }) => {
   }
   return next({ ctx });
 });
+
+export const studentProcedure = protectedProcedure.use(({ ctx, next }) => {
+  if (ctx.profile.role !== "student") {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "This action is only available to students",
+    });
+  }
+  return next({ ctx });
+});
