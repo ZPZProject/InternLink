@@ -194,3 +194,13 @@ export const employerProcedure = protectedProcedure.use(({ ctx, next }) => {
   }
   return next({ ctx });
 });
+
+export const supervisorProcedure = protectedProcedure.use(({ ctx, next }) => {
+  if (ctx.profile.role !== "supervisor") {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "This action is only available to supervisors",
+    });
+  }
+  return next({ ctx });
+});
