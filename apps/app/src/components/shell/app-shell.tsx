@@ -11,19 +11,24 @@ type NavItem =
 
 function navForRole(role: Profile["role"]): NavItem[] {
   const home: NavItem = { kind: "link", href: "/home", label: "Home" };
+  const offers: NavItem = { kind: "link", href: "/offers", label: "Offers" };
   if (role === "student") {
-    return [home, { kind: "soon", label: "Applications (soon)" }];
+    return [home, offers, { kind: "soon", label: "Applications (soon)" }];
   }
   if (role === "employer") {
-    return [home, { kind: "soon", label: "My offers (soon)" }];
+    return [
+      home,
+      offers,
+      { kind: "link", href: "/employer/offers", label: "My offers" },
+    ];
   }
   if (role === "supervisor") {
-    return [home, { kind: "soon", label: "Reviews (soon)" }];
+    return [home, offers, { kind: "soon", label: "Reviews (soon)" }];
   }
   if (role === "admin") {
-    return [home, { kind: "soon", label: "Users (soon)" }];
+    return [home, offers, { kind: "soon", label: "Users (soon)" }];
   }
-  return [home];
+  return [home, offers];
 }
 
 export function AppShell({

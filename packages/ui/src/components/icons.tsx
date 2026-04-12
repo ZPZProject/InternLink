@@ -22,6 +22,7 @@ import {
   ListOrdered,
   Loader2,
   LogOut,
+  MapPin,
   MessageSquare,
   Minus,
   Monitor,
@@ -78,6 +79,7 @@ export const Icons = {
   Student: GraduationCap,
   Supervisor: User,
   Admin: Shield,
+  Location: MapPin,
 };
 
 export type { LucideIcon } from "lucide-react";

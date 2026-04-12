@@ -184,3 +184,13 @@ export const protectedProcedure = t.procedure
       },
     });
   });
+
+export const employerProcedure = protectedProcedure.use(({ ctx, next }) => {
+  if (ctx.profile.role !== "employer") {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "This action is only available to employers",
+    });
+  }
+  return next({ ctx });
+});

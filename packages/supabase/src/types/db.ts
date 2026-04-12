@@ -9,6 +9,166 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      applications: {
+        Row: {
+          created_at: string;
+          id: string;
+          offer_id: string;
+          status: Database["public"]["Enums"]["application_status"];
+          student_profile_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          offer_id: string;
+          status?: Database["public"]["Enums"]["application_status"];
+          student_profile_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          offer_id?: string;
+          status?: Database["public"]["Enums"]["application_status"];
+          student_profile_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "applications_offer_id_fkey";
+            columns: ["offer_id"];
+            isOneToOne: false;
+            referencedRelation: "internship_offers";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "applications_student_profile_id_fkey";
+            columns: ["student_profile_id"];
+            isOneToOne: false;
+            referencedRelation: "student_profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      companies: {
+        Row: {
+          address: string | null;
+          approval_status: Database["public"]["Enums"]["company_approval_status"];
+          contact_person: string | null;
+          created_at: string;
+          created_by_profile_id: string | null;
+          id: string;
+          name: string;
+          tax_id: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          address?: string | null;
+          approval_status?: Database["public"]["Enums"]["company_approval_status"];
+          contact_person?: string | null;
+          created_at?: string;
+          created_by_profile_id?: string | null;
+          id?: string;
+          name: string;
+          tax_id?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          address?: string | null;
+          approval_status?: Database["public"]["Enums"]["company_approval_status"];
+          contact_person?: string | null;
+          created_at?: string;
+          created_by_profile_id?: string | null;
+          id?: string;
+          name?: string;
+          tax_id?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      company_members: {
+        Row: {
+          company_id: string;
+          created_at: string;
+          profile_id: string;
+        };
+        Insert: {
+          company_id: string;
+          created_at?: string;
+          profile_id: string;
+        };
+        Update: {
+          company_id?: string;
+          created_at?: string;
+          profile_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "company_members_company_id_fkey";
+            columns: ["company_id"];
+            isOneToOne: false;
+            referencedRelation: "companies";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      internship_offers: {
+        Row: {
+          application_deadline: string | null;
+          company_id: string;
+          created_at: string;
+          created_by_profile_id: string | null;
+          description: string;
+          end_date: string;
+          id: string;
+          is_active: boolean;
+          location: string;
+          number_of_positions: number;
+          requirements: string | null;
+          start_date: string;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          application_deadline?: string | null;
+          company_id: string;
+          created_at?: string;
+          created_by_profile_id?: string | null;
+          description?: string;
+          end_date: string;
+          id?: string;
+          is_active?: boolean;
+          location?: string;
+          number_of_positions?: number;
+          requirements?: string | null;
+          start_date: string;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          application_deadline?: string | null;
+          company_id?: string;
+          created_at?: string;
+          created_by_profile_id?: string | null;
+          description?: string;
+          end_date?: string;
+          id?: string;
+          is_active?: boolean;
+          location?: string;
+          number_of_positions?: number;
+          requirements?: string | null;
+          start_date?: string;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "internship_offers_company_id_fkey";
+            columns: ["company_id"];
+            isOneToOne: false;
+            referencedRelation: "companies";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           created_at: string;
@@ -42,6 +202,41 @@ export type Database = {
         };
         Relationships: [];
       };
+      student_profiles: {
+        Row: {
+          created_at: string;
+          id: string;
+          index_number: string | null;
+          major: string | null;
+          updated_at: string;
+          year_of_study: number | null;
+        };
+        Insert: {
+          created_at?: string;
+          id: string;
+          index_number?: string | null;
+          major?: string | null;
+          updated_at?: string;
+          year_of_study?: number | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          index_number?: string | null;
+          major?: string | null;
+          updated_at?: string;
+          year_of_study?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "student_profiles_id_fkey";
+            columns: ["id"];
+            isOneToOne: true;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -50,6 +245,8 @@ export type Database = {
       custom_access_token_hook: { Args: { event: Json }; Returns: Json };
     };
     Enums: {
+      application_status: "pending" | "accepted" | "rejected" | "withdrawn";
+      company_approval_status: "pending" | "approved" | "rejected";
       user_role: "student" | "employer" | "supervisor" | "admin";
     };
     CompositeTypes: {
@@ -181,6 +378,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      application_status: ["pending", "accepted", "rejected", "withdrawn"],
+      company_approval_status: ["pending", "approved", "rejected"],
       user_role: ["student", "employer", "supervisor", "admin"],
     },
   },
