@@ -1,4 +1,4 @@
--- Schools and supervisor membership (additive). Supervisors create pending schools or join any existing school.
+-- Schools and supervisor membership. Supervisors create pending schools or join existing schools (RLS allows all authenticated users to read schools for onboarding).
 
 create type public.school_approval_status as enum ('pending', 'approved', 'rejected');
 
@@ -34,26 +34,6 @@ on public.schools
 for select
 to authenticated
 using (true);
-
-create policy schools_select_member_or_creator
-on public.schools
-for select
-to authenticated
-using (
-  created_by_profile_id = auth.uid()
-  or exists (
-    select 1
-    from public.school_members m
-    where m.school_id = schools.id
-      and m.profile_id = auth.uid()
-  )
-);
-
-create policy schools_select_admin
-on public.schools
-for select
-to authenticated
-using ((auth.jwt() ->> 'user_role') = 'admin');
 
 create policy schools_insert_supervisor_pending
 on public.schools

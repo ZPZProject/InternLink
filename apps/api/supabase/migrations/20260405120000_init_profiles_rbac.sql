@@ -151,32 +151,32 @@ grant select, update on table public.profiles to authenticated;
 
 alter table public.profiles enable row level security;
 
-create policy "profiles_select_auth_admin"
+create policy profiles_select_auth_admin
 on public.profiles
 for select
 to supabase_auth_admin
 using (true);
 
-create policy "profiles_select_own"
+create policy profiles_select_own
 on public.profiles
 for select
 to authenticated
 using (auth.uid() = id);
 
-create policy "profiles_select_admin"
+create policy profiles_select_admin
 on public.profiles
 for select
 to authenticated
 using ((auth.jwt() ->> 'user_role') = 'admin');
 
-create policy "profiles_update_own"
+create policy profiles_update_own
 on public.profiles
 for update
 to authenticated
 using (auth.uid() = id)
 with check (auth.uid() = id);
 
-create policy "profiles_update_admin"
+create policy profiles_update_admin
 on public.profiles
 for update
 to authenticated
