@@ -114,6 +114,41 @@ export async function getEmployerHasCompanyMembership(
   return data !== null;
 }
 
+type StudentProfileOnboardingFields = Pick<
+  Database["public"]["Tables"]["student_profiles"]["Row"],
+  "school_id" | "index_number" | "major" | "year_of_study"
+>;
+
+function isStudentProfileComplete(
+  row: StudentProfileOnboardingFields | null,
+): boolean {
+  if (!row) return false;
+  if (!row.school_id) return false;
+  const index = row.index_number?.trim() ?? "";
+  const major = row.major?.trim() ?? "";
+  const year = row.year_of_study;
+  if (index.length === 0 || major.length === 0) return false;
+  if (year === null || year === undefined) return false;
+  return Number.isInteger(year) && year >= 1 && year <= 6;
+}
+
+/** Whether this student has a complete `student_profiles` onboarding row. */
+export async function getStudentProfileComplete(
+  supabase: Client,
+  profileId: string,
+): Promise<boolean> {
+  const { data, error } = await supabase
+    .from("student_profiles")
+    .select("id, school_id, index_number, major, year_of_study")
+    .eq("id", profileId)
+    .maybeSingle();
+
+  if (error) {
+    return false;
+  }
+  return isStudentProfileComplete(data);
+}
+
 export const createAuthMiddleware = async (
   protectedPaths: ProtectedPath[],
   I18nMiddleware?: (request: NextRequest) => NextResponse<unknown>,
