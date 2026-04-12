@@ -31,14 +31,9 @@ const schema = z
     requirements: z.string().max(20_000).optional(),
     location: z.string().trim().min(1).max(200),
     number_of_positions: z.coerce.number().int().min(1).max(500),
-    start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Use YYYY-MM-DD"),
-    end_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Use YYYY-MM-DD"),
-    application_deadline: z
-      .string()
-      .refine(
-        (s) => s === "" || /^\d{4}-\d{2}-\d{2}$/.test(s),
-        "Use YYYY-MM-DD",
-      ),
+    start_date: z.date(),
+    end_date: z.date(),
+    application_deadline: z.date().optional(),
     is_active: z.boolean(),
   })
   .refine((v) => v.end_date >= v.start_date, {
@@ -48,15 +43,12 @@ const schema = z
 
 type Values = z.infer<typeof schema>;
 
-const defaults: Values = {
+const defaults: Partial<Values> = {
   title: "",
   description: "",
   requirements: "",
   location: "",
   number_of_positions: 1,
-  start_date: "",
-  end_date: "",
-  application_deadline: "",
   is_active: false,
 };
 
@@ -113,7 +105,7 @@ export function OfferForm({
 
   function onSubmit(values: Values) {
     const deadline =
-      values.application_deadline && values.application_deadline.length > 0
+      values.application_deadline && values.application_deadline !== undefined
         ? values.application_deadline
         : null;
 

@@ -17,13 +17,9 @@ export const offersCreateSchema = z.object({
   requirements: z.string().max(20_000).optional().nullable(),
   location: z.string().trim().min(1).max(200),
   number_of_positions: z.number().int().min(1).max(500).optional().default(1),
-  start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  end_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  application_deadline: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
-    .optional()
-    .nullable(),
+  start_date: z.date(),
+  end_date: z.date(),
+  application_deadline: z.date().optional().nullable(),
   is_active: z.boolean().optional().default(true),
 });
 
@@ -34,19 +30,9 @@ export const offersUpdateSchema = z.object({
   requirements: z.string().max(20_000).optional().nullable(),
   location: z.string().trim().min(1).max(200).optional(),
   number_of_positions: z.number().int().min(1).max(500).optional(),
-  start_date: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
-    .optional(),
-  end_date: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
-    .optional(),
-  application_deadline: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
-    .optional()
-    .nullable(),
+  start_date: z.date().optional(),
+  end_date: z.date().optional(),
+  application_deadline: z.date().optional().nullable(),
   is_active: z.boolean().optional(),
 });
 

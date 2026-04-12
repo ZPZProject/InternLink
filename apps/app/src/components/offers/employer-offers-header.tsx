@@ -1,4 +1,5 @@
 import { Button } from "@v1/ui/button";
+import Link from "next/link";
 
 export function EmployerOffersHeader() {
   return (
@@ -10,8 +11,8 @@ export function EmployerOffersHeader() {
         </p>
       </div>
 
-      <Button type="button" disabled>
-        New offer
+      <Button type="button" asChild>
+        <Link href="/employer/offers/new">New offer</Link>
       </Button>
     </div>
   );

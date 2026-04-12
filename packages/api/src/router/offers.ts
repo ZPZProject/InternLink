@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import type { Client } from "@v1/supabase/types";
-
+import { formatISO } from "date-fns";
 import {
   offersByIdSchema,
   offersCreateSchema,
@@ -208,9 +208,11 @@ export const offersRouter = createTRPCRouter({
           requirements: input.requirements ?? null,
           location: input.location,
           number_of_positions: input.number_of_positions,
-          start_date: input.start_date,
-          end_date: input.end_date,
-          application_deadline: input.application_deadline ?? null,
+          start_date: formatISO(input.start_date),
+          end_date: formatISO(input.end_date),
+          application_deadline: input.application_deadline
+            ? formatISO(input.application_deadline)
+            : null,
           is_active: input.is_active,
         })
         .select()
@@ -246,35 +248,18 @@ export const offersRouter = createTRPCRouter({
 
       await assertCanManageOffer(ctx, offer);
 
-      const updatePayload: Record<string, unknown> = {};
-      if (patch.title !== undefined) updatePayload.title = patch.title;
-      if (patch.description !== undefined)
-        updatePayload.description = patch.description;
-      if (patch.requirements !== undefined)
-        updatePayload.requirements = patch.requirements;
-      if (patch.location !== undefined) updatePayload.location = patch.location;
-      if (patch.number_of_positions !== undefined) {
-        updatePayload.number_of_positions = patch.number_of_positions;
-      }
-      if (patch.start_date !== undefined)
-        updatePayload.start_date = patch.start_date;
-      if (patch.end_date !== undefined) updatePayload.end_date = patch.end_date;
-      if (patch.application_deadline !== undefined) {
-        updatePayload.application_deadline = patch.application_deadline;
-      }
-      if (patch.is_active !== undefined)
-        updatePayload.is_active = patch.is_active;
-
-      if (Object.keys(updatePayload).length === 0) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "No fields to update",
-        });
-      }
-
       const { data, error } = await ctx.supabase
         .from("internship_offers")
-        .update(updatePayload)
+        .update({
+          ...patch,
+          start_date: patch.start_date
+            ? formatISO(patch.start_date)
+            : undefined,
+          end_date: patch.end_date ? formatISO(patch.end_date) : undefined,
+          application_deadline: patch.application_deadline
+            ? formatISO(patch.application_deadline)
+            : undefined,
+        })
         .eq("id", id)
         .select()
         .single();
