@@ -1,86 +1,24 @@
-import type { Tables } from "@v1/supabase/types";
-import Link from "next/link";
-import { SignOutButton } from "@/components/auth/sign-out-button";
-import { RoleBadge } from "@/components/role-badge";
+import { SidebarInset, SidebarProvider } from "@v1/ui/sidebar";
+import AppSidebar from "./app-sidebar";
+import { ShellPageTitle } from "./shell-page-title";
+import UserDropdown from "./user-dropdown";
 
-type Profile = Tables<"profiles">;
-
-type NavItem =
-  | { kind: "link"; href: string; label: string }
-  | { kind: "soon"; label: string };
-
-function navForRole(role: Profile["role"]): NavItem[] {
-  const home: NavItem = { kind: "link", href: "/home", label: "Home" };
-  const offers: NavItem = { kind: "link", href: "/offers", label: "Offers" };
-  if (role === "student") {
-    return [home, offers, { kind: "soon", label: "Applications (soon)" }];
-  }
-  if (role === "employer") {
-    return [
-      home,
-      offers,
-      { kind: "link", href: "/employer/offers", label: "My offers" },
-    ];
-  }
-  if (role === "supervisor") {
-    return [
-      home,
-      offers,
-      { kind: "link", href: "/supervisor/onboarding", label: "My school" },
-      { kind: "soon", label: "Reviews (soon)" },
-    ];
-  }
-  if (role === "admin") {
-    return [home, offers, { kind: "soon", label: "Users (soon)" }];
-  }
-  return [home, offers];
-}
-
-export function AppShell({
-  profile,
-  children,
-}: {
-  profile: Profile;
-  children: React.ReactNode;
-}) {
-  const items = navForRole(profile.role);
-  const display =
-    [profile.first_name, profile.last_name].filter(Boolean).join(" ") ||
-    profile.email ||
-    "Account";
-
+export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-background min-h-screen">
-      <header className="border-border flex h-14 items-center gap-4 border-b px-4">
-        <Link className="font-semibold" href="/home">
-          InternLink
-        </Link>
-        <nav className="text-muted-foreground flex flex-1 items-center gap-4 text-sm">
-          {items.map((item) =>
-            item.kind === "link" ? (
-              <Link
-                key={item.label}
-                className="hover:text-foreground"
-                href={item.href}
-              >
-                {item.label}
-              </Link>
-            ) : (
-              <span key={item.label} className="cursor-default opacity-50">
-                {item.label}
-              </span>
-            ),
-          )}
-        </nav>
-        <div className="flex items-center gap-3">
-          <span className="text-muted-foreground hidden max-w-[160px] truncate text-sm sm:inline">
-            {display}
-          </span>
-          <RoleBadge role={profile.role} />
-          <SignOutButton />
-        </div>
-      </header>
-      <main className="mx-auto max-w-4xl p-6">{children}</main>
-    </div>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="w-full border-b px-2 h-16">
+          <div className="flex justify-between w-full items-center h-full">
+            <div className="w-[140px]" />
+            <div>
+              <ShellPageTitle />
+            </div>
+            <UserDropdown />
+          </div>
+        </header>
+        <div className="p-6">{children}</div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

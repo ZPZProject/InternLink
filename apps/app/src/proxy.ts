@@ -18,20 +18,12 @@ const I18nMiddleware = createI18nMiddleware({
 /** Paths that use the dashboard layout and require login; employers need a company; students need student_profiles onboarding. */
 const dashboardPathPatterns: (string | RegExp)[] = [
   /\/home(\/|\?|$)/,
-  /\/(en|pl)\/home(\/|\?|$)/,
   /\/offers(\/|$)/,
-  /\/(en|pl)\/offers(\/|$)/,
 ];
 
-const studentPathPatterns: RegExp[] = [
-  /\/student(\/|$)/,
-  /\/(en|pl)\/student(\/|$)/,
-];
+const studentPathPatterns: RegExp[] = [/\/student(\/|$)/];
 
-const supervisorPathPatterns: RegExp[] = [
-  /\/supervisor(\/|$)/,
-  /\/(en|pl)\/supervisor(\/|$)/,
-];
+const supervisorPathPatterns: RegExp[] = [/\/supervisor(\/|$)/];
 
 const protectedPaths: ProtectedPath[] = [
   {

@@ -70,4 +70,8 @@ export const authRouter = createTRPCRouter({
         userId: data.user?.id ?? null,
       };
     }),
+
+  signOut: publicProcedure.mutation(async ({ ctx }) => {
+    await ctx.supabase.auth.signOut();
+  }),
 });
