@@ -19,7 +19,7 @@ export function RoleBadge({
   const variant = roleVariants[role];
 
   return (
-    <Badge variant={variant} className={cn("capitalize", className)}>
+    <Badge variant={variant} size="sm" className={cn("capitalize", className)}>
       {role}
     </Badge>
   );
