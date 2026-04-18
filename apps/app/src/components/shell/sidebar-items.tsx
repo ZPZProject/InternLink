@@ -1,3 +1,6 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
 import type { Tables } from "@v1/supabase/types";
 import {
   SidebarMenu,
@@ -5,7 +8,8 @@ import {
   SidebarMenuItem,
 } from "@v1/ui/sidebar";
 import Link from "next/link";
-import { caller } from "@/trpc/server";
+import { usePathname } from "next/navigation";
+import { useTRPC } from "@/trpc/react";
 
 type Profile = Tables<"profiles">;
 
@@ -52,8 +56,14 @@ function navForRole(role: Profile["role"]): NavItem[] {
   return SHARED_LINKS;
 }
 
-const SidebarItems = async () => {
-  const profile = await caller.profile.me();
+const SidebarItems = () => {
+  const pathname = usePathname();
+  const trpc = useTRPC();
+  const { data: profile } = useQuery(trpc.profile.me.queryOptions());
+
+  if (!profile) {
+    return null;
+  }
 
   const items = navForRole(profile.role);
 
@@ -61,7 +71,7 @@ const SidebarItems = async () => {
     <SidebarMenu>
       {items.map((item) => (
         <SidebarMenuItem key={item.label}>
-          <SidebarMenuButton asChild>
+          <SidebarMenuButton asChild isActive={pathname.startsWith(item.href)}>
             <Link href={item.href}>{item.label}</Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
