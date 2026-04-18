@@ -5,9 +5,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarHeader,
-  SidebarMenuSkeleton,
 } from "@v1/ui/sidebar";
-import { Suspense } from "react";
 import { Logo } from "../shared/logo";
 import SidebarItems from "./sidebar-items";
 
@@ -19,9 +17,7 @@ const AppSidebar = () => {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <Suspense fallback={<SidebarMenuSkeleton />}>
-            <SidebarItems />
-          </Suspense>
+          <SidebarItems />
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
