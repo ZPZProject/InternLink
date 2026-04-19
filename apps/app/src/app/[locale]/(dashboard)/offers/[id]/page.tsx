@@ -3,6 +3,7 @@ import { Button } from "@v1/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@v1/ui/card";
 import Link from "next/link";
 
+import { RichTextHtml } from "@/components/editor/rich-text-html";
 import { caller } from "@/trpc/server";
 
 type Props = { params: Promise<{ id: string }> };
@@ -31,16 +32,16 @@ export default async function OfferDetailPage({ params }: Props) {
         <CardContent className="space-y-4 text-sm">
           <section>
             <h2 className="mb-1 font-medium">Description</h2>
-            <p className="text-muted-foreground whitespace-pre-wrap">
-              {offer.description || "—"}
-            </p>
+            {offer.description?.trim() ? (
+              <RichTextHtml html={offer.description} />
+            ) : (
+              <p className="text-muted-foreground">—</p>
+            )}
           </section>
-          {offer.requirements ? (
+          {offer.requirements?.trim() ? (
             <section>
               <h2 className="mb-1 font-medium">Requirements</h2>
-              <p className="text-muted-foreground whitespace-pre-wrap">
-                {offer.requirements}
-              </p>
+              <RichTextHtml html={offer.requirements} />
             </section>
           ) : null}
           <p className="text-muted-foreground text-xs">

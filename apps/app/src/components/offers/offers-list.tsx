@@ -2,6 +2,8 @@ import { Badge } from "@v1/ui/badge";
 import { Card, CardDescription, CardHeader, CardTitle } from "@v1/ui/card";
 import Link from "next/link";
 
+import { htmlToPlainText } from "@/lib/html-text";
+
 type Company = { id: string; name: string } | null;
 
 type OfferListItem = {
@@ -43,7 +45,7 @@ export function OffersList({ items }: { items: OfferListItem[] }) {
                   <Badge variant="secondary">{companyName(offer)}</Badge>
                 </div>
                 <CardDescription className="line-clamp-2">
-                  {offer.description || "No description"}
+                  {htmlToPlainText(offer.description) || "No description"}
                 </CardDescription>
                 <p className="text-muted-foreground text-xs">
                   {offer.location} · {offer.start_date} → {offer.end_date}

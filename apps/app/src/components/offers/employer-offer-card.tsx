@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardTitle } from "@v1/ui/card";
 import { Icons } from "@v1/ui/icons";
 import Link from "next/link";
 import { EmployerOfferActiveToggle } from "@/components/offers/employer-offer-actions";
+import { htmlToPlainText } from "@/lib/html-text";
 
 type Offer = RouterOutputs["offers"]["listMine"]["items"][number];
 
@@ -40,7 +41,7 @@ export function EmployerOfferCard({ offer }: { offer: Offer }) {
         </div>
 
         <CardDescription className="line-clamp-2">
-          {offer.description || "—"}
+          {htmlToPlainText(offer.description) || "—"}
         </CardDescription>
       </CardContent>
     </Card>
