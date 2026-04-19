@@ -22,6 +22,7 @@ import { useId } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { useTRPC } from "@/trpc/react";
+import { CityLocationCombobox } from "./city-location-combobox";
 import { EMPLOYER_OFFERS_LIST_QUERY } from "./employer-offers-query";
 
 const schema = z
@@ -212,11 +213,12 @@ export function OfferForm({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
                 <FieldLabel htmlFor={`${formId}-loc`}>Location</FieldLabel>
-                <Input
-                  {...field}
+                <CityLocationCombobox
                   id={`${formId}-loc`}
-                  aria-invalid={fieldState.invalid}
+                  value={field.value}
+                  onChange={field.onChange}
                   disabled={busy}
+                  aria-invalid={fieldState.invalid}
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
