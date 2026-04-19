@@ -16,11 +16,11 @@ import {
 import { Input } from "@v1/ui/input";
 import { toast } from "@v1/ui/sonner";
 import { Switch } from "@v1/ui/switch";
-import { Textarea } from "@v1/ui/textarea";
 import { useRouter } from "next/navigation";
 import { useId } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { useTRPC } from "@/trpc/react";
 import { CityLocationCombobox } from "./city-location-combobox";
 import { EMPLOYER_OFFERS_LIST_QUERY } from "./employer-offers-query";
@@ -173,12 +173,14 @@ export function OfferForm({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
                 <FieldLabel htmlFor={`${formId}-desc`}>Description</FieldLabel>
-                <Textarea
-                  {...field}
+                <RichTextEditor
                   id={`${formId}-desc`}
-                  rows={5}
-                  aria-invalid={fieldState.invalid}
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Describe the internship role, team, and expectations."
                   disabled={busy}
+                  aria-invalid={fieldState.invalid}
+                  minHeight="min-h-[180px]"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -194,12 +196,14 @@ export function OfferForm({
                 <FieldLabel htmlFor={`${formId}-req`}>
                   Requirements (optional)
                 </FieldLabel>
-                <Textarea
-                  {...field}
+                <RichTextEditor
                   id={`${formId}-req`}
-                  rows={3}
-                  aria-invalid={fieldState.invalid}
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  placeholder="Skills, year of study, languages, etc."
                   disabled={busy}
+                  aria-invalid={fieldState.invalid}
+                  minHeight="min-h-[120px]"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
