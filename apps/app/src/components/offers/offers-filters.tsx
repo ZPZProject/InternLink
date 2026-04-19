@@ -3,7 +3,8 @@
 import { Field, FieldLabel } from "@v1/ui/field";
 import { Input } from "@v1/ui/input";
 import { debounce, parseAsString, useQueryStates } from "nuqs";
-import { useId, useTransition } from "react";
+import { useId } from "react";
+import { CityLocationCombobox } from "./city-location-combobox";
 
 const offersFiltersParsers = {
   q: parseAsString.withDefault(""),
@@ -12,11 +13,9 @@ const offersFiltersParsers = {
 
 export function OffersFilters() {
   const uid = useId();
-  const [pending, startTransition] = useTransition();
   const [{ q, location }, setParams] = useQueryStates(offersFiltersParsers, {
     history: "push",
     shallow: false,
-    startTransition,
   });
 
   return (
@@ -27,7 +26,6 @@ export function OffersFilters() {
           id={`${uid}-q`}
           value={q}
           placeholder="Title or description"
-          disabled={pending}
           onChange={(e) => {
             const v = e.target.value;
             void setParams(
@@ -39,15 +37,13 @@ export function OffersFilters() {
           }}
         />
       </Field>
-      <Field className="min-w-[160px] flex-1">
+      <Field className="min-w-[200px] flex-1">
         <FieldLabel htmlFor={`${uid}-loc`}>Location</FieldLabel>
-        <Input
+        <CityLocationCombobox
           id={`${uid}-loc`}
           value={location}
-          placeholder="City or remote"
-          disabled={pending}
-          onChange={(e) => {
-            const v = e.target.value;
+          placeholder="City, region, or remote"
+          onChange={(v) => {
             void setParams(
               { location: v === "" ? null : v },
               {
