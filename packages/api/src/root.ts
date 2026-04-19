@@ -1,5 +1,6 @@
 import { authRouter } from "./router/auth";
 import { companyRouter } from "./router/company";
+import { geocodingRouter } from "./router/geocoding";
 import { offersRouter } from "./router/offers";
 import { profileRouter } from "./router/profile";
 import { schoolRouter } from "./router/school";
@@ -9,6 +10,7 @@ import { createTRPCRouter } from "./trpc";
 export const appRouter = createTRPCRouter({
   auth: authRouter,
   company: companyRouter,
+  geocoding: geocodingRouter,
   offers: offersRouter,
   profile: profileRouter,
   school: schoolRouter,
