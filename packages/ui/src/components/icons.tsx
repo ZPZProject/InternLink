@@ -1,9 +1,17 @@
 import {
+  Bold,
   Briefcase,
   GraduationCap,
+  Heading2,
+  Italic,
+  List,
+  ListOrdered,
   LogOut,
   MapPin,
+  Redo2,
   Settings,
+  Strikethrough,
+  Undo2,
   User,
 } from "lucide-react";
 
@@ -15,6 +23,14 @@ export const Icons = {
   Supervisor: User,
   Settings,
   LogOut,
+  Bold,
+  Italic,
+  Strikethrough,
+  List,
+  ListOrdered,
+  Heading2,
+  Undo: Undo2,
+  Redo: Redo2,
 };
 
 export type { LucideIcon } from "lucide-react";
