@@ -16,7 +16,10 @@ import {
 
 const MAX_ACTIVE_APPLICATIONS = 5;
 
-async function getStudentProfileId(ctx: { supabase: Client; user: { id: string } }) {
+async function getStudentProfileId(ctx: {
+  supabase: Client;
+  user: { id: string };
+}) {
   const { data, error } = await ctx.supabase
     .from("student_profiles")
     .select("id")
@@ -38,7 +41,10 @@ async function getStudentProfileId(ctx: { supabase: Client; user: { id: string }
   return data.id;
 }
 
-async function getEmployerCompanyId(ctx: { supabase: Client; user: { id: string } }) {
+async function getEmployerCompanyId(ctx: {
+  supabase: Client;
+  user: { id: string };
+}) {
   const { data: member, error } = await ctx.supabase
     .from("company_members")
     .select("company_id")
@@ -104,7 +110,7 @@ export const applicationsRouter = createTRPCRouter({
         });
       }
 
-const { count: activeCount } = await ctx.supabase
+      const { count: activeCount } = await ctx.supabase
         .from("applications")
         .select("*", { count: "exact", head: true })
         .eq("student_profile_id", studentProfileId)
@@ -253,7 +259,10 @@ const { count: activeCount } = await ctx.supabase
         });
       }
 
-      if ((app.internship_offers as { company_id: string }).company_id !== companyId) {
+      if (
+        (app.internship_offers as { company_id: string }).company_id !==
+        companyId
+      ) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "This application does not belong to your company",
@@ -274,7 +283,8 @@ const { count: activeCount } = await ctx.supabase
         .update({
           status: newStatus,
           reviewed_at: new Date().toISOString(),
-          employer_rejection_reason: input.action === "reject" ? input.reason : null,
+          employer_rejection_reason:
+            input.action === "reject" ? input.reason : null,
         })
         .eq("id", input.application_id)
         .select()

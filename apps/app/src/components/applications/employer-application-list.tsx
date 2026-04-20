@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@v1/ui/badge";
 import { Button } from "@v1/ui/button";
+import { toast } from "@v1/ui/sonner";
 import {
   Table,
   TableBody,
@@ -12,19 +13,13 @@ import {
   TableRow,
 } from "@v1/ui/table";
 import { Textarea } from "@v1/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@v1/ui/dialog";
-import { toast } from "@v1/ui/sonner";
 import { useState } from "react";
 import { useTRPC } from "@/trpc/react";
 
-const statusVariant: Record<string, "blue" | "destructive" | "amber" | "secondary"> = {
+const statusVariant: Record<
+  string,
+  "blue" | "destructive" | "amber" | "secondary"
+> = {
   pending: "amber",
   accepted: "blue",
   rejected: "destructive",
@@ -33,11 +28,9 @@ const statusVariant: Record<string, "blue" | "destructive" | "amber" | "secondar
 
 function AcceptRejectActions({
   applicationId,
-  offerId,
   initialReason,
 }: {
   applicationId: string;
-  offerId: string;
   initialReason?: string | null;
 }) {
   const [action, setAction] = useState<"accept" | "reject" | null>(null);
@@ -115,7 +108,7 @@ export function EmployerApplicationList({ offerId }: { offerId: string }) {
     return <div>Loading...</div>;
   }
 
-  if (!data?.items.length) {
+  if (!data) {
     return (
       <div className="text-center py-12 text-muted-foreground">
         <p>No applications yet.</p>
@@ -138,21 +131,12 @@ export function EmployerApplicationList({ offerId }: { offerId: string }) {
       </TableHeader>
       <TableBody>
         {data.items.map((app) => {
-          const student = app.student_profiles as {
-            id: string;
-            index_number: string | null;
-            major: string | null;
-            year_of_study: number | null;
-            profiles: {
-              first_name: string | null;
-              last_name: string | null;
-              email: string | null;
-            };
-          };
+          const student = app.student_profiles;
+
           return (
             <TableRow key={app.id}>
               <TableCell className="font-medium">
-                {student.profiles?.first_name} {student.profiles?.last_name}
+                {student.profiles.first_name} {student.profiles.last_name}
               </TableCell>
               <TableCell>{student.index_number ?? "—"}</TableCell>
               <TableCell>{student.major ?? "—"}</TableCell>
@@ -171,7 +155,6 @@ export function EmployerApplicationList({ offerId }: { offerId: string }) {
                 {app.status === "pending" ? (
                   <AcceptRejectActions
                     applicationId={app.id}
-                    offerId={offerId}
                     initialReason={app.employer_rejection_reason}
                   />
                 ) : app.employer_rejection_reason ? (
