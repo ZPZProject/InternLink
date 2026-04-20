@@ -14,7 +14,10 @@ import {
 import Link from "next/link";
 import { useTRPC } from "@/trpc/react";
 
-const statusVariant: Record<string, "blue" | "destructive" | "amber" | "secondary"> = {
+const statusVariant: Record<
+  string,
+  "blue" | "destructive" | "amber" | "secondary"
+> = {
   pending: "amber",
   accepted: "blue",
   rejected: "destructive",
@@ -56,16 +59,12 @@ export function ApplicationList() {
       </TableHeader>
       <TableBody>
         {data.items.map((app) => {
-          const offer = app.internship_offers as {
-            id: string;
-            title: string;
-            location: string;
-            companies: { name: string };
-          };
+          const offer = app.internship_offers;
+
           return (
             <TableRow key={app.id}>
               <TableCell className="font-medium">{offer.title}</TableCell>
-              <TableCell>{offer.companies?.name}</TableCell>
+              <TableCell>{offer.companies.name}</TableCell>
               <TableCell>{offer.location}</TableCell>
               <TableCell>
                 <Badge variant={statusVariant[app.status] ?? "secondary"}>

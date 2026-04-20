@@ -9,8 +9,8 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@v1/ui/field";
-import { Textarea } from "@v1/ui/textarea";
 import { toast } from "@v1/ui/sonner";
+import { Textarea } from "@v1/ui/textarea";
 import { useRouter } from "next/navigation";
 import { useId } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -45,9 +45,14 @@ export function ApplicationForm({
 
   const mut = useMutation(
     trpc.applications.create.mutationOptions({
-      onSuccess: (data) => {
+      onSuccess: () => {
         toast.success("Application submitted successfully");
-        queryClient.invalidateQueries();
+        queryClient.invalidateQueries(
+          trpc.applications.myList.queryOptions({ limit: 20, offset: 0 }),
+        );
+        queryClient.invalidateQueries(
+          trpc.offers.listMine.queryOptions({ limit: 50, offset: 0 }),
+        );
         onSuccess?.();
         router.push("/student/applications");
       },
@@ -84,8 +89,8 @@ export function ApplicationForm({
                 Motivation letter
               </FieldLabel>
               <FieldDescription>
-                Explain why you want to do this internship and what makes you a good
-                candidate.
+                Explain why you want to do this internship and what makes you a
+                good candidate.
               </FieldDescription>
               <Textarea
                 {...field}
@@ -97,9 +102,7 @@ export function ApplicationForm({
                 rows={6}
                 placeholder="I am interested in this position because..."
               />
-              {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
