@@ -43,9 +43,7 @@ for insert
 to authenticated
 with check (
   id = auth.uid()
-  and exists (
-    select 1 from public.profiles p where p.id = auth.uid() and p.role = 'student'
-  )
+  and (auth.jwt() ->> 'user_role') = 'student'
 );
 
 create policy student_profiles_update_own

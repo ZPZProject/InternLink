@@ -1,47 +1,23 @@
--- Week 3: Applications full schema
--- Add columns, RLS policies, and helper functions for F2, F4, F6, F7
+-- Applications: extra columns, RLS, indexes
 
--- Add missing columns to applications
 alter table public.applications
-add column if not exists motivation_letter text default '',
-add column if not exists applied_at timestamptz,
-add column if not exists reviewed_at timestamptz,
-add column if not exists employer_rejection_reason text;
+  add column if not exists motivation_letter text default '',
+  add column if not exists applied_at timestamptz,
+  add column if not exists reviewed_at timestamptz,
+  add column if not exists employer_rejection_reason text;
 
--- Function: count_active_applications for limit validation
-create or replace function public.count_active_applications(p_student_profile_id uuid)
-returns int as $$
-  select count(*)::int
-  from public.applications a
-  where a.student_profile_id = p_student_profile_id
-    and a.status in ('pending', 'accepted');
-$$ language sql stable;
+-- applications RLS
 
--- Applications RLS
-
--- Student can see their own applications
 drop policy if exists applications_student_select on public.applications;
 create policy applications_student_select on public.applications
 for select to authenticated
-using (
-  exists (
-    select 1 from public.student_profiles sp
-    where sp.id = auth.uid() and sp.id = student_profile_id
-  )
-);
+using (student_profile_id = auth.uid());
 
--- Student can insert new application (basic check)
 drop policy if exists applications_student_insert on public.applications;
 create policy applications_student_insert on public.applications
 for insert to authenticated
-with check (
-  exists (
-    select 1 from public.student_profiles sp
-    where sp.id = auth.uid() and sp.id = student_profile_id
-  )
-);
+with check (student_profile_id = auth.uid());
 
--- Employer can see applications for their offers
 drop policy if exists applications_employer_select on public.applications;
 create policy applications_employer_select on public.applications
 for select to authenticated
@@ -53,7 +29,6 @@ using (
   )
 );
 
--- Employer can update (accept/reject) applications for their offers
 drop policy if exists applications_employer_update on public.applications;
 create policy applications_employer_update on public.applications
 for update to authenticated
@@ -65,26 +40,69 @@ using (
   )
 );
 
--- Supervisor can see all applications
 drop policy if exists applications_supervisor_select on public.applications;
 create policy applications_supervisor_select on public.applications
 for select to authenticated
+using ((auth.jwt() ->> 'user_role') in ('supervisor', 'admin'));
+
+-- Nested selects (e.g. byOffer) need RLS on related tables, not only applications.
+
+drop policy if exists student_profiles_select_employer_applicants on public.student_profiles;
+create policy student_profiles_select_employer_applicants on public.student_profiles
+for select to authenticated
 using (
   exists (
-    select 1 from public.profiles p
-    where p.id = auth.uid() and p.role in ('supervisor', 'admin')
+    select 1
+    from public.applications a
+    join public.internship_offers io on io.id = a.offer_id
+    join public.company_members cm on cm.company_id = io.company_id
+    where a.student_profile_id = student_profiles.id
+      and cm.profile_id = auth.uid()
   )
 );
 
--- Grant permissions
+drop policy if exists profiles_select_employer_applicants on public.profiles;
+create policy profiles_select_employer_applicants on public.profiles
+for select to authenticated
+using (
+  exists (
+    select 1
+    from public.applications a
+    join public.internship_offers io on io.id = a.offer_id
+    join public.company_members cm on cm.company_id = io.company_id
+    where a.student_profile_id = profiles.id
+      and cm.profile_id = auth.uid()
+  )
+);
+
+-- Supervisors read applicants via JWT (no subquery into profiles).
+drop policy if exists student_profiles_select_supervisor_applicants on public.student_profiles;
+create policy student_profiles_select_supervisor_applicants on public.student_profiles
+for select to authenticated
+using (
+  (auth.jwt() ->> 'user_role') in ('supervisor', 'admin')
+  and exists (
+    select 1 from public.applications a
+    where a.student_profile_id = student_profiles.id
+  )
+);
+
+drop policy if exists profiles_select_supervisor_applicants on public.profiles;
+create policy profiles_select_supervisor_applicants on public.profiles
+for select to authenticated
+using (
+  (auth.jwt() ->> 'user_role') in ('supervisor', 'admin')
+  and exists (
+    select 1 from public.applications a
+    where a.student_profile_id = profiles.id
+  )
+);
+
 grant select, insert, update on table public.applications to authenticated;
 
--- Indexes for common queries
-drop index if exists applications_student_profile_id_idx;
-create index applications_student_profile_id_idx on public.applications(student_profile_id);
-
-drop index if exists applications_offer_id_idx;
-create index applications_offer_id_idx on public.applications(offer_id);
-
 drop index if exists applications_status_idx;
-create index applications_status_idx on public.applications(status);
+
+create index if not exists applications_student_profile_id_idx
+  on public.applications (student_profile_id);
+create index if not exists applications_offer_id_idx
+  on public.applications (offer_id);
