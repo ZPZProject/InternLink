@@ -11,23 +11,35 @@ export type Database = {
     Tables: {
       applications: {
         Row: {
+          applied_at: string | null;
           created_at: string;
+          employer_rejection_reason: string | null;
           id: string;
+          motivation_letter: string;
           offer_id: string;
+          reviewed_at: string | null;
           status: Database["public"]["Enums"]["application_status"];
           student_profile_id: string;
         };
         Insert: {
+          applied_at?: string | null;
           created_at?: string;
+          employer_rejection_reason?: string | null;
           id?: string;
+          motivation_letter?: string;
           offer_id: string;
+          reviewed_at?: string | null;
           status?: Database["public"]["Enums"]["application_status"];
           student_profile_id: string;
         };
         Update: {
+          applied_at?: string | null;
           created_at?: string;
+          employer_rejection_reason?: string | null;
           id?: string;
+          motivation_letter?: string;
           offer_id?: string;
+          reviewed_at?: string | null;
           status?: Database["public"]["Enums"]["application_status"];
           student_profile_id?: string;
         };

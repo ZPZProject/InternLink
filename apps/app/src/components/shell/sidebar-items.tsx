@@ -22,7 +22,7 @@ const SHARED_LINKS: NavItem[] = [
 
 const STUDENT_LINKS: NavItem[] = [
   ...SHARED_LINKS,
-  { href: "/applications", label: "Applications" },
+  { href: "/student/applications", label: "Applications" },
 ];
 
 const EMPLOYER_LINKS: NavItem[] = [

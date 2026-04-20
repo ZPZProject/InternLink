@@ -99,9 +99,7 @@ on public.companies
 for insert
 to authenticated
 with check (
-  exists (
-    select 1 from public.profiles p where p.id = auth.uid() and p.role = 'employer'
-  )
+  (auth.jwt() ->> 'user_role') = 'employer'
   and created_by_profile_id = auth.uid()
   and approval_status = 'pending'
 );
@@ -154,9 +152,7 @@ for insert
 to authenticated
 with check (
   profile_id = auth.uid()
-  and exists (
-    select 1 from public.profiles p where p.id = auth.uid() and p.role = 'employer'
-  )
+  and (auth.jwt() ->> 'user_role') = 'employer'
   and exists (
     select 1 from public.companies c where c.id = company_id
   )

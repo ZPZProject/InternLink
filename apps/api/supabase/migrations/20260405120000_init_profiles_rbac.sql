@@ -35,23 +35,13 @@ create or replace function public.profiles_enforce_immutability()
 returns trigger
 language plpgsql
 as $$
-declare
-  is_admin boolean;
 begin
   if old.id is distinct from new.id then
     raise exception 'profile id cannot be changed';
   end if;
 
   if old.role is distinct from new.role then
-    select exists (
-      select 1
-      from public.profiles ap
-      where ap.id = auth.uid()
-        and ap.role = 'admin'
-    )
-    into is_admin;
-
-    if not coalesce(is_admin, false) then
+    if coalesce(auth.jwt() ->> 'user_role', '') <> 'admin' then
       raise exception 'only an admin can change role';
     end if;
   end if;

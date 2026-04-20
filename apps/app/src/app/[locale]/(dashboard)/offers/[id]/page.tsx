@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@v1/ui/card";
 import Link from "next/link";
 
 import { RichTextHtml } from "@/components/editor/rich-text-html";
+import { ApplyButton } from "@/components/applications/apply-button";
 import { caller } from "@/trpc/server";
 
 type Props = { params: Promise<{ id: string }> };
@@ -50,9 +51,7 @@ export default async function OfferDetailPage({ params }: Props) {
               ? ` · Apply by ${offer.application_deadline}`
               : null}
           </p>
-          <Button type="button" disabled className="w-full sm:w-auto">
-            Apply (coming in week 3)
-          </Button>
+          <ApplyButton offerId={offer.id} />
         </CardContent>
       </Card>
     </div>

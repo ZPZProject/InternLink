@@ -33,6 +33,9 @@ export function EmployerOfferCard({ offer }: { offer: Offer }) {
             <Button asChild variant="outline" size="sm">
               <Link href={`/employer/offers/${offer.id}/edit`}>Edit</Link>
             </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/employer/offers/${offer.id}/applications`}>Applications</Link>
+            </Button>
             <EmployerOfferActiveToggle
               offerId={offer.id}
               isActive={offer.is_active}
