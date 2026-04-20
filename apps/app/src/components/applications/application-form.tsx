@@ -44,7 +44,7 @@ export function ApplicationForm({
   });
 
   const mut = useMutation(
-    trpc.applications.apply.mutationOptions({
+    trpc.applications.create.mutationOptions({
       onSuccess: (data) => {
         toast.success("Application submitted successfully");
         queryClient.invalidateQueries();

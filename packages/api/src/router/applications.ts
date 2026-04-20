@@ -55,7 +55,7 @@ async function getEmployerCompanyId(ctx: { supabase: Client; user: { id: string 
 }
 
 export const applicationsRouter = createTRPCRouter({
-  apply: studentProcedure
+  create: studentProcedure
     .input(applicationsApplySchema)
     .mutation(async ({ ctx, input }) => {
       const studentProfileId = await getStudentProfileId(ctx);
