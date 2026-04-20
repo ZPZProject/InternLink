@@ -1,9 +1,7 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@v1/ui/badge";
-import { Button } from "@v1/ui/button";
-import { toast } from "@v1/ui/sonner";
 import {
   Table,
   TableBody,
@@ -12,9 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@v1/ui/table";
-import { Textarea } from "@v1/ui/textarea";
-import { useState } from "react";
 import { useTRPC } from "@/trpc/react";
+import { AcceptRejectApplicationActions } from "./accept-reject-application-actions";
 
 const statusVariant: Record<
   string,
@@ -25,78 +22,6 @@ const statusVariant: Record<
   rejected: "destructive",
   withdrawn: "secondary",
 };
-
-function AcceptRejectActions({
-  applicationId,
-  initialReason,
-}: {
-  applicationId: string;
-  initialReason?: string | null;
-}) {
-  const [action, setAction] = useState<"accept" | "reject" | null>(null);
-  const [reason, setReason] = useState(initialReason ?? "");
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
-
-  const mut = useMutation(
-    trpc.applications.review.mutationOptions({
-      onSuccess: () => {
-        toast.success("Application reviewed");
-        queryClient.invalidateQueries();
-      },
-      onError: (err) => {
-        toast.error(
-          err instanceof Error ? err.message : "Could not review application",
-        );
-      },
-    }),
-  );
-
-  function handleSubmit() {
-    if (!action) return;
-    mut.mutate({
-      application_id: applicationId,
-      action,
-      reason: action === "reject" ? reason : null,
-    });
-  }
-
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex gap-2">
-        <Button
-          size="sm"
-          variant="default"
-          onClick={() => setAction("accept")}
-          disabled={mut.isPending}
-        >
-          Accept
-        </Button>
-        <Button
-          size="sm"
-          variant="destructive"
-          onClick={() => setAction("reject")}
-          disabled={mut.isPending}
-        >
-          Reject
-        </Button>
-      </div>
-      {action === "reject" && (
-        <div className="flex flex-col gap-2">
-          <Textarea
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            placeholder="Reason for rejection (optional)"
-            rows={3}
-          />
-          <Button onClick={handleSubmit} disabled={mut.isPending}>
-            Confirm rejection
-          </Button>
-        </div>
-      )}
-    </div>
-  );
-}
 
 export function EmployerApplicationList({ offerId }: { offerId: string }) {
   const trpc = useTRPC();
@@ -153,9 +78,10 @@ export function EmployerApplicationList({ offerId }: { offerId: string }) {
               </TableCell>
               <TableCell>
                 {app.status === "pending" ? (
-                  <AcceptRejectActions
+                  <AcceptRejectApplicationActions
                     applicationId={app.id}
                     initialReason={app.employer_rejection_reason}
+                    offerId={offerId}
                   />
                 ) : app.employer_rejection_reason ? (
                   <p className="text-xs text-muted-foreground">
