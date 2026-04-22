@@ -17,7 +17,7 @@ function isStudentOnboardingComplete(
 }
 
 export default async function StudentOnboardingPage() {
-  const profile = await caller.student.myProfile();
+  const profile = await caller.student.getMyProfile();
 
   if (isStudentOnboardingComplete(profile)) {
     return <StudentProfileComplete />;
