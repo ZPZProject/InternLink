@@ -19,7 +19,7 @@ function isOnboardingComplete(row: {
 }
 
 export const studentRouter = createTRPCRouter({
-  myProfile: studentProcedure.query(async ({ ctx }) => {
+  getMyProfile: studentProcedure.query(async ({ ctx }) => {
     const { data, error } = await ctx.supabase
       .from("student_profiles")
       .select("*")
