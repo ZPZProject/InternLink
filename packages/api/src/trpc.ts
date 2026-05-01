@@ -214,3 +214,13 @@ export const supervisorProcedure = protectedProcedure.use(({ ctx, next }) => {
   }
   return next({ ctx });
 });
+
+export const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
+  if (ctx.profile.role !== "admin") {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "This action is only available to admins",
+    });
+  }
+  return next({ ctx });
+});

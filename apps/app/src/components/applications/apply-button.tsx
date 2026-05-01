@@ -20,12 +20,13 @@ export function ApplyButton({ offerId }: { offerId: string }) {
   );
 
   const { data: onboarding, isLoading: onboardingLoading } = useQuery(
-    trpc.student.myProfile.queryOptions(),
+    trpc.student.getMyProfile.queryOptions(),
   );
 
   const isLoading = profileLoading || onboardingLoading;
   const isStudent = profile?.role === "student";
-  const hasOnboarding = onboarding && onboarding.school_id && onboarding.index_number;
+  const hasOnboarding =
+    onboarding?.school_id && onboarding?.index_number;
 
   if (isLoading) {
     return <Button disabled>Loading...</Button>;
