@@ -19,8 +19,8 @@ export function OffersFilters() {
   });
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
-      <Field className="min-w-[200px] flex-1">
+    <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <Field className="min-w-[200px] w-[400px]">
         <FieldLabel htmlFor={`${uid}-q`}>Search</FieldLabel>
         <Input
           id={`${uid}-q`}
@@ -37,7 +37,7 @@ export function OffersFilters() {
           }}
         />
       </Field>
-      <Field className="min-w-[200px] flex-1">
+      <Field className="min-w-[200px] w-[250px]">
         <FieldLabel htmlFor={`${uid}-loc`}>Location</FieldLabel>
         <CityLocationCombobox
           id={`${uid}-loc`}
