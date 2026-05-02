@@ -7,7 +7,7 @@
  * The pieces you will need to use are documented accordingly near the end
  */
 import { initTRPC, TRPCError } from "@trpc/server";
-import { createClient } from "@v1/supabase/server";
+import { createClient, createServiceRoleClient } from "@v1/supabase/server";
 import superjson from "superjson";
 import { ZodError, z } from "zod/v4";
 import { createLoggerPlugin } from "./logger";
@@ -33,6 +33,7 @@ export const createTRPCContext = async (opts: {
   const source = opts.headers?.get("x-trpc-source") ?? opts.source ?? "unknown";
 
   const supabase = await createClient();
+  const supabaseServiceRole = await createServiceRoleClient();
 
   const {
     data: { user },
@@ -54,6 +55,7 @@ export const createTRPCContext = async (opts: {
       "http://localhost:3000",
 
     supabase,
+    supabaseServiceRole,
     user: user,
     session: session,
   };
