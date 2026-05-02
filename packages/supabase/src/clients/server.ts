@@ -24,3 +24,17 @@ export const createClient = async () => {
     },
   );
 };
+
+export const createServiceRoleClient = async () => {
+  return createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return null;
+        },
+      },
+    },
+  );
+};
