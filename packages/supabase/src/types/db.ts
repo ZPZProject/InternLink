@@ -137,6 +137,66 @@ export type Database = {
           },
         ];
       };
+      documents: {
+        Row: {
+          application_id: string;
+          file_name: string;
+          file_size_bytes: number;
+          id: string;
+          mime_type: string;
+          rejection_reason: string | null;
+          review_status: Database["public"]["Enums"]["document_review_status"];
+          reviewed_at: string | null;
+          storage_path: string;
+          supervisor_id: string | null;
+          type: Database["public"]["Enums"]["document_type"];
+          uploaded_at: string;
+        };
+        Insert: {
+          application_id: string;
+          file_name: string;
+          file_size_bytes: number;
+          id?: string;
+          mime_type: string;
+          rejection_reason?: string | null;
+          review_status?: Database["public"]["Enums"]["document_review_status"];
+          reviewed_at?: string | null;
+          storage_path: string;
+          supervisor_id?: string | null;
+          type: Database["public"]["Enums"]["document_type"];
+          uploaded_at?: string;
+        };
+        Update: {
+          application_id?: string;
+          file_name?: string;
+          file_size_bytes?: number;
+          id?: string;
+          mime_type?: string;
+          rejection_reason?: string | null;
+          review_status?: Database["public"]["Enums"]["document_review_status"];
+          reviewed_at?: string | null;
+          storage_path?: string;
+          supervisor_id?: string | null;
+          type?: Database["public"]["Enums"]["document_type"];
+          uploaded_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "documents_application_id_fkey";
+            columns: ["application_id"];
+            isOneToOne: false;
+            referencedRelation: "applications";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "documents_supervisor_id_fkey";
+            columns: ["supervisor_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       internship_offers: {
         Row: {
           application_deadline: string | null;
@@ -365,6 +425,8 @@ export type Database = {
     Enums: {
       application_status: "pending" | "accepted" | "rejected" | "withdrawn";
       company_approval_status: "pending" | "approved" | "rejected";
+      document_review_status: "pending" | "approved" | "rejected";
+      document_type: "contract" | "internship_log" | "other";
       school_approval_status: "pending" | "approved" | "rejected";
       user_role: "student" | "employer" | "supervisor" | "admin";
     };
@@ -499,6 +561,8 @@ export const Constants = {
     Enums: {
       application_status: ["pending", "accepted", "rejected", "withdrawn"],
       company_approval_status: ["pending", "approved", "rejected"],
+      document_review_status: ["pending", "approved", "rejected"],
+      document_type: ["contract", "internship_log", "other"],
       school_approval_status: ["pending", "approved", "rejected"],
       user_role: ["student", "employer", "supervisor", "admin"],
     },
