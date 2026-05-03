@@ -106,6 +106,91 @@ export const offersRouter = createTRPCRouter({
       };
     }),
 
+  getStats: protectedProcedure.query(async ({ ctx }) => {
+    const role = ctx.profile.role;
+
+    if (role === "employer") {
+      const { data: member } = await ctx.supabase
+        .from("company_members")
+        .select("company_id")
+        .eq("profile_id", ctx.user.id)
+        .maybeSingle();
+
+      if (!member) {
+        return {
+          role: "employer" as const,
+          hasCompany: false,
+          stats: {
+            totalOffers: 0,
+            activeOffers: 0,
+            inactiveOffers: 0,
+            totalApplications: 0,
+          },
+        };
+      }
+
+      const { count: totalOffers } = await ctx.supabase
+        .from("internship_offers")
+        .select("*", { count: "exact", head: true })
+        .eq("company_id", member.company_id);
+
+      const { count: activeOffers } = await ctx.supabase
+        .from("internship_offers")
+        .select("*", { count: "exact", head: true })
+        .eq("company_id", member.company_id)
+        .eq("is_active", true);
+
+      const { count: inactiveOffers } = await ctx.supabase
+        .from("internship_offers")
+        .select("*", { count: "exact", head: true })
+        .eq("company_id", member.company_id)
+        .eq("is_active", false);
+
+      const { data: offerIds } = await ctx.supabase
+        .from("internship_offers")
+        .select("id")
+        .eq("company_id", member.company_id);
+
+      const offerIdList = offerIds?.map((o) => o.id) ?? [];
+      const { count: totalApplications } = offerIdList.length
+        ? await ctx.supabase
+            .from("applications")
+            .select("*", { count: "exact", head: true })
+            .in("offer_id", offerIdList)
+        : { count: 0 };
+
+      return {
+        role: "employer" as const,
+        hasCompany: true,
+        stats: {
+          totalOffers: totalOffers ?? 0,
+          activeOffers: activeOffers ?? 0,
+          inactiveOffers: inactiveOffers ?? 0,
+          totalApplications: totalApplications ?? 0,
+        },
+      };
+    }
+
+    const { count: totalActive } = await ctx.supabase
+      .from("internship_offers")
+      .select("*", { count: "exact", head: true })
+      .eq("is_active", true);
+
+    const { count: remoteOffers } = await ctx.supabase
+      .from("internship_offers")
+      .select("*", { count: "exact", head: true })
+      .eq("is_active", true)
+      .ilike("location", "%remote%");
+
+    return {
+      role: "public" as const,
+      stats: {
+        totalActive: totalActive ?? 0,
+        remoteOffers: remoteOffers ?? 0,
+      },
+    };
+  }),
+
   byId: protectedProcedure
     .input(offersByIdSchema)
     .query(async ({ ctx, input }) => {
