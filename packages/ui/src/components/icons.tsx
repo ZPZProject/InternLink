@@ -1,6 +1,10 @@
 import {
   Bold,
   Briefcase,
+  Building,
+  Check,
+  Clock,
+  FileText,
   GraduationCap,
   Heading2,
   Italic,
@@ -8,11 +12,13 @@ import {
   ListOrdered,
   LogOut,
   MapPin,
+  Plus,
   Redo2,
   Settings,
   Strikethrough,
   Undo2,
   User,
+  X,
 } from "lucide-react";
 
 export const Icons = {
@@ -31,6 +37,13 @@ export const Icons = {
   Heading2,
   Undo: Undo2,
   Redo: Redo2,
+  Briefcase,
+  Building,
+  Check,
+  Clock,
+  FileText,
+  Plus,
+  X,
 };
 
 export type { LucideIcon } from "lucide-react";
