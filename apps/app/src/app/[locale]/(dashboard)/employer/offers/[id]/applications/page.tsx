@@ -2,6 +2,7 @@ import { Button } from "@v1/ui/button";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ApplicationsHeader } from "@/components/applications/applications-header";
 import { EmployerApplicationList } from "@/components/applications/employer-application-list";
 import { caller } from "@/trpc/server";
 
@@ -23,14 +24,10 @@ export default async function EmployerOfferApplicationsPage({ params }: Props) {
         <Link href="/employer/offers">← Back to my offers</Link>
       </Button>
 
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Applications for {offer.title}
-        </h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          {offer.companies.name} · {offer.location}
-        </p>
-      </div>
+      <ApplicationsHeader
+        isEmployer
+        offerTitle={offer.title}
+      />
 
       <EmployerApplicationList offerId={offer.id} />
     </div>

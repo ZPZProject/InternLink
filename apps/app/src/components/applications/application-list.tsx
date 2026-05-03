@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Badge } from "@v1/ui/badge";
 import { Button } from "@v1/ui/button";
 import {
@@ -24,20 +24,30 @@ const statusVariant: Record<
   withdrawn: "secondary",
 };
 
-export function ApplicationList() {
+type StatusFilter = "all" | "pending" | "accepted" | "rejected" | "withdrawn";
+
+export function ApplicationList({
+  status = "all",
+}: {
+  status?: StatusFilter;
+}) {
   const trpc = useTRPC();
-  const { data, isLoading } = useQuery(
-    trpc.applications.myList.queryOptions({ limit: 20, offset: 0 }),
+  const { data } = useSuspenseQuery(
+    trpc.applications.myList.queryOptions({ limit: 50, offset: 0 }),
   );
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const filteredItems = status === "all"
+    ? data.items
+    : data.items.filter((app) => app.status === status);
 
-  if (!data?.items.length) {
+  if (!filteredItems.length) {
     return (
       <div className="text-center py-12 text-muted-foreground">
-        <p>You haven&apos;t applied to any offers yet.</p>
+        <p>
+          {status === "all"
+            ? "You haven't applied to any offers yet."
+            : `No ${status} applications found.`}
+        </p>
         <Button asChild variant="link">
           <Link href="/offers">Browse offers</Link>
         </Button>
@@ -58,7 +68,7 @@ export function ApplicationList() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.items.map((app) => {
+        {filteredItems.map((app) => {
           const offer = app.internship_offers;
 
           return (
