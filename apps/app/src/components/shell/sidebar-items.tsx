@@ -32,6 +32,7 @@ const EMPLOYER_LINKS: NavItem[] = [
 
 const SUPERVISOR_LINKS: NavItem[] = [
   ...SHARED_LINKS,
+  { href: "/supervisor/reviews", label: "Reviews" },
   { href: "/supervisor/onboarding", label: "My school" },
 ];
 

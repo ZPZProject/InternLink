@@ -30,6 +30,7 @@
     "@v1/ui": "workspace:*",
     "date-fns": "^4.1.0",
     "geist": "^1.5.1",
+    "lucide-react": "^0.483.0",
     "jwt-decode": "^4.0.0",
     "next": "catalog:react",
     "next-international": "^1.2.4",
