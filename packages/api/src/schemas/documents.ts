@@ -25,3 +25,13 @@ export const documentsListByApplicationSchema = z.object({
 export const documentsDeleteSchema = z.object({
   id: z.uuid(),
 });
+
+export const documentsReviewSchema = z.object({
+  document_id: z.uuid(),
+  action: z.enum(["approve", "reject"]),
+  rejection_reason: z.string().max(500).optional(),
+});
+
+export const documentsGetSignedReadUrlSchema = z.object({
+  document_id: z.uuid(),
+});
