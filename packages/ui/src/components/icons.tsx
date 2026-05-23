@@ -41,6 +41,11 @@ export const Icons = {
   Check,
   Clock,
   FileText,
+  MapPin,
+  Check,
+  Clock,
+  FileText,
+  Building,
   Plus,
 };
 

@@ -15,25 +15,15 @@ import { ApplicationForm } from "./application-form";
 
 export function ApplyButton({ offerId }: { offerId: string }) {
   const trpc = useTRPC();
-  const { data: profile, isLoading: profileLoading } = useQuery(
-    trpc.profile.me.queryOptions(),
-  );
 
-  const { data: onboarding, isLoading: onboardingLoading } = useQuery(
+  const { data: onboarding, isLoading } = useQuery(
     trpc.student.getMyProfile.queryOptions(),
   );
 
-  const isLoading = profileLoading || onboardingLoading;
-  const isStudent = profile?.role === "student";
-  const hasOnboarding =
-    onboarding?.school_id && onboarding?.index_number;
+  const hasOnboarding = onboarding?.school_id && onboarding?.index_number;
 
   if (isLoading) {
     return <Button disabled>Loading...</Button>;
-  }
-
-  if (!isStudent) {
-    return null;
   }
 
   if (!hasOnboarding) {

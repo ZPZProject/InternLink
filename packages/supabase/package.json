@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.45.3",
     "@supabase/ssr": "^0.8.0",
     "@v1/logger": "workspace:*",
     "react": "catalog:react",
@@ -16,7 +17,6 @@
     "supabase": "catalog:"
   },
   "devDependencies": {
-    "@supabase/supabase-js": "^2.45.3",
     "@v1/typescript": "workspace:*",
     "next": "catalog:react",
     "react": "catalog:react",
