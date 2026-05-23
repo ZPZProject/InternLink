@@ -1,13 +1,16 @@
 import { ApplicationList } from "@/components/applications/application-list";
-import { StudentHeader } from "@/components/student/student-header";
-import { StudentStats } from "@/components/student/student-stats";
+import { ApplicationsHeader } from "@/components/applications/applications-header";
+import { ApplicationsStats } from "@/components/applications/applications-stats";
+import { HydrateClient } from "@/trpc/server";
 
 export default function StudentApplicationsPage() {
   return (
-    <div className="space-y-6">
-      <StudentHeader />
-      <StudentStats />
-      <ApplicationList />
-    </div>
+    <HydrateClient>
+      <div className="space-y-6">
+        <ApplicationsHeader />
+        <ApplicationsStats />
+        <ApplicationList />
+      </div>
+    </HydrateClient>
   );
 }

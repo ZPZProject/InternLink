@@ -18,6 +18,7 @@ import {
   Strikethrough,
   Undo2,
   User,
+  X,
 } from "lucide-react";
 
 export const Icons = {
@@ -41,6 +42,8 @@ export const Icons = {
   Check,
   Clock,
   FileText,
+  Plus,
+  X,
   MapPin,
   Check,
   Clock,

@@ -299,4 +299,58 @@ export const applicationsRouter = createTRPCRouter({
 
       return data;
     }),
+
+  getStats: protectedProcedure.query(async ({ ctx }) => {
+    const role = ctx.profile.role;
+
+    if (role === "student") {
+      const studentProfileId = await getStudentProfileId(ctx);
+
+      const { count: total } = await ctx.supabase
+        .from("applications")
+        .select("*", { count: "exact", head: true })
+        .eq("student_profile_id", studentProfileId);
+
+      const { count: pending } = await ctx.supabase
+        .from("applications")
+        .select("*", { count: "exact", head: true })
+        .eq("student_profile_id", studentProfileId)
+        .eq("status", "pending");
+
+      const { count: accepted } = await ctx.supabase
+        .from("applications")
+        .select("*", { count: "exact", head: true })
+        .eq("student_profile_id", studentProfileId)
+        .eq("status", "accepted");
+
+      const { count: rejected } = await ctx.supabase
+        .from("applications")
+        .select("*", { count: "exact", head: true })
+        .eq("student_profile_id", studentProfileId)
+        .eq("status", "rejected");
+
+      const { count: withdrawn } = await ctx.supabase
+        .from("applications")
+        .select("*", { count: "exact", head: true })
+        .eq("student_profile_id", studentProfileId)
+        .eq("status", "withdrawn");
+
+      return {
+        role: "student" as const,
+        stats: {
+          total: total ?? 0,
+          pending: pending ?? 0,
+          accepted: accepted ?? 0,
+          rejected: rejected ?? 0,
+          withdrawn: withdrawn ?? 0,
+        },
+      };
+    }
+
+    // For employers, get stats for a specific offer (offer_id passed as input)
+    return {
+      role: "other" as const,
+      stats: null,
+    };
+  }),
 });
