@@ -1,6 +1,7 @@
 import { applicationsRouter } from "./router/applications";
 import { authRouter } from "./router/auth";
 import { companyRouter } from "./router/company";
+import { documentsRouter } from "./router/documents";
 import { geocodingRouter } from "./router/geocoding";
 import { offersRouter } from "./router/offers";
 import { profileRouter } from "./router/profile";
@@ -12,6 +13,7 @@ export const appRouter = createTRPCRouter({
   applications: applicationsRouter,
   auth: authRouter,
   company: companyRouter,
+  documents: documentsRouter,
   geocoding: geocodingRouter,
   offers: offersRouter,
   profile: profileRouter,

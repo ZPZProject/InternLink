@@ -54,7 +54,7 @@ export function ApplicationList() {
           <TableHead>Location</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Applied</TableHead>
-          <TableHead />
+          <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -76,10 +76,17 @@ export function ApplicationList() {
                   ? new Date(app.applied_at).toLocaleDateString()
                   : "—"}
               </TableCell>
-              <TableCell>
-                <Button asChild variant="link" size="sm">
-                  <Link href={`/offers/${offer.id}`}>View</Link>
-                </Button>
+              <TableCell className="text-right">
+                <div className="flex flex-wrap justify-end gap-1">
+                  <Button asChild variant="link" size="sm">
+                    <Link href={`/student/applications/${app.id}`}>
+                      Details
+                    </Link>
+                  </Button>
+                  <Button asChild variant="link" size="sm">
+                    <Link href={`/offers/${offer.id}`}>Offer</Link>
+                  </Button>
+                </div>
               </TableCell>
             </TableRow>
           );
