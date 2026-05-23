@@ -44,6 +44,12 @@ export const Icons = {
   FileText,
   Plus,
   X,
+  MapPin,
+  Check,
+  Clock,
+  FileText,
+  Building,
+  Plus,
 };
 
 export type { LucideIcon } from "lucide-react";

@@ -2,9 +2,8 @@ import { Badge } from "@v1/ui/badge";
 import { Button } from "@v1/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@v1/ui/card";
 import Link from "next/link";
-
-import { RichTextHtml } from "@/components/editor/rich-text-html";
 import { ApplyButton } from "@/components/applications/apply-button";
+import { RichTextHtml } from "@/components/editor/rich-text-html";
 import { caller } from "@/trpc/server";
 
 type Props = { params: Promise<{ id: string }> };
@@ -13,6 +12,9 @@ export default async function OfferDetailPage({ params }: Props) {
   const { id } = await params;
 
   const offer = await caller.offers.byId({ id });
+  const profile = await caller.profile.me();
+
+  const isStudent = profile?.role === "student";
 
   return (
     <div className="space-y-6">
@@ -51,7 +53,7 @@ export default async function OfferDetailPage({ params }: Props) {
               ? ` · Apply by ${offer.application_deadline}`
               : null}
           </p>
-          <ApplyButton offerId={offer.id} />
+          {isStudent && <ApplyButton offerId={offer.id} />}
         </CardContent>
       </Card>
     </div>
