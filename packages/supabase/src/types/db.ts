@@ -60,6 +60,44 @@ export type Database = {
           },
         ];
       };
+      audit_logs: {
+        Row: {
+          action: string;
+          actor_profile_id: string;
+          created_at: string;
+          entity_id: string;
+          entity_type: string;
+          id: string;
+          metadata: Json;
+        };
+        Insert: {
+          action: string;
+          actor_profile_id: string;
+          created_at?: string;
+          entity_id: string;
+          entity_type: string;
+          id?: string;
+          metadata?: Json;
+        };
+        Update: {
+          action?: string;
+          actor_profile_id?: string;
+          created_at?: string;
+          entity_id?: string;
+          entity_type?: string;
+          id?: string;
+          metadata?: Json;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_actor_profile_id_fkey";
+            columns: ["actor_profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       companies: {
         Row: {
           address: string | null;
@@ -191,6 +229,48 @@ export type Database = {
           {
             foreignKeyName: "documents_supervisor_id_fkey";
             columns: ["supervisor_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      evaluations: {
+        Row: {
+          application_id: string;
+          comment: string | null;
+          created_at: string;
+          id: string;
+          score: number;
+          supervisor_profile_id: string;
+        };
+        Insert: {
+          application_id: string;
+          comment?: string | null;
+          created_at?: string;
+          id?: string;
+          score: number;
+          supervisor_profile_id: string;
+        };
+        Update: {
+          application_id?: string;
+          comment?: string | null;
+          created_at?: string;
+          id?: string;
+          score?: number;
+          supervisor_profile_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "evaluations_application_id_fkey";
+            columns: ["application_id"];
+            isOneToOne: true;
+            referencedRelation: "applications";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "evaluations_supervisor_profile_id_fkey";
+            columns: ["supervisor_profile_id"];
             isOneToOne: false;
             referencedRelation: "profiles";
             referencedColumns: ["id"];

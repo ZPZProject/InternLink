@@ -1,7 +1,9 @@
+import { adminRouter } from "./router/admin";
 import { applicationsRouter } from "./router/applications";
 import { authRouter } from "./router/auth";
 import { companyRouter } from "./router/company";
 import { documentsRouter } from "./router/documents";
+import { evaluationsRouter } from "./router/evaluations";
 import { geocodingRouter } from "./router/geocoding";
 import { offersRouter } from "./router/offers";
 import { profileRouter } from "./router/profile";
@@ -10,10 +12,12 @@ import { studentRouter } from "./router/student";
 import { createTRPCRouter } from "./trpc";
 
 export const appRouter = createTRPCRouter({
+  admin: adminRouter,
   applications: applicationsRouter,
   auth: authRouter,
   company: companyRouter,
   documents: documentsRouter,
+  evaluations: evaluationsRouter,
   geocoding: geocodingRouter,
   offers: offersRouter,
   profile: profileRouter,
