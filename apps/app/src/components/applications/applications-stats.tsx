@@ -3,19 +3,11 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@v1/ui/card";
 import { Icons } from "@v1/ui/icons";
-import type { RouterOutputs } from "@v1/api";
-
-type AppsStats = RouterOutputs["applications"]["getStats"];
+import { useTRPC } from "@/trpc/react";
 
 export function ApplicationsStats() {
-  const { data } = useSuspenseQuery({
-    queryKey: ["applications", "getStats"],
-    queryFn: async () => {
-      const res = await fetch("/api/trpc/applications.getStats", { method: "GET" });
-      const json = await res.json();
-      return json.result.data as AppsStats;
-    },
-  });
+  const trpc = useTRPC();
+  const { data } = useSuspenseQuery(trpc.applications.getStats.queryOptions());
 
   if (!data || data.role !== "student") {
     return null;

@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@v1/ui/dropdown-menu";
 import { Icons } from "@v1/ui/icons";
+import { Skeleton } from "@v1/ui/skeleton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTRPC } from "@/trpc/react";
@@ -30,7 +31,11 @@ const UserDropdown = () => {
   );
 
   if (!profile) {
-    return <div className="w-[140px]" />;
+    return (
+      <div className="w-[140px]">
+        <Skeleton className="w-full h-12" />
+      </div>
+    );
   }
 
   return (

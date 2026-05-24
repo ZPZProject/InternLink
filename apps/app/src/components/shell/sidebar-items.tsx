@@ -6,9 +6,11 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSkeleton,
 } from "@v1/ui/sidebar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useMounted } from "@/hooks/use-mounted";
 import { useTRPC } from "@/trpc/react";
 
 type Profile = Tables<"profiles">;
@@ -61,9 +63,21 @@ const SidebarItems = () => {
   const pathname = usePathname();
   const trpc = useTRPC();
   const { data: profile } = useQuery(trpc.profile.me.queryOptions());
+  const mounted = useMounted();
+
+  if (!mounted) {
+    // Return nothing until the component is mounted because the SidebarMenuSkeleton is using Math.random() to generate the width which is not safe to use in a server component
+    return null;
+  }
 
   if (!profile) {
-    return null;
+    return (
+      <SidebarMenu>
+        <SidebarMenuSkeleton />
+        <SidebarMenuSkeleton />
+        <SidebarMenuSkeleton />
+      </SidebarMenu>
+    );
   }
 
   const items = navForRole(profile.role);

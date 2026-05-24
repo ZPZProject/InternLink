@@ -3,22 +3,13 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@v1/ui/card";
 import { Icons } from "@v1/ui/icons";
-
-type Stats = {
-  totalApplications: number;
-  pendingApplications: number;
-  acceptedApplications: number;
-};
+import { useTRPC } from "@/trpc/react";
 
 export function StudentStats() {
-  const { data: homeStats } = useSuspenseQuery({
-    queryKey: ["profile", "homeStats"],
-    queryFn: async () => {
-      const res = await fetch("/api/trpc/profile.homeStats", { method: "GET" });
-      const json = await res.json();
-      return json.result.data as { role: string; stats: Stats };
-    },
-  });
+  const trpc = useTRPC();
+  const { data: homeStats } = useSuspenseQuery(
+    trpc.profile.homeStats.queryOptions(),
+  );
 
   if (!homeStats || homeStats.role !== "student") {
     return null;
@@ -28,7 +19,9 @@ export function StudentStats() {
     <div className="grid gap-4 md:grid-cols-3">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Applications</CardTitle>
+          <CardTitle className="text-sm font-medium">
+            Total Applications
+          </CardTitle>
           <Icons.Briefcase className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
