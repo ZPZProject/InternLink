@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@v1/ui/table";
+import { formatISO } from "date-fns";
 import Link from "next/link";
 import { useTRPC } from "@/trpc/react";
 
@@ -26,19 +27,16 @@ const statusVariant: Record<
 
 type StatusFilter = "all" | "pending" | "accepted" | "rejected" | "withdrawn";
 
-export function ApplicationList({
-  status = "all",
-}: {
-  status?: StatusFilter;
-}) {
+export function ApplicationList({ status = "all" }: { status?: StatusFilter }) {
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(
     trpc.applications.myList.queryOptions({ limit: 50, offset: 0 }),
   );
 
-  const filteredItems = status === "all"
-    ? data.items
-    : data.items.filter((app) => app.status === status);
+  const filteredItems =
+    status === "all"
+      ? data.items
+      : data.items.filter((app) => app.status === status);
 
   if (!filteredItems.length) {
     return (
@@ -83,7 +81,7 @@ export function ApplicationList({
               </TableCell>
               <TableCell className="text-muted-foreground">
                 {app.applied_at
-                  ? new Date(app.applied_at).toLocaleDateString()
+                  ? formatISO(app.applied_at, { representation: "date" })
                   : "—"}
               </TableCell>
               <TableCell className="text-right">

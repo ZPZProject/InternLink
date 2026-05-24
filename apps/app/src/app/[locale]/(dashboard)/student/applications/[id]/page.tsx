@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@v1/ui/card";
+import { formatISO } from "date-fns";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ApplicationDocumentsPanel } from "@/components/documents/application-documents-panel";
@@ -66,7 +67,7 @@ export default async function StudentApplicationDetailPage({ params }: Props) {
           </div>
           <CardDescription>
             {application.applied_at
-              ? `Applied ${new Date(application.applied_at).toLocaleDateString()}`
+              ? `Applied ${formatISO(application.applied_at, { representation: "date" })}`
               : null}
           </CardDescription>
         </CardHeader>

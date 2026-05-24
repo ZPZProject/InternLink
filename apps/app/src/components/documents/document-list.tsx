@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@v1/ui/table";
+import { formatISO } from "date-fns";
 import { useTRPC } from "@/trpc/react";
 import { FileTypeIcon } from "./file-type-icon";
 
@@ -102,7 +103,7 @@ export function DocumentList({ applicationId }: { applicationId: string }) {
               </Badge>
             </TableCell>
             <TableCell className="text-muted-foreground text-sm">
-              {new Date(doc.uploaded_at).toLocaleString()}
+              {formatISO(doc.uploaded_at, { representation: "date" })}
             </TableCell>
             <TableCell>
               {doc.review_status === "pending" ? (

@@ -10,7 +10,6 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DocumentPreviewList } from "@/components/supervisor/document-preview-list";
-import { ReviewActionBar } from "@/components/supervisor/review-action-bar";
 import { caller } from "@/trpc/server";
 
 type Props = { params: Promise<{ id: string }> };
@@ -28,21 +27,13 @@ export default async function SupervisorReviewDetailPage({ params }: Props) {
     application_id: id,
   });
 
-  const offer = application.internship_offers as {
-    id: string;
-    title: string;
-    companies: { name: string };
-  };
+  const offer = application.internship_offers;
 
-  const student = application.student_profiles as {
-    id: string;
-    index_number: string | null;
-    major: string | null;
-    year_of_study: number | null;
-    profiles: { first_name: string | null; last_name: string | null; email: string | null };
-  };
+  const student = application.student_profiles;
 
-  const pendingCount = documents.filter((d) => d.review_status === "pending").length;
+  const pendingCount = documents.filter(
+    (d) => d.review_status === "pending",
+  ).length;
 
   return (
     <div className="space-y-6">

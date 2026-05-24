@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@v1/ui/table";
+import { formatISO } from "date-fns";
 import { useTRPC } from "@/trpc/react";
 import { AcceptRejectApplicationActions } from "./accept-reject-application-actions";
 
@@ -73,7 +74,7 @@ export function EmployerApplicationList({ offerId }: { offerId: string }) {
               </TableCell>
               <TableCell className="text-muted-foreground">
                 {app.applied_at
-                  ? new Date(app.applied_at).toLocaleDateString()
+                  ? formatISO(app.applied_at, { representation: "date" })
                   : "—"}
               </TableCell>
               <TableCell>

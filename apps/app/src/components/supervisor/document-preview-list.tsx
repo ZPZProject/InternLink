@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@v1/ui/badge";
 import { Button } from "@v1/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@v1/ui/card";
+import { toast } from "@v1/ui/sonner";
 import {
   Table,
   TableBody,
@@ -12,10 +13,10 @@ import {
   TableHeader,
   TableRow,
 } from "@v1/ui/table";
-import { toast } from "@v1/ui/sonner";
+import { formatISO } from "date-fns";
 import { FileTypeIcon } from "@/components/documents/file-type-icon";
-import { ReviewActionBar } from "./review-action-bar";
 import { useTRPC } from "@/trpc/react";
+import { ReviewActionBar } from "./review-action-bar";
 
 const typeLabel: Record<string, string> = {
   contract: "Contract",
@@ -23,7 +24,10 @@ const typeLabel: Record<string, string> = {
   other: "Other",
 };
 
-const reviewVariant: Record<string, "amber" | "blue" | "destructive" | "secondary"> = {
+const reviewVariant: Record<
+  string,
+  "amber" | "blue" | "destructive" | "secondary"
+> = {
   pending: "amber",
   approved: "blue",
   rejected: "destructive",
@@ -97,7 +101,7 @@ export function DocumentPreviewList({
                 {(document.file_size_bytes / 1024).toFixed(1)} KB
               </TableCell>
               <TableCell className="text-muted-foreground text-sm">
-                {new Date(document.uploaded_at).toLocaleString()}
+                {formatISO(document.uploaded_at, { representation: "date" })}
               </TableCell>
               <TableCell>
                 <div className="flex gap-2">
