@@ -3,9 +3,16 @@ import type { Client } from "@v1/supabase/types";
 import {
   documentsCreateUploadIntentSchema,
   documentsDeleteSchema,
+  documentsGetSignedReadUrlSchema,
   documentsListByApplicationSchema,
+  documentsReviewSchema,
 } from "../schemas/documents";
-import { createTRPCRouter, studentProcedure } from "../trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  studentProcedure,
+  supervisorProcedure,
+} from "../trpc";
 
 const BUCKET = "application-documents";
 
@@ -222,4 +229,189 @@ export const documentsRouter = createTRPCRouter({
 
       return { ok: true as const };
     }),
+
+  listByApplicationSupervisor: supervisorProcedure
+    .input(documentsListByApplicationSchema)
+    .query(async ({ ctx, input }) => {
+      const { data, error } = await ctx.supabase
+        .from("documents")
+        .select("*")
+        .eq("application_id", input.application_id)
+        .order("uploaded_at", { ascending: false });
+
+      if (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      }
+
+      return data ?? [];
+    }),
+
+  review: supervisorProcedure
+    .input(documentsReviewSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { data: doc, error: fetchError } = await ctx.supabase
+        .from("documents")
+        .select("id, review_status")
+        .eq("id", input.document_id)
+        .maybeSingle();
+
+      if (fetchError) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: fetchError.message,
+        });
+      }
+      if (!doc) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Document not found",
+        });
+      }
+      if (doc.review_status !== "pending") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "This document has already been reviewed",
+        });
+      }
+
+      const newStatus = input.action === "approve" ? "approved" : "rejected";
+
+      const { error: updateError } = await ctx.supabase
+        .from("documents")
+        .update({
+          review_status: newStatus,
+          reviewed_at: new Date().toISOString(),
+          supervisor_id: ctx.user.id,
+          rejection_reason:
+            input.action === "reject" ? (input.rejection_reason ?? null) : null,
+        })
+        .eq("id", input.document_id);
+
+      if (updateError) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: updateError.message,
+        });
+      }
+
+      return { ok: true as const, review_status: newStatus };
+    }),
+
+  getSignedReadUrl: supervisorProcedure
+    .input(documentsGetSignedReadUrlSchema)
+    .query(async ({ ctx, input }) => {
+      const { data: doc, error: fetchError } = await ctx.supabase
+        .from("documents")
+        .select("id, storage_path")
+        .eq("id", input.document_id)
+        .maybeSingle();
+
+      if (fetchError) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: fetchError.message,
+        });
+      }
+      if (!doc) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Document not found",
+        });
+      }
+
+      const { data: signed, error: signError } =
+        await ctx.supabaseServiceRole.storage
+          .from(BUCKET)
+          .createSignedUrl(doc.storage_path, 300);
+
+      if (signError) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: signError?.message ?? "Could not create download URL",
+        });
+      }
+
+      return { signedUrl: signed.signedUrl, expiresIn: 300 };
+    }),
+
+  reviewQueue: supervisorProcedure.query(async ({ ctx }) => {
+    const { data: applications, error } = await ctx.supabase
+      .from("applications")
+      .select(
+        `id, status, applied_at,
+         student_profiles!inner(id, index_number, major, year_of_study, profiles!inner(first_name, last_name, email)),
+         internship_offers!inner(id, title, location, companies!inner(name))`,
+      )
+      .eq("status", "accepted");
+
+    if (error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: error.message,
+      });
+    }
+
+    const appIds = (applications ?? []).map((a) => a.id);
+
+    if (appIds.length === 0) {
+      return [];
+    }
+
+    const { data: docs, error: docsError } = await ctx.supabase
+      .from("documents")
+      .select("*")
+      .in("application_id", appIds)
+      .order("uploaded_at", { ascending: false });
+
+    if (docsError) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: docsError.message,
+      });
+    }
+
+    const docsByApp = new Map<string, typeof docs>();
+    for (const d of docs ?? []) {
+      const existing = docsByApp.get(d.application_id) ?? [];
+      existing.push(d);
+      docsByApp.set(d.application_id, existing);
+    }
+
+    return (applications ?? [])
+      .map((app) => {
+        const appDocs = docsByApp.get(app.id) ?? [];
+        const pendingDocs = appDocs.filter(
+          (d) => d.review_status === "pending",
+        );
+        return {
+          application_id: app.id,
+          status: app.status,
+          applied_at: app.applied_at,
+          student: app.student_profiles as {
+            id: string;
+            index_number: string | null;
+            major: string | null;
+            year_of_study: number | null;
+            profiles: {
+              first_name: string | null;
+              last_name: string | null;
+              email: string | null;
+            };
+          },
+          offer: app.internship_offers as {
+            id: string;
+            title: string;
+            location: string | null;
+            companies: { name: string };
+          },
+          total_documents: appDocs.length,
+          pending_documents: pendingDocs.length,
+          documents: appDocs,
+        };
+      })
+      .filter((item) => item.pending_documents > 0);
+  }),
 });
