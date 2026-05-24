@@ -11,6 +11,7 @@ import { formatISO } from "date-fns";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ApplicationDocumentsPanel } from "@/components/documents/application-documents-panel";
+import { ApplicationEvaluation } from "@/components/student/application-evaluation";
 import { caller } from "@/trpc/server";
 
 type Props = { params: Promise<{ id: string }> };
@@ -24,6 +25,9 @@ export default async function StudentApplicationDetailPage({ params }: Props) {
   }
 
   const application = await caller.applications.byId({ id }).catch(() => null);
+  const evaluation = await caller.evaluations
+    .byApplication({ application_id: id })
+    .catch(() => null);
 
   if (!application) {
     notFound();
@@ -79,6 +83,7 @@ export default async function StudentApplicationDetailPage({ params }: Props) {
       </Card>
 
       <ApplicationDocumentsPanel applicationId={id} canUpload={canUpload} />
+      <ApplicationEvaluation evaluation={evaluation} />
     </div>
   );
 }

@@ -35,12 +35,13 @@ const EMPLOYER_LINKS: NavItem[] = [
 const SUPERVISOR_LINKS: NavItem[] = [
   ...SHARED_LINKS,
   { href: "/supervisor/reviews", label: "Reviews" },
+  { href: "/supervisor/evaluations", label: "Evaluations" },
   { href: "/supervisor/onboarding", label: "My school" },
 ];
 
 const ADMIN_LINKS: NavItem[] = [
   ...SHARED_LINKS,
-  { href: "/users", label: "Users" },
+  { href: "/admin/users", label: "Users" },
 ];
 
 function navForRole(role: Profile["role"]): NavItem[] {

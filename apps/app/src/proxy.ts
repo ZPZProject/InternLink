@@ -25,6 +25,8 @@ const studentPathPatterns: RegExp[] = [/\/student(\/|$)/];
 
 const supervisorPathPatterns: RegExp[] = [/\/supervisor(\/|$)/];
 
+const adminPathPatterns: RegExp[] = [/\/admin(\/|$)/];
+
 const protectedPaths: ProtectedPath[] = [
   {
     path: ["/login", "/register"],
@@ -131,6 +133,19 @@ const protectedPaths: ProtectedPath[] = [
       return NextResponse.redirect(
         new URL("/supervisor/onboarding", request.url),
       );
+    },
+  },
+  {
+    path: adminPathPatterns,
+    test: async (ctx, _request) => {
+      if (!ctx.auth) return false;
+      return ctx.auth.role === "admin";
+    },
+    onFail: (request, { auth }) => {
+      if (!auth) {
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
+      return NextResponse.redirect(new URL("/home", request.url));
     },
   },
 ];

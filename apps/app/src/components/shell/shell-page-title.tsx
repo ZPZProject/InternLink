@@ -13,7 +13,8 @@ const EXACT_TITLES: ReadonlyArray<readonly [string | RegExp, string]> = [
   ["/supervisor/onboarding", "My school"],
   ["/supervisor/reviews", "Document reviews"],
   [/^\/supervisor\/reviews\/[^/]+$/, "Review documents"],
-  ["/users", "Users"],
+  ["/supervisor/evaluations", "Evaluations"],
+  ["/admin/users", "Users"],
   [/^\/offers\/[^/]+$/, "Offer"],
   [/^\/employer\/offers\/[^/]+\/edit$/, "Edit offer"],
 ];
