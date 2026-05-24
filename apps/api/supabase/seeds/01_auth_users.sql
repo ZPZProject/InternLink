@@ -350,6 +350,14 @@ from auth.users u
 where u.email like '%@seed.internlink.local';
 
 -- The signup trigger does not accept admin from metadata, so elevate after profile creation.
+select set_config(
+  'request.jwt.claims',
+  '{"user_role":"admin","sub":"90000000-0000-4000-8000-000000000001"}',
+  true
+);
+
 update public.profiles
 set role = 'admin'
 where id = '90000000-0000-4000-8000-000000000001';
+
+select set_config('request.jwt.claims', '{}', true);
