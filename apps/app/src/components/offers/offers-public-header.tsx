@@ -23,7 +23,9 @@ export function OffersPublicHeader({
         Internship offers
       </h1>
       <p className="text-muted-foreground mt-1 text-sm">
-        Active listings from approved companies ({data.total} total).
+        {data.total > 0
+          ? `Browse ${data.total} active offer${data.total !== 1 ? "s" : ""} from companies.`
+          : "No active offers available at the moment."}
       </p>
     </div>
   );

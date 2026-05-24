@@ -75,7 +75,7 @@ export function SchoolCombobox({
         <ComboboxEmpty>{getEmptyMessage()}</ComboboxEmpty>
         <ComboboxList>
           {(item) => (
-            <ComboboxItem key={item} value={item}>
+            <ComboboxItem key={item.value} value={item}>
               {item.label}
             </ComboboxItem>
           )}
