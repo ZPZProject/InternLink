@@ -305,6 +305,25 @@ insert into auth.users (
     '',
     '',
     ''
+  ),
+  (
+    '00000000-0000-0000-0000-000000000000',
+    '90000000-0000-4000-8000-000000000001',
+    'authenticated',
+    'authenticated',
+    'admin1@seed.internlink.local',
+    crypt('password123', gen_salt('bf')),
+    now(),
+    now(),
+    now(),
+    '{"provider":"email","providers":["email"]}',
+    '{"role":"student","first_name":"Alicja","last_name":"Admin"}',
+    now(),
+    now(),
+    '',
+    '',
+    '',
+    ''
   );
 
 -- Email login requires a row in auth.identities per user.
@@ -329,3 +348,8 @@ select
   now()
 from auth.users u
 where u.email like '%@seed.internlink.local';
+
+-- The signup trigger does not accept admin from metadata, so elevate after profile creation.
+update public.profiles
+set role = 'admin'
+where id = '90000000-0000-4000-8000-000000000001';
