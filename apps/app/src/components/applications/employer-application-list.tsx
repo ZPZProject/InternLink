@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Avatar, AvatarFallback } from "@v1/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@v1/ui/avatar";
 import { Badge } from "@v1/ui/badge";
 import { Card, CardContent } from "@v1/ui/card";
 import {
@@ -132,6 +132,7 @@ export function EmployerApplicationList({ offerId }: { offerId: string }) {
               <CardContent className="p-4">
                 <div className="flex items-start gap-4">
                   <Avatar className="size-10 shrink-0">
+                    <AvatarImage src={student.profiles.avatar_url ?? undefined} />
                     <AvatarFallback className="text-xs font-medium">
                       {initials || "?"}
                     </AvatarFallback>

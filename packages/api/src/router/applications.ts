@@ -182,7 +182,7 @@ export const applicationsRouter = createTRPCRouter({
       const { data, error } = await ctx.supabase
         .from("applications")
         .select(
-          "*, internship_offers!inner(id, title, companies(name)), student_profiles!inner(id, index_number, major, profiles(first_name, last_name, email))",
+          "*, internship_offers!inner(id, title, companies(name)), student_profiles!inner(id, index_number, major, profiles(first_name, last_name, email, avatar_url))",
         )
         .eq("id", input.id)
         .single();
@@ -221,7 +221,7 @@ export const applicationsRouter = createTRPCRouter({
       const { data, error, count } = await ctx.supabase
         .from("applications")
         .select(
-          "*, student_profiles(id, index_number, major, year_of_study, profiles(first_name, last_name, email))",
+          "*, student_profiles(id, index_number, major, year_of_study, profiles(first_name, last_name, email, avatar_url))",
           { count: "exact" },
         )
         .eq("offer_id", input.offer_id)

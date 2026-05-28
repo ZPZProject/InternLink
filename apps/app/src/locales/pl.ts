@@ -81,6 +81,7 @@ export default {
   "pageTitle.offerDetail": "Oferta",
   "pageTitle.editOffer": "Edytuj ofertę",
   "pageTitle.employerApplications": "Aplikacje",
+  "pageTitle.applicationDetail": "Aplikacja",
 
   // ── Home ────────────────────────────────────────────────────────────────
   "welcomeHeader.greeting": "Witaj ponownie, {name}",
@@ -125,8 +126,7 @@ export default {
   "offersPublicHeader.title": "Oferty staży",
   "offersPublicHeader.subtitleWithOffers":
     "Przeglądaj {total} aktywną(-ych) ofert(-y) od firm.",
-  "offersPublicHeader.subtitleEmpty":
-    "Brak aktywnych ofert w tej chwili.",
+  "offersPublicHeader.subtitleEmpty": "Brak aktywnych ofert w tej chwili.",
 
   "employerOffersHeader.title": "Moje oferty",
   "employerOffersHeader.subtitle":
@@ -173,8 +173,7 @@ export default {
   "offerForm.descriptionPlaceholder":
     "Opisz rolę stażysty, zespół i oczekiwania.",
   "offerForm.requirementsLabel": "Wymagania (opcjonalnie)",
-  "offerForm.requirementsPlaceholder":
-    "Umiejętności, rok studiów, języki itp.",
+  "offerForm.requirementsPlaceholder": "Umiejętności, rok studiów, języki itp.",
   "offerForm.locationLabel": "Lokalizacja",
   "offerForm.activeLabel": "Aktywna",
   "offerForm.activeDescription": "Widoczna na liście ofert publicznych",
@@ -277,8 +276,7 @@ export default {
   "applicationForm.cvLabel": "CV / Życiorys (opcjonalnie)",
   "applicationForm.cvDescription":
     "Prześlij swoje CV w formacie PDF (max 10 MB).",
-  "applicationForm.cvDropHint":
-    "Przeciągnij i upuść CV tutaj lub wybierz plik",
+  "applicationForm.cvDropHint": "Przeciągnij i upuść CV tutaj lub wybierz plik",
   "applicationForm.cvChooseFile": "Wybierz plik",
   "applicationForm.cvUploading": "Przesyłanie…",
   "applicationForm.cvUploaded": "Przesłano: {name}",
@@ -466,8 +464,7 @@ export default {
   "evaluationForm.scoreLabel": "Ocena",
   "evaluationForm.scorePlaceholder": "Wybierz ocenę",
   "evaluationForm.commentLabel": "Komentarz (opcjonalnie)",
-  "evaluationForm.commentPlaceholder":
-    "Podsumuj wyniki stażu studenta.",
+  "evaluationForm.commentPlaceholder": "Podsumuj wyniki stażu studenta.",
   "evaluationForm.saveBtn": "Zapisz ocenę",
   "evaluationForm.cancelBtn": "Anuluj",
   "evaluationForm.toast.success": "Ocena zapisana",
@@ -493,7 +490,8 @@ export default {
   "uploadZone.chooseFileBtn": "Wybierz plik",
   "uploadZone.uploadingBtn": "Przesyłanie…",
   "uploadZone.toast.success": "Plik przesłany",
-  "uploadZone.toast.uploadFailed": "Przesyłanie nie powiodło się. Spróbuj ponownie.",
+  "uploadZone.toast.uploadFailed":
+    "Przesyłanie nie powiodło się. Spróbuj ponownie.",
   "uploadZone.error.tooLarge": "Plik musi mieć maksymalnie 10 MB.",
   "uploadZone.error.wrongType": "Dozwolone są tylko pliki PDF.",
   "uploadZone.error.wrongExt": "Użyj pliku .pdf.",
@@ -515,7 +513,8 @@ export default {
   "documentList.type.other": "Inne",
   "documentList.previewBtn": "Podgląd",
   "documentList.deleteBtn": "Usuń",
-  "documentList.toast.previewError": "Nie udało się otworzyć podglądu dokumentu",
+  "documentList.toast.previewError":
+    "Nie udało się otworzyć podglądu dokumentu",
   "documentList.toast.deleted": "Dokument usunięty",
   "documentList.toast.deleteError": "Nie udało się usunąć",
 
@@ -554,7 +553,8 @@ export default {
   "userAdminTable.nextBtn": "Następna",
   "userAdminTable.toast.activated": "Użytkownik aktywowany",
   "userAdminTable.toast.deactivated": "Użytkownik dezaktywowany",
-  "userAdminTable.toast.error": "Nie udało się zaktualizować statusu użytkownika",
+  "userAdminTable.toast.error":
+    "Nie udało się zaktualizować statusu użytkownika",
 
   // ── Edit offer page ─────────────────────────────────────────────────────
   "editOffer.backLink": "← Wróć do moich ofert",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Avatar, AvatarFallback, AvatarImage } from "@v1/ui/avatar";
 import { Badge } from "@v1/ui/badge";
 import { Button } from "@v1/ui/button";
 import { Input } from "@v1/ui/input";
@@ -172,11 +173,24 @@ export function UserAdminTable() {
 
               return (
                 <TableRow key={user.id}>
-                  <TableCell className="font-medium">
-                    {fullName || user.email || t("userAdminTable.col.user")}
-                    <span className="block text-xs text-muted-foreground">
-                      {user.email}
-                    </span>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="size-8 shrink-0">
+                        <AvatarImage src={user.avatar_url ?? undefined} />
+                        <AvatarFallback className="text-xs font-medium">
+                          {user.first_name?.charAt(0)}
+                          {user.last_name?.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium">
+                          {fullName || user.email || t("userAdminTable.col.user")}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {user.email}
+                        </p>
+                      </div>
+                    </div>
                   </TableCell>
                   <TableCell>
                     <Badge variant="secondary">{user.role}</Badge>

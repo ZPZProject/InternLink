@@ -12,7 +12,7 @@ const usersRouter = createTRPCRouter({
       let query = ctx.supabase
         .from("profiles")
         .select(
-          "id, email, first_name, last_name, role, is_active, created_at",
+          "id, email, first_name, last_name, avatar_url, role, is_active, created_at",
           {
             count: "exact",
           },

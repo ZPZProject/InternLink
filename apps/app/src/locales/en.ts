@@ -81,10 +81,12 @@ export default {
   "pageTitle.offerDetail": "Offer",
   "pageTitle.editOffer": "Edit offer",
   "pageTitle.employerApplications": "Applications",
+  "pageTitle.applicationDetail": "Application",
 
   // ── Home ────────────────────────────────────────────────────────────────
   "welcomeHeader.greeting": "Welcome back, {name}",
-  "welcomeHeader.roleMessage.student": "Find your perfect internship opportunity",
+  "welcomeHeader.roleMessage.student":
+    "Find your perfect internship opportunity",
   "welcomeHeader.roleMessage.employer": "Manage your internship offers",
   "welcomeHeader.roleMessage.supervisor": "Oversee student internships",
   "welcomeHeader.roleMessage.admin": "Manage the platform",
@@ -173,8 +175,7 @@ export default {
   "offerForm.descriptionPlaceholder":
     "Describe the internship role, team, and expectations.",
   "offerForm.requirementsLabel": "Requirements (optional)",
-  "offerForm.requirementsPlaceholder":
-    "Skills, year of study, languages, etc.",
+  "offerForm.requirementsPlaceholder": "Skills, year of study, languages, etc.",
   "offerForm.locationLabel": "Location",
   "offerForm.activeLabel": "Active",
   "offerForm.activeDescription": "Visible in the public offers list",
@@ -274,10 +275,8 @@ export default {
   "applicationForm.motivationPlaceholder":
     "I am interested in this position because...",
   "applicationForm.cvLabel": "CV / Resume (optional)",
-  "applicationForm.cvDescription":
-    "Upload your CV as a PDF file (max 10 MB).",
-  "applicationForm.cvDropHint":
-    "Drag and drop your CV here, or choose a file",
+  "applicationForm.cvDescription": "Upload your CV as a PDF file (max 10 MB).",
+  "applicationForm.cvDropHint": "Drag and drop your CV here, or choose a file",
   "applicationForm.cvChooseFile": "Choose file",
   "applicationForm.cvUploading": "Uploading…",
   "applicationForm.cvUploaded": "Uploaded: {name}",
@@ -450,8 +449,7 @@ export default {
   "reviewActionBar.toast.rejected": "Document rejected",
   "reviewActionBar.toast.error": "Could not review document",
 
-  "evaluationList.empty":
-    "No applications are ready for evaluation yet.",
+  "evaluationList.empty": "No applications are ready for evaluation yet.",
   "evaluationList.col.student": "Student",
   "evaluationList.col.offer": "Offer",
   "evaluationList.col.company": "Company",

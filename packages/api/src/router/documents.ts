@@ -433,7 +433,7 @@ export const documentsRouter = createTRPCRouter({
       .from("applications")
       .select(
         `id, status, applied_at,
-         student_profiles!inner(id, index_number, major, year_of_study, profiles!inner(first_name, last_name, email)),
+         student_profiles!inner(id, index_number, major, year_of_study, profiles!inner(first_name, last_name, email, avatar_url)),
          internship_offers!inner(id, title, location, companies!inner(name))`,
       )
       .eq("status", "accepted");

@@ -1,6 +1,7 @@
 "use client";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Avatar, AvatarFallback, AvatarImage } from "@v1/ui/avatar";
 import { Card } from "@v1/ui/card";
 import { useI18n } from "@/locales/client";
 import { RoleBadge } from "@/components/role-badge";
@@ -32,11 +33,20 @@ export function WelcomeHeader() {
   return (
     <Card className="p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {t("welcomeHeader.greeting", { name: displayName })}
-          </h1>
-          <p className="text-muted-foreground text-sm">{t(messageKey)}</p>
+        <div className="flex items-center gap-4">
+          <Avatar className="size-12 shrink-0">
+            <AvatarImage src={profile.avatar_url ?? undefined} />
+            <AvatarFallback className="text-sm font-medium">
+              {profile.first_name?.charAt(0)}
+              {profile.last_name?.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+          <div className="space-y-1">
+            <h1 className="text-2xl font-semibold tracking-tight">
+              {t("welcomeHeader.greeting", { name: displayName })}
+            </h1>
+            <p className="text-muted-foreground text-sm">{t(messageKey)}</p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <RoleBadge role={profile.role} />

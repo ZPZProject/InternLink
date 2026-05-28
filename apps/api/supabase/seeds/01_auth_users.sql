@@ -361,3 +361,21 @@ set role = 'admin'
 where id = '90000000-0000-4000-8000-000000000001';
 
 select set_config('request.jwt.claims', '{}', true);
+
+-- Assign vibrent avatars (https://github.com/alohe/avatars).
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_1.png'  where id = '10000000-0000-4000-8000-000000000001';
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_2.png'  where id = '10000000-0000-4000-8000-000000000002';
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png'  where id = '10000000-0000-4000-8000-000000000003';
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_4.png'  where id = '10000000-0000-4000-8000-000000000004';
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_5.png'  where id = '10000000-0000-4000-8000-000000000005';
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_6.png'  where id = '20000000-0000-4000-8000-000000000001';
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_7.png'  where id = '20000000-0000-4000-8000-000000000002';
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_8.png'  where id = '20000000-0000-4000-8000-000000000003';
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_9.png'  where id = '20000000-0000-4000-8000-000000000004';
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_10.png' where id = '20000000-0000-4000-8000-000000000005';
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_11.png' where id = '30000000-0000-4000-8000-000000000001';
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_12.png' where id = '30000000-0000-4000-8000-000000000002';
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_13.png' where id = '30000000-0000-4000-8000-000000000003';
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_14.png' where id = '30000000-0000-4000-8000-000000000004';
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_15.png' where id = '30000000-0000-4000-8000-000000000005';
+update public.profiles set avatar_url = 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_16.png' where id = '90000000-0000-4000-8000-000000000001';

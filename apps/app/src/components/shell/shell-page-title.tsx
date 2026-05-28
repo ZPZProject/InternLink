@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@/locales/client";
 import { usePathname } from "next/navigation";
+import { useI18n } from "@/locales/client";
 
 type TitleKey =
   | "pageTitle.home"
@@ -18,12 +18,14 @@ type TitleKey =
   | "pageTitle.adminUsers"
   | "pageTitle.offerDetail"
   | "pageTitle.editOffer"
-  | "pageTitle.employerApplications";
+  | "pageTitle.employerApplications"
+  | "pageTitle.applicationDetail";
 
 const EXACT_TITLES: ReadonlyArray<readonly [string | RegExp, TitleKey]> = [
   ["/home", "pageTitle.home"],
   ["/offers", "pageTitle.offers"],
   ["/student/applications", "pageTitle.applications"],
+  [/^\/student\/applications\/[^/]+$/, "pageTitle.applicationDetail"],
   ["/employer/offers/new", "pageTitle.newOffer"],
   ["/employer/offers", "pageTitle.myOffers"],
   ["/employer/onboarding", "pageTitle.employerOnboarding"],
@@ -35,7 +37,10 @@ const EXACT_TITLES: ReadonlyArray<readonly [string | RegExp, TitleKey]> = [
   ["/admin/users", "pageTitle.adminUsers"],
   [/^\/offers\/[^/]+$/, "pageTitle.offerDetail"],
   [/^\/employer\/offers\/[^/]+\/edit$/, "pageTitle.editOffer"],
-  [/^\/employer\/offers\/[^/]+\/applications$/, "pageTitle.employerApplications"],
+  [
+    /^\/employer\/offers\/[^/]+\/applications$/,
+    "pageTitle.employerApplications",
+  ],
 ];
 
 function titleKeyForPath(path: string): TitleKey | null {
@@ -58,13 +63,13 @@ export function ShellPageTitle() {
 
   const title = key
     ? t(key)
-    : pathname
+    : (pathname
         .split("/")
         .filter(Boolean)
         .at(-1)
         ?.split("-")
         .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(" ") ?? "Home";
+        .join(" ") ?? "Home");
 
   return <h1 className="text-lg font-semibold tracking-tight">{title}</h1>;
 }

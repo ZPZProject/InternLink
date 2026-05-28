@@ -45,7 +45,7 @@ const UserDropdown = () => {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="lg" className="h-12">
           <Avatar>
-            <AvatarImage src={undefined} />
+            <AvatarImage src={profile.avatar_url ?? undefined} />
             <AvatarFallback>
               {profile.first_name?.charAt(0)}
               {profile.last_name?.charAt(0)}
