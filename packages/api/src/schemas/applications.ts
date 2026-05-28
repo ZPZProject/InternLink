@@ -2,7 +2,7 @@ import { z } from "zod/v4";
 
 export const applicationsApplySchema = z.object({
   offer_id: z.uuid(),
-  motivation_letter: z.string().max(5000).optional().default(""),
+  motivation_letter: z.string().max(10000).optional().default(""),
 });
 
 export const applicationsMyListSchema = z.object({

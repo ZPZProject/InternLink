@@ -204,6 +204,9 @@ export default {
   "offerDetail.requirementsHeading": "Wymagania",
   "offerDetail.positions": "Liczba miejsc:",
   "offerDetail.applyBy": "· Aplikuj do {date}",
+  "offerDetail.inactiveTitle": "Ta oferta nie przyjmuje już aplikacji",
+  "offerDetail.inactiveDescription":
+    "Pracodawca zamknął tę ofertę. Nie możesz już aplikować.",
 
   // ── Employer pages ──────────────────────────────────────────────────────
   "newOffer.backLink": "← Wróć do moich ofert",
@@ -271,6 +274,15 @@ export default {
     "Wyjaśnij, dlaczego chcesz odbyć ten staż i co sprawia, że jesteś dobrym kandydatem.",
   "applicationForm.motivationPlaceholder":
     "Interesuję się tą ofertą, ponieważ...",
+  "applicationForm.cvLabel": "CV / Życiorys (opcjonalnie)",
+  "applicationForm.cvDescription":
+    "Prześlij swoje CV w formacie PDF lub DOCX (max 10 MB).",
+  "applicationForm.cvDropHint":
+    "Przeciągnij i upuść CV tutaj lub wybierz plik",
+  "applicationForm.cvChooseFile": "Wybierz plik",
+  "applicationForm.cvUploading": "Przesyłanie…",
+  "applicationForm.cvUploaded": "Przesłano: {name}",
+  "applicationForm.cvRemove": "Usuń",
   "applicationForm.submitIdle": "Wyślij aplikację",
   "applicationForm.submitBusy": "Wysyłanie…",
   "applicationForm.toast.success": "Aplikacja przesłana pomyślnie",
@@ -420,6 +432,7 @@ export default {
   "reviewTable.pendingBadge": "{pending} / {total} oczekujących",
   "reviewTable.reviewBtn": "Przeglądaj",
 
+  "documentPreview.type.cv": "CV / Życiorys",
   "documentPreview.type.contract": "Umowa",
   "documentPreview.type.internshipLog": "Dziennik praktyk",
   "documentPreview.type.other": "Inne",
@@ -471,6 +484,7 @@ export default {
   "uploadZone.typeDescription":
     "Wybierz, co przesyłasz (np. umowa lub dziennik praktyk).",
   "uploadZone.typePlaceholder": "Typ dokumentu",
+  "uploadZone.type.cv": "CV / Życiorys",
   "uploadZone.type.contract": "Umowa",
   "uploadZone.type.internshipLog": "Dziennik praktyk",
   "uploadZone.type.other": "Inne",
@@ -495,6 +509,7 @@ export default {
   "documentList.col.size": "Rozmiar",
   "documentList.col.status": "Status",
   "documentList.col.uploaded": "Przesłano",
+  "documentList.type.cv": "CV / Życiorys",
   "documentList.type.contract": "Umowa",
   "documentList.type.internshipLog": "Dziennik praktyk",
   "documentList.type.other": "Inne",

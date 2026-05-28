@@ -71,7 +71,7 @@ function mimeForUpload(file: File): string {
   return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 }
 
-type DocType = "contract" | "internship_log" | "other";
+type DocType = "cv" | "contract" | "internship_log" | "other";
 
 export function DocumentUploadZone({
   applicationId,
@@ -89,6 +89,7 @@ export function DocumentUploadZone({
   const [uploadBusy, setUploadBusy] = useState(false);
 
   const DOC_TYPES: { value: DocType; labelKey: string }[] = [
+    { value: "cv", labelKey: "uploadZone.type.cv" },
     { value: "contract", labelKey: "uploadZone.type.contract" },
     { value: "internship_log", labelKey: "uploadZone.type.internshipLog" },
     { value: "other", labelKey: "uploadZone.type.other" },

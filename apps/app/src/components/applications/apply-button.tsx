@@ -14,7 +14,13 @@ import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 import { ApplicationForm } from "./application-form";
 
-export function ApplyButton({ offerId }: { offerId: string }) {
+export function ApplyButton({
+  offerId,
+  isActive,
+}: {
+  offerId: string;
+  isActive: boolean;
+}) {
   const t = useI18n();
   const trpc = useTRPC();
 
@@ -23,6 +29,14 @@ export function ApplyButton({ offerId }: { offerId: string }) {
   );
 
   const hasOnboarding = onboarding?.school_id && onboarding?.index_number;
+
+  if (!isActive) {
+    return (
+      <Button disabled className="w-full sm:w-auto">
+        {t("applyButton.apply")}
+      </Button>
+    );
+  }
 
   if (isLoading) {
     return <Button disabled>{t("applyButton.loading")}</Button>;
@@ -41,7 +55,7 @@ export function ApplyButton({ offerId }: { offerId: string }) {
       <DialogTrigger asChild>
         <Button className="w-full sm:w-auto">{t("applyButton.apply")}</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{t("applyButton.dialogTitle")}</DialogTitle>
           <DialogDescription>

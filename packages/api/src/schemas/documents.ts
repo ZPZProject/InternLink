@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
 
-export const DOCUMENT_TYPES = ["contract", "internship_log", "other"] as const;
+export const DOCUMENT_TYPES = ["cv", "contract", "internship_log", "other"] as const;
 
 /** PDF and DOCX only (spec). */
 export const ALLOWED_DOCUMENT_MIMES = [

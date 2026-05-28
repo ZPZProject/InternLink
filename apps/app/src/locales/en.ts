@@ -203,6 +203,9 @@ export default {
   "offerDetail.requirementsHeading": "Requirements",
   "offerDetail.positions": "Positions:",
   "offerDetail.applyBy": "· Apply by {date}",
+  "offerDetail.inactiveTitle": "This offer is no longer accepting applications",
+  "offerDetail.inactiveDescription":
+    "The employer has closed this listing. You can no longer apply.",
 
   // ── Employer pages ──────────────────────────────────────────────────────
   "newOffer.backLink": "← Back to my offers",
@@ -270,6 +273,15 @@ export default {
     "Explain why you want to do this internship and what makes you a good candidate.",
   "applicationForm.motivationPlaceholder":
     "I am interested in this position because...",
+  "applicationForm.cvLabel": "CV / Resume (optional)",
+  "applicationForm.cvDescription":
+    "Upload your CV as a PDF or DOCX file (max 10 MB).",
+  "applicationForm.cvDropHint":
+    "Drag and drop your CV here, or choose a file",
+  "applicationForm.cvChooseFile": "Choose file",
+  "applicationForm.cvUploading": "Uploading…",
+  "applicationForm.cvUploaded": "Uploaded: {name}",
+  "applicationForm.cvRemove": "Remove",
   "applicationForm.submitIdle": "Submit application",
   "applicationForm.submitBusy": "Submitting…",
   "applicationForm.toast.success": "Application submitted successfully",
@@ -419,6 +431,7 @@ export default {
   "reviewTable.pendingBadge": "{pending} / {total} pending",
   "reviewTable.reviewBtn": "Review",
 
+  "documentPreview.type.cv": "CV / Resume",
   "documentPreview.type.contract": "Contract",
   "documentPreview.type.internshipLog": "Internship log",
   "documentPreview.type.other": "Other",
@@ -470,6 +483,7 @@ export default {
   "uploadZone.typeDescription":
     "Choose what you are uploading (e.g. contract or internship log).",
   "uploadZone.typePlaceholder": "Document type",
+  "uploadZone.type.cv": "CV / Resume",
   "uploadZone.type.contract": "Contract",
   "uploadZone.type.internshipLog": "Internship log",
   "uploadZone.type.other": "Other",
@@ -494,6 +508,7 @@ export default {
   "documentList.col.size": "Size",
   "documentList.col.status": "Status",
   "documentList.col.uploaded": "Uploaded",
+  "documentList.type.cv": "CV / Resume",
   "documentList.type.contract": "Contract",
   "documentList.type.internshipLog": "Internship log",
   "documentList.type.other": "Other",

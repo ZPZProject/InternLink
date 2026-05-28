@@ -17,6 +17,7 @@ import {
   Settings,
   Strikethrough,
   Undo2,
+  Upload,
   User,
   X,
 } from "lucide-react";
@@ -43,6 +44,7 @@ export const Icons = {
   Clock,
   FileText,
   Plus,
+  Upload,
   X,
   MapPin,
 };

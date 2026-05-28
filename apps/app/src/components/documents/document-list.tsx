@@ -32,6 +32,7 @@ export function DocumentList({ applicationId }: { applicationId: string }) {
   const queryClient = useQueryClient();
 
   const typeLabel: Record<string, string> = {
+    cv: t("documentList.type.cv"),
     contract: t("documentList.type.contract"),
     internship_log: t("documentList.type.internshipLog"),
     other: t("documentList.type.other"),

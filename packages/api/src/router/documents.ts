@@ -152,6 +152,58 @@ export const documentsRouter = createTRPCRouter({
       };
     }),
 
+  createCvUploadIntent: studentProcedure
+    .input(documentsCreateUploadIntentSchema)
+    .mutation(async ({ ctx, input }) => {
+      await assertStudentOwnsApplication(ctx, input.application_id);
+
+      const documentId = crypto.randomUUID();
+      const slug = slugFileName(input.file_name);
+      const storagePath = `${input.application_id}/${documentId}_${slug}`;
+
+      const { data: row, error: insertError } = await ctx.supabase
+        .from("documents")
+        .insert({
+          id: documentId,
+          application_id: input.application_id,
+          type: input.type,
+          file_name: input.file_name,
+          storage_path: storagePath,
+          file_size_bytes: input.file_size_bytes,
+          mime_type: input.mime_type,
+        })
+        .select("id, storage_path")
+        .single();
+
+      if (insertError) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: insertError?.message ?? "Could not create document record",
+        });
+      }
+
+      const { data: signed, error: signError } =
+        await ctx.supabaseServiceRole.storage
+          .from(BUCKET)
+          .createSignedUploadUrl(storagePath);
+
+      if (signError) {
+        await ctx.supabase.from("documents").delete().eq("id", documentId);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: signError?.message ?? "Could not create upload URL",
+        });
+      }
+
+      return {
+        documentId: row.id,
+        storagePath: row.storage_path,
+        signedUrl: signed.signedUrl,
+        token: signed.token,
+        path: signed.path,
+      };
+    }),
+
   listByApplication: studentProcedure
     .input(documentsListByApplicationSchema)
     .query(async ({ ctx, input }) => {

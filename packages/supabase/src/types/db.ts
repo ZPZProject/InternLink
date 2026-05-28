@@ -506,7 +506,7 @@ export type Database = {
       application_status: "pending" | "accepted" | "rejected" | "withdrawn";
       company_approval_status: "pending" | "approved" | "rejected";
       document_review_status: "pending" | "approved" | "rejected";
-      document_type: "contract" | "internship_log" | "other";
+      document_type: "cv" | "contract" | "internship_log" | "other";
       school_approval_status: "pending" | "approved" | "rejected";
       user_role: "student" | "employer" | "supervisor" | "admin";
     };
@@ -642,7 +642,7 @@ export const Constants = {
       application_status: ["pending", "accepted", "rejected", "withdrawn"],
       company_approval_status: ["pending", "approved", "rejected"],
       document_review_status: ["pending", "approved", "rejected"],
-      document_type: ["contract", "internship_log", "other"],
+      document_type: ["cv", "contract", "internship_log", "other"],
       school_approval_status: ["pending", "approved", "rejected"],
       user_role: ["student", "employer", "supervisor", "admin"],
     },

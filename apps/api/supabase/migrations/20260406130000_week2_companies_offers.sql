@@ -159,11 +159,12 @@ with check (
 );
 
 -- internship_offers
-create policy offers_select_active
+create policy offers_select_authenticated
 on public.internship_offers
 for select
 to authenticated
-using (is_active = true);
+using (true);
+
 
 create policy offers_select_company_member
 on public.internship_offers
