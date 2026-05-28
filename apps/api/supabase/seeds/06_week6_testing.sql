@@ -13,6 +13,9 @@
 --   student4: accepted, one document rejected -> should not appear in evaluation queue
 --   student4: separate accepted application with no documents -> should not appear in evaluation queue
 --   student5: rejected application, inactive profile -> useful for admin activation tests
+--   student3: pending DevOps application (new offer 11) -> tests remote-offer flow
+--   student1: accepted Java application (new offer 14, no docs) -> tests many-positions offer
+--   student4: pending Marketing application (new offer 12) -> tests non-tech offer flow
 
 insert into public.applications (
   id,
@@ -92,6 +95,48 @@ insert into public.applications (
     'accepted',
     '2026-05-06T16:30:00Z',
     '2026-05-09T10:30:00Z',
+    null
+  );
+
+-- Additional applications for the 5 new internship offers (11–15).
+insert into public.applications (
+  id,
+  offer_id,
+  student_profile_id,
+  motivation_letter,
+  status,
+  applied_at,
+  reviewed_at,
+  employer_rejection_reason
+) values
+  (
+    '70000000-0000-4000-8000-000000000008',
+    '60000000-0000-4000-8000-000000000011',
+    '30000000-0000-4000-8000-000000000003',
+    'Praktyka zdalna z DevOps i AWS to dokladnie to, czego szukam po kursie data science.',
+    'pending',
+    '2026-06-01T09:00:00Z',
+    null,
+    null
+  ),
+  (
+    '70000000-0000-4000-8000-000000000009',
+    '60000000-0000-4000-8000-000000000014',
+    '30000000-0000-4000-8000-000000000001',
+    'Znam juz Node.js, chce poszerzyc horyzonty o ekosystem Java i Spring Boot.',
+    'accepted',
+    '2026-06-02T10:30:00Z',
+    '2026-06-05T12:00:00Z',
+    null
+  ),
+  (
+    '70000000-0000-4000-8000-000000000010',
+    '60000000-0000-4000-8000-000000000012',
+    '30000000-0000-4000-8000-000000000004',
+    'Lacze umiejetnosci techniczne z kreatywnoscia — idealnie pasuje do marketingu.',
+    'pending',
+    '2026-06-03T14:15:00Z',
+    null,
     null
   );
 
