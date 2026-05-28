@@ -10,27 +10,43 @@ import { toast } from "@v1/ui/sonner";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useI18n } from "@/locales/client";
 import { SchoolCombobox } from "@/components/school/school-combobox";
 import { useTRPC } from "@/trpc/react";
 
-const studentOnboardingFormSchema = z.object({
-  school_id: z.uuid("Select your school or university"),
-  index_number: z.string().trim().min(1, "Index number is required").max(40),
-  major: z.string().trim().min(1, "Major is required").max(200),
-  year_of_study: z.coerce
-    .number()
-    .int()
-    .min(1, "Year must be between 1 and 6")
-    .max(6, "Year must be between 1 and 6"),
-});
-
-type FormValues = z.infer<typeof studentOnboardingFormSchema>;
+type FormValues = {
+  school_id: string;
+  index_number: string;
+  major: string;
+  year_of_study: number;
+};
 
 export function StudentOnboardingForm({
   initial,
 }: {
   initial: Tables<"student_profiles"> | null;
 }) {
+  const t = useI18n();
+
+  const studentOnboardingFormSchema = z.object({
+    school_id: z.uuid(t("studentOnboardingForm.error.schoolRequired")),
+    index_number: z
+      .string()
+      .trim()
+      .min(1, t("studentOnboardingForm.error.indexRequired"))
+      .max(40),
+    major: z
+      .string()
+      .trim()
+      .min(1, t("studentOnboardingForm.error.majorRequired"))
+      .max(200),
+    year_of_study: z.coerce
+      .number()
+      .int()
+      .min(1, t("studentOnboardingForm.error.yearRange"))
+      .max(6, t("studentOnboardingForm.error.yearRange")),
+  });
+
   const router = useRouter();
   const trpc = useTRPC();
   const form = useForm<FormValues>({
@@ -46,13 +62,15 @@ export function StudentOnboardingForm({
   const mutation = useMutation(
     trpc.student.completeOnboarding.mutationOptions({
       onSuccess: () => {
-        toast.success("Profile saved");
+        toast.success(t("studentOnboardingForm.toast.success"));
         router.refresh();
         router.push("/home");
       },
       onError: (err) => {
         toast.error(
-          err instanceof Error ? err.message : "Could not save profile",
+          err instanceof Error
+            ? err.message
+            : t("studentOnboardingForm.toast.error"),
         );
       },
     }),
@@ -66,16 +84,6 @@ export function StudentOnboardingForm({
 
   return (
     <div className="mx-auto max-w-lg space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Complete your student profile
-        </h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          We need your school, index number, major, and year of study before you
-          can browse offers and apply.
-        </p>
-      </div>
-
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
           <Controller
@@ -83,7 +91,7 @@ export function StudentOnboardingForm({
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
-                <FieldLabel>School / university</FieldLabel>
+                <FieldLabel>{t("studentOnboardingForm.schoolLabel")}</FieldLabel>
                 <SchoolCombobox
                   value={field.value || undefined}
                   onChange={field.onChange}
@@ -99,7 +107,9 @@ export function StudentOnboardingForm({
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
-                <FieldLabel htmlFor="index_number">Index number</FieldLabel>
+                <FieldLabel htmlFor="index_number">
+                  {t("studentOnboardingForm.indexNumberLabel")}
+                </FieldLabel>
                 <Input
                   {...field}
                   id="index_number"
@@ -118,7 +128,9 @@ export function StudentOnboardingForm({
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
-                <FieldLabel htmlFor="major">Major / field of study</FieldLabel>
+                <FieldLabel htmlFor="major">
+                  {t("studentOnboardingForm.majorLabel")}
+                </FieldLabel>
                 <Input
                   {...field}
                   id="major"
@@ -138,7 +150,7 @@ export function StudentOnboardingForm({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
                 <FieldLabel htmlFor="year_of_study">
-                  Year of study (1–6)
+                  {t("studentOnboardingForm.yearLabel")}
                 </FieldLabel>
                 <Input
                   {...field}
@@ -164,7 +176,7 @@ export function StudentOnboardingForm({
           />
         </FieldGroup>
         <Button disabled={busy} type="submit">
-          Save and continue
+          {t("studentOnboardingForm.submitBtn")}
         </Button>
       </form>
     </div>

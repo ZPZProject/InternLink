@@ -2,6 +2,7 @@
 
 import { Button } from "@v1/ui/button";
 import Link from "next/link";
+import { useI18n } from "@/locales/client";
 
 type School = {
   id: string;
@@ -10,30 +11,37 @@ type School = {
 };
 
 export function SupervisorSchoolStatus({ school }: { school: School }) {
+  const t = useI18n();
   return (
     <div className="mx-auto max-w-lg space-y-4">
-      <h1 className="text-2xl font-semibold tracking-tight">School</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">
+        {t("schoolStatus.title")}
+      </h1>
       <p className="text-muted-foreground text-sm">
-        You are linked to{" "}
-        <span className="text-foreground font-medium">{school.name}</span>.
+        {t("schoolStatus.linkedTo", {
+          name: (
+            <span key="name" className="text-foreground font-medium">
+              {school.name}
+            </span>
+          ),
+        })}
       </p>
       <p className="text-sm">
-        Status:{" "}
+        {t("schoolStatus.statusLabel")}{" "}
         <span className="font-medium capitalize">{school.approval_status}</span>
       </p>
       {school.approval_status === "pending" ? (
         <p className="text-muted-foreground text-sm">
-          An administrator still needs to approve this school or university.
+          {t("schoolStatus.pendingMessage")}
         </p>
       ) : null}
       {school.approval_status === "rejected" ? (
         <p className="text-muted-foreground text-sm">
-          This school was not approved. Contact an administrator if you need
-          your account linked to a different institution.
+          {t("schoolStatus.rejectedMessage")}
         </p>
       ) : null}
       <Button asChild variant="outline" size="sm">
-        <Link href="/home">Home</Link>
+        <Link href="/home">{t("schoolStatus.homeBtn")}</Link>
       </Button>
     </div>
   );

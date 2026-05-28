@@ -8,6 +8,7 @@ import { Button } from "@v1/ui/button";
 import { cn } from "@v1/ui/cn";
 import { Icons } from "@v1/ui/icons";
 import { useEffect } from "react";
+import { useI18n } from "@/locales/client";
 
 import { toEditorHtml } from "@/lib/html-text";
 
@@ -18,12 +19,13 @@ function RichTextToolbar({
   editor: Editor;
   disabled?: boolean;
 }) {
+  const t = useI18n();
   const iconBtn = "h-8 w-8 shrink-0 p-0 [&_svg:not([class*='size-'])]:size-4";
 
   return (
     <div
       role="toolbar"
-      aria-label="Formatting"
+      aria-label={t("richText.toolbar.label")}
       className="flex flex-wrap gap-0.5 border-b border-input bg-muted/40 p-1"
     >
       <Button
@@ -34,7 +36,7 @@ function RichTextToolbar({
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleBold().run()}
         aria-pressed={editor.isActive("bold")}
-        aria-label="Bold"
+        aria-label={t("richText.bold")}
       >
         <Icons.Bold />
       </Button>
@@ -46,7 +48,7 @@ function RichTextToolbar({
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleItalic().run()}
         aria-pressed={editor.isActive("italic")}
-        aria-label="Italic"
+        aria-label={t("richText.italic")}
       >
         <Icons.Italic />
       </Button>
@@ -58,7 +60,7 @@ function RichTextToolbar({
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleStrike().run()}
         aria-pressed={editor.isActive("strike")}
-        aria-label="Strikethrough"
+        aria-label={t("richText.strikethrough")}
       >
         <Icons.Strikethrough />
       </Button>
@@ -70,7 +72,7 @@ function RichTextToolbar({
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         aria-pressed={editor.isActive("bulletList")}
-        aria-label="Bullet list"
+        aria-label={t("richText.bulletList")}
       >
         <Icons.List />
       </Button>
@@ -82,7 +84,7 @@ function RichTextToolbar({
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
         aria-pressed={editor.isActive("orderedList")}
-        aria-label="Numbered list"
+        aria-label={t("richText.numberedList")}
       >
         <Icons.ListOrdered />
       </Button>
@@ -96,7 +98,7 @@ function RichTextToolbar({
         disabled={disabled}
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         aria-pressed={editor.isActive("heading", { level: 2 })}
-        aria-label="Heading 2"
+        aria-label={t("richText.heading2")}
       >
         <Icons.Heading2 />
       </Button>
@@ -107,7 +109,7 @@ function RichTextToolbar({
         className={iconBtn}
         disabled={disabled || !editor.can().undo()}
         onClick={() => editor.chain().focus().undo().run()}
-        aria-label="Undo"
+        aria-label={t("richText.undo")}
       >
         <Icons.Undo />
       </Button>
@@ -118,7 +120,7 @@ function RichTextToolbar({
         className={iconBtn}
         disabled={disabled || !editor.can().redo()}
         onClick={() => editor.chain().focus().redo().run()}
-        aria-label="Redo"
+        aria-label={t("richText.redo")}
       >
         <Icons.Redo />
       </Button>
@@ -141,12 +143,15 @@ export function RichTextEditor({
   id,
   value,
   onChange,
-  placeholder = "Write something…",
+  placeholder,
   disabled,
   "aria-invalid": ariaInvalid,
   className,
   minHeight = "min-h-[140px]",
 }: RichTextEditorProps) {
+  const t = useI18n();
+  const resolvedPlaceholder = placeholder ?? t("richText.placeholder");
+
   const editor = useEditor({
     immediatelyRender: false,
     shouldRerenderOnTransaction: true,
@@ -154,7 +159,7 @@ export function RichTextEditor({
       StarterKit.configure({
         heading: { levels: [2, 3] },
       }),
-      Placeholder.configure({ placeholder }),
+      Placeholder.configure({ placeholder: resolvedPlaceholder }),
     ],
     content: toEditorHtml(value),
     editable: !disabled,

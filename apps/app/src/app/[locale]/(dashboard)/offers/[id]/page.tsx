@@ -1,3 +1,4 @@
+import { getI18n } from "@/locales/server";
 import { Badge } from "@v1/ui/badge";
 import { Button } from "@v1/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@v1/ui/card";
@@ -10,6 +11,7 @@ type Props = { params: Promise<{ id: string }> };
 
 export default async function OfferDetailPage({ params }: Props) {
   const { id } = await params;
+  const t = await getI18n();
 
   const offer = await caller.offers.byId({ id });
   const profile = await caller.profile.me();
@@ -19,7 +21,7 @@ export default async function OfferDetailPage({ params }: Props) {
   return (
     <div className="space-y-6">
       <Button asChild variant="link" size="sm">
-        <Link href="/offers">← Back to offers</Link>
+        <Link href="/offers">{t("offerDetail.backLink")}</Link>
       </Button>
 
       <Card>
@@ -34,7 +36,9 @@ export default async function OfferDetailPage({ params }: Props) {
         </CardHeader>
         <CardContent className="space-y-4 text-sm">
           <section>
-            <h2 className="mb-1 font-medium">Description</h2>
+            <h2 className="mb-1 font-medium">
+              {t("offerDetail.descriptionHeading")}
+            </h2>
             {offer.description?.trim() ? (
               <RichTextHtml html={offer.description} />
             ) : (
@@ -43,14 +47,16 @@ export default async function OfferDetailPage({ params }: Props) {
           </section>
           {offer.requirements?.trim() ? (
             <section>
-              <h2 className="mb-1 font-medium">Requirements</h2>
+              <h2 className="mb-1 font-medium">
+                {t("offerDetail.requirementsHeading")}
+              </h2>
               <RichTextHtml html={offer.requirements} />
             </section>
           ) : null}
           <p className="text-muted-foreground text-xs">
-            Positions: {offer.number_of_positions}
+            {t("offerDetail.positions")} {offer.number_of_positions}
             {offer.application_deadline
-              ? ` · Apply by ${offer.application_deadline}`
+              ? ` ${t("offerDetail.applyBy", { date: offer.application_deadline })}`
               : null}
           </p>
           {isStudent && <ApplyButton offerId={offer.id} />}

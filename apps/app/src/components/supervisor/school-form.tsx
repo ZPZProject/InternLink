@@ -10,6 +10,7 @@ import { Textarea } from "@v1/ui/textarea";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 
 const createSchoolSchema = z.object({
@@ -21,26 +22,23 @@ const createSchoolSchema = z.object({
 type CreateSchoolValues = z.infer<typeof createSchoolSchema>;
 
 export function SchoolForm() {
+  const t = useI18n();
   const router = useRouter();
   const trpc = useTRPC();
   const createForm = useForm<CreateSchoolValues>({
     resolver: standardSchemaResolver(createSchoolSchema),
-    defaultValues: {
-      name: "",
-      address: "",
-      website: "",
-    },
+    defaultValues: { name: "", address: "", website: "" },
   });
   const createMutation = useMutation(
     trpc.school.create.mutationOptions({
       onSuccess: () => {
-        toast.success("School created — pending administrator approval");
+        toast.success(t("schoolForm.toast.success"));
         router.refresh();
         router.push("/home");
       },
       onError: (err) => {
         toast.error(
-          err instanceof Error ? err.message : "Could not create school",
+          err instanceof Error ? err.message : t("schoolForm.toast.error"),
         );
       },
     }),
@@ -66,7 +64,7 @@ export function SchoolForm() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid ? true : undefined}>
               <FieldLabel htmlFor="school-name">
-                School / university name
+                {t("schoolForm.nameLabel")}
               </FieldLabel>
               <Input
                 {...field}
@@ -84,7 +82,7 @@ export function SchoolForm() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid ? true : undefined}>
               <FieldLabel htmlFor="school-address">
-                Address (optional)
+                {t("schoolForm.addressLabel")}
               </FieldLabel>
               <Textarea
                 {...field}
@@ -103,7 +101,7 @@ export function SchoolForm() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid ? true : undefined}>
               <FieldLabel htmlFor="school-website">
-                Website (optional)
+                {t("schoolForm.websiteLabel")}
               </FieldLabel>
               <Input
                 {...field}
@@ -117,7 +115,7 @@ export function SchoolForm() {
         />
       </FieldGroup>
       <Button type="submit" className="w-full" disabled={busyCreate}>
-        {busyCreate ? "Creating…" : "Create school"}
+        {busyCreate ? t("schoolForm.submitBusy") : t("schoolForm.submitIdle")}
       </Button>
     </form>
   );

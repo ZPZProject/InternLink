@@ -12,10 +12,12 @@ import {
   TableRow,
 } from "@v1/ui/table";
 import { useState } from "react";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 import { EvaluationForm } from "./evaluation-form";
 
 export function EvaluationList() {
+  const t = useI18n();
   const trpc = useTRPC();
   const [selectedApplicationId, setSelectedApplicationId] = useState<
     string | null
@@ -27,7 +29,7 @@ export function EvaluationList() {
   if (!items || items.length === 0) {
     return (
       <p className="text-muted-foreground py-12 text-center text-sm">
-        No applications are ready for evaluation yet.
+        {t("evaluationList.empty")}
       </p>
     );
   }
@@ -41,11 +43,13 @@ export function EvaluationList() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Student</TableHead>
-            <TableHead>Offer</TableHead>
-            <TableHead>Company</TableHead>
-            <TableHead>Documents</TableHead>
-            <TableHead className="text-right">Action</TableHead>
+            <TableHead>{t("evaluationList.col.student")}</TableHead>
+            <TableHead>{t("evaluationList.col.offer")}</TableHead>
+            <TableHead>{t("evaluationList.col.company")}</TableHead>
+            <TableHead>{t("evaluationList.col.documents")}</TableHead>
+            <TableHead className="text-right">
+              {t("evaluationList.col.action")}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -56,7 +60,9 @@ export function EvaluationList() {
             return (
               <TableRow key={item.application_id}>
                 <TableCell className="font-medium">
-                  {studentName || item.student.profiles.email || "Student"}
+                  {studentName ||
+                    item.student.profiles.email ||
+                    t("evaluationList.fallbackStudent")}
                   <span className="block text-xs text-muted-foreground">
                     {item.student.profiles.email}
                   </span>
@@ -65,7 +71,10 @@ export function EvaluationList() {
                 <TableCell>{item.offer.companies.name}</TableCell>
                 <TableCell>
                   <Badge variant="blue">
-                    {item.approved_documents} / {item.total_documents} approved
+                    {t("evaluationList.approvedBadge", {
+                      approved: item.approved_documents,
+                      total: item.total_documents,
+                    })}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">
@@ -80,7 +89,7 @@ export function EvaluationList() {
                       setSelectedApplicationId(item.application_id)
                     }
                   >
-                    Evaluate
+                    {t("evaluationList.evaluateBtn")}
                   </Button>
                 </TableCell>
               </TableRow>
@@ -95,7 +104,7 @@ export function EvaluationList() {
           studentName={
             `${selectedItem.student.profiles.first_name ?? ""} ${selectedItem.student.profiles.last_name ?? ""}`.trim() ||
             selectedItem.student.profiles.email ||
-            "Student"
+            t("evaluationList.fallbackStudent")
           }
           onDone={() => setSelectedApplicationId(null)}
         />

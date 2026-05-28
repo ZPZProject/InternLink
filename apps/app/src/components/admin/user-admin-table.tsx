@@ -22,6 +22,7 @@ import {
   TableRow,
 } from "@v1/ui/table";
 import { useDeferredValue, useState } from "react";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 
 const PAGE_SIZE = 20;
@@ -30,6 +31,7 @@ type RoleFilter = "all" | "student" | "employer" | "supervisor" | "admin";
 type StatusFilter = "all" | "active" | "inactive";
 
 export function UserAdminTable() {
+  const t = useI18n();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
@@ -52,7 +54,9 @@ export function UserAdminTable() {
     trpc.admin.users.setActive.mutationOptions({
       onSuccess: async (_, variables) => {
         toast.success(
-          variables.is_active ? "User activated" : "User deactivated",
+          variables.is_active
+            ? t("userAdminTable.toast.activated")
+            : t("userAdminTable.toast.deactivated"),
         );
         await queryClient.invalidateQueries(listQuery);
       },
@@ -60,7 +64,7 @@ export function UserAdminTable() {
         toast.error(
           error instanceof Error
             ? error.message
-            : "Could not update user status",
+            : t("userAdminTable.toast.error"),
         );
       },
     }),
@@ -80,7 +84,7 @@ export function UserAdminTable() {
             setQuery(event.target.value);
             setPage(0);
           }}
-          placeholder="Search by name or email"
+          placeholder={t("userAdminTable.searchPlaceholder")}
           className="md:max-w-sm"
         />
         <Select
@@ -91,15 +95,25 @@ export function UserAdminTable() {
           }}
         >
           <SelectTrigger className="w-full md:w-44">
-            <SelectValue placeholder="Role" />
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="all">All roles</SelectItem>
-              <SelectItem value="student">Student</SelectItem>
-              <SelectItem value="employer">Employer</SelectItem>
-              <SelectItem value="supervisor">Supervisor</SelectItem>
-              <SelectItem value="admin">Admin</SelectItem>
+              <SelectItem value="all">
+                {t("userAdminTable.roleFilter.all")}
+              </SelectItem>
+              <SelectItem value="student">
+                {t("userAdminTable.roleFilter.student")}
+              </SelectItem>
+              <SelectItem value="employer">
+                {t("userAdminTable.roleFilter.employer")}
+              </SelectItem>
+              <SelectItem value="supervisor">
+                {t("userAdminTable.roleFilter.supervisor")}
+              </SelectItem>
+              <SelectItem value="admin">
+                {t("userAdminTable.roleFilter.admin")}
+              </SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -111,13 +125,19 @@ export function UserAdminTable() {
           }}
         >
           <SelectTrigger className="w-full md:w-44">
-            <SelectValue placeholder="Status" />
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="all">All statuses</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="inactive">Inactive</SelectItem>
+              <SelectItem value="all">
+                {t("userAdminTable.statusFilter.all")}
+              </SelectItem>
+              <SelectItem value="active">
+                {t("userAdminTable.statusFilter.active")}
+              </SelectItem>
+              <SelectItem value="inactive">
+                {t("userAdminTable.statusFilter.inactive")}
+              </SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -126,11 +146,13 @@ export function UserAdminTable() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>User</TableHead>
-            <TableHead>Role</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Created</TableHead>
-            <TableHead className="text-right">Action</TableHead>
+            <TableHead>{t("userAdminTable.col.user")}</TableHead>
+            <TableHead>{t("userAdminTable.col.role")}</TableHead>
+            <TableHead>{t("userAdminTable.col.status")}</TableHead>
+            <TableHead>{t("userAdminTable.col.created")}</TableHead>
+            <TableHead className="text-right">
+              {t("userAdminTable.col.action")}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -140,7 +162,7 @@ export function UserAdminTable() {
                 colSpan={5}
                 className="py-12 text-center text-muted-foreground"
               >
-                No users matched the current filters.
+                {t("userAdminTable.empty")}
               </TableCell>
             </TableRow>
           ) : (
@@ -151,7 +173,7 @@ export function UserAdminTable() {
               return (
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">
-                    {fullName || user.email || "User"}
+                    {fullName || user.email || t("userAdminTable.col.user")}
                     <span className="block text-xs text-muted-foreground">
                       {user.email}
                     </span>
@@ -161,7 +183,9 @@ export function UserAdminTable() {
                   </TableCell>
                   <TableCell>
                     <Badge variant={user.is_active ? "blue" : "destructive"}>
-                      {user.is_active ? "Active" : "Inactive"}
+                      {user.is_active
+                        ? t("userAdminTable.badge.active")
+                        : t("userAdminTable.badge.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -179,7 +203,9 @@ export function UserAdminTable() {
                         })
                       }
                     >
-                      {user.is_active ? "Deactivate" : "Activate"}
+                      {user.is_active
+                        ? t("userAdminTable.deactivateBtn")
+                        : t("userAdminTable.activateBtn")}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -191,7 +217,10 @@ export function UserAdminTable() {
 
       <div className="flex items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">
-          Page {currentPage} of {totalPages}
+          {t("userAdminTable.pagination", {
+            current: currentPage,
+            total: totalPages,
+          })}
         </p>
         <div className="flex gap-2">
           <Button
@@ -201,7 +230,7 @@ export function UserAdminTable() {
             disabled={page === 0}
             onClick={() => setPage((current) => Math.max(0, current - 1))}
           >
-            Previous
+            {t("userAdminTable.prevBtn")}
           </Button>
           <Button
             type="button"
@@ -210,7 +239,7 @@ export function UserAdminTable() {
             disabled={page + 1 >= totalPages}
             onClick={() => setPage((current) => current + 1)}
           >
-            Next
+            {t("userAdminTable.nextBtn")}
           </Button>
         </div>
       </div>

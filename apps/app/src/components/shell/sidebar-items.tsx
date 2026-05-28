@@ -10,64 +10,57 @@ import {
 } from "@v1/ui/sidebar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useI18n } from "@/locales/client";
 import { useMounted } from "@/hooks/use-mounted";
 import { useTRPC } from "@/trpc/react";
 
 type Profile = Tables<"profiles">;
 
-type NavItem = { href: string; label: string };
+type NavItem = { href: string; labelKey: string };
 
 const SHARED_LINKS: NavItem[] = [
-  { href: "/home", label: "Home" },
-  { href: "/offers", label: "Offers" },
+  { href: "/home", labelKey: "nav.home" },
+  { href: "/offers", labelKey: "nav.offers" },
 ];
 
 const STUDENT_LINKS: NavItem[] = [
   ...SHARED_LINKS,
-  { href: "/student/applications", label: "Applications" },
+  { href: "/student/applications", labelKey: "nav.applications" },
 ];
 
 const EMPLOYER_LINKS: NavItem[] = [
   ...SHARED_LINKS,
-  { href: "/employer/offers", label: "My offers" },
+  { href: "/employer/offers", labelKey: "nav.myOffers" },
 ];
 
 const SUPERVISOR_LINKS: NavItem[] = [
   ...SHARED_LINKS,
-  { href: "/supervisor/reviews", label: "Reviews" },
-  { href: "/supervisor/evaluations", label: "Evaluations" },
-  { href: "/supervisor/onboarding", label: "My school" },
+  { href: "/supervisor/reviews", labelKey: "nav.reviews" },
+  { href: "/supervisor/evaluations", labelKey: "nav.evaluations" },
+  { href: "/supervisor/onboarding", labelKey: "nav.mySchool" },
 ];
 
 const ADMIN_LINKS: NavItem[] = [
   ...SHARED_LINKS,
-  { href: "/admin/users", label: "Users" },
+  { href: "/admin/users", labelKey: "nav.users" },
 ];
 
 function navForRole(role: Profile["role"]): NavItem[] {
-  if (role === "student") {
-    return STUDENT_LINKS;
-  }
-  if (role === "employer") {
-    return EMPLOYER_LINKS;
-  }
-  if (role === "supervisor") {
-    return SUPERVISOR_LINKS;
-  }
-  if (role === "admin") {
-    return ADMIN_LINKS;
-  }
+  if (role === "student") return STUDENT_LINKS;
+  if (role === "employer") return EMPLOYER_LINKS;
+  if (role === "supervisor") return SUPERVISOR_LINKS;
+  if (role === "admin") return ADMIN_LINKS;
   return SHARED_LINKS;
 }
 
 const SidebarItems = () => {
+  const t = useI18n();
   const pathname = usePathname();
   const trpc = useTRPC();
   const { data: profile } = useQuery(trpc.profile.me.queryOptions());
   const mounted = useMounted();
 
   if (!mounted) {
-    // Return nothing until the component is mounted because the SidebarMenuSkeleton is using Math.random() to generate the width which is not safe to use in a server component
     return null;
   }
 
@@ -86,9 +79,9 @@ const SidebarItems = () => {
   return (
     <SidebarMenu>
       {items.map((item) => (
-        <SidebarMenuItem key={item.label}>
+        <SidebarMenuItem key={item.href}>
           <SidebarMenuButton asChild isActive={pathname.startsWith(item.href)}>
-            <Link href={item.href}>{item.label}</Link>
+            <Link href={item.href}>{t(item.labelKey as Parameters<typeof t>[0])}</Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
       ))}

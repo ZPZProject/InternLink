@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@v1/ui/card";
+import { useI18n } from "@/locales/client";
 import { DocumentList } from "./document-list";
 import { DocumentUploadZone } from "./document-upload-zone";
 
@@ -17,14 +18,15 @@ export function ApplicationDocumentsPanel({
   applicationId: string;
   canUpload: boolean;
 }) {
+  const t = useI18n();
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Documents</CardTitle>
+        <CardTitle>{t("documentsPanel.title")}</CardTitle>
         <CardDescription>
           {canUpload
-            ? "Upload internship documents for your supervisor to review."
-            : "Document uploads are available after the employer accepts your application."}
+            ? t("documentsPanel.descriptionCanUpload")
+            : t("documentsPanel.descriptionNoUpload")}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">

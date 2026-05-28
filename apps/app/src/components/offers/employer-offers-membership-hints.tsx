@@ -2,10 +2,11 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Link from "next/link";
-
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 
 export function EmployerOffersMembershipHints() {
+  const t = useI18n();
   const trpc = useTRPC();
   const { data: membership } = useSuspenseQuery(
     trpc.company.myMembership.queryOptions(),
@@ -17,11 +18,17 @@ export function EmployerOffersMembershipHints() {
 
   return (
     <p className="text-muted-foreground text-sm">
-      Complete{" "}
-      <Link className="text-primary underline" href="/employer/onboarding">
-        company onboarding
-      </Link>{" "}
-      first.
+      {t("membershipHints.incomplete", {
+        link: (
+          <Link
+            key="link"
+            className="text-primary underline"
+            href="/employer/onboarding"
+          >
+            {t("membershipHints.link")}
+          </Link>
+        ),
+      })}
     </p>
   );
 }

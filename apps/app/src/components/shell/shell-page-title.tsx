@@ -1,50 +1,70 @@
 "use client";
 
+import { useI18n } from "@/locales/client";
 import { usePathname } from "next/navigation";
 
-const EXACT_TITLES: ReadonlyArray<readonly [string | RegExp, string]> = [
-  ["/home", "Home"],
-  ["/offers", "Offers"],
-  ["/applications", "Applications"],
-  ["/employer/offers", "My offers"],
-  ["/employer/offers/new", "New offer"],
-  ["/employer/onboarding", "Onboarding"],
-  ["/student/onboarding", "Onboarding"],
-  ["/supervisor/onboarding", "My school"],
-  ["/supervisor/reviews", "Document reviews"],
-  [/^\/supervisor\/reviews\/[^/]+$/, "Review documents"],
-  ["/supervisor/evaluations", "Evaluations"],
-  ["/admin/users", "Users"],
-  [/^\/offers\/[^/]+$/, "Offer"],
-  [/^\/employer\/offers\/[^/]+\/edit$/, "Edit offer"],
+type TitleKey =
+  | "pageTitle.home"
+  | "pageTitle.offers"
+  | "pageTitle.applications"
+  | "pageTitle.myOffers"
+  | "pageTitle.newOffer"
+  | "pageTitle.employerOnboarding"
+  | "pageTitle.studentOnboarding"
+  | "pageTitle.supervisorOnboarding"
+  | "pageTitle.supervisorReviews"
+  | "pageTitle.supervisorReviewDetail"
+  | "pageTitle.supervisorEvaluations"
+  | "pageTitle.adminUsers"
+  | "pageTitle.offerDetail"
+  | "pageTitle.editOffer"
+  | "pageTitle.employerApplications";
+
+const EXACT_TITLES: ReadonlyArray<readonly [string | RegExp, TitleKey]> = [
+  ["/home", "pageTitle.home"],
+  ["/offers", "pageTitle.offers"],
+  ["/student/applications", "pageTitle.applications"],
+  ["/employer/offers/new", "pageTitle.newOffer"],
+  ["/employer/offers", "pageTitle.myOffers"],
+  ["/employer/onboarding", "pageTitle.employerOnboarding"],
+  ["/student/onboarding", "pageTitle.studentOnboarding"],
+  ["/supervisor/onboarding", "pageTitle.supervisorOnboarding"],
+  ["/supervisor/reviews", "pageTitle.supervisorReviews"],
+  [/^\/supervisor\/reviews\/[^/]+$/, "pageTitle.supervisorReviewDetail"],
+  ["/supervisor/evaluations", "pageTitle.supervisorEvaluations"],
+  ["/admin/users", "pageTitle.adminUsers"],
+  [/^\/offers\/[^/]+$/, "pageTitle.offerDetail"],
+  [/^\/employer\/offers\/[^/]+\/edit$/, "pageTitle.editOffer"],
+  [/^\/employer\/offers\/[^/]+\/applications$/, "pageTitle.employerApplications"],
 ];
 
-function titleForPath(path: string): string {
+function titleKeyForPath(path: string): TitleKey | null {
   const normalized =
     path === "" ? "/" : path.startsWith("/") ? path : `/${path}`;
-  for (const [matcher, title] of EXACT_TITLES) {
+  for (const [matcher, key] of EXACT_TITLES) {
     if (typeof matcher === "string") {
-      if (matcher === normalized) {
-        return title;
-      }
+      if (matcher === normalized) return key;
     } else if (matcher.test(normalized)) {
-      return title;
+      return key;
     }
   }
-  const segments = normalized.split("/").filter(Boolean);
-  const last = segments.at(-1);
-  if (!last) {
-    return "Home";
-  }
-  return last
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
+  return null;
 }
 
 export function ShellPageTitle() {
+  const t = useI18n();
   const pathname = usePathname() ?? "/";
-  const pageTitle = titleForPath(pathname);
+  const key = titleKeyForPath(pathname);
 
-  return <h1 className="text-lg font-semibold tracking-tight">{pageTitle}</h1>;
+  const title = key
+    ? t(key)
+    : pathname
+        .split("/")
+        .filter(Boolean)
+        .at(-1)
+        ?.split("-")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ") ?? "Home";
+
+  return <h1 className="text-lg font-semibold tracking-tight">{title}</h1>;
 }

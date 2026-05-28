@@ -10,6 +10,7 @@ import {
   ComboboxList,
 } from "@v1/ui/combobox";
 import { useState } from "react";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 
 export function SchoolCombobox({
@@ -19,6 +20,7 @@ export function SchoolCombobox({
   value?: string;
   onChange?: (value?: string) => void;
 }) {
+  const t = useI18n();
   const trpc = useTRPC();
   const [search, setSearch] = useState("");
 
@@ -43,13 +45,9 @@ export function SchoolCombobox({
   const selectedItem = items.find((item) => item.value === value) ?? null;
 
   const getEmptyMessage = () => {
-    if (listQuery.isError) {
-      return "Could not load schools.";
-    }
-    if (listQuery.isPending) {
-      return "Loading…";
-    }
-    return "No schools found.";
+    if (listQuery.isError) return t("schoolCombobox.loadError");
+    if (listQuery.isPending) return t("schoolCombobox.loading");
+    return t("schoolCombobox.noResults");
   };
 
   return (
@@ -69,7 +67,7 @@ export function SchoolCombobox({
       <ComboboxInput
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        placeholder="Select your school or university"
+        placeholder={t("schoolCombobox.placeholder")}
       />
       <ComboboxContent>
         <ComboboxEmpty>{getEmptyMessage()}</ComboboxEmpty>

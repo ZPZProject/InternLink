@@ -5,6 +5,7 @@ import { Button } from "@v1/ui/button";
 import { toast } from "@v1/ui/sonner";
 import { Textarea } from "@v1/ui/textarea";
 import { useState } from "react";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 
 export function AcceptRejectApplicationActions({
@@ -16,6 +17,7 @@ export function AcceptRejectApplicationActions({
   initialReason?: string | null;
   offerId: string;
 }) {
+  const t = useI18n();
   const [rejectOpen, setRejectOpen] = useState(false);
   const [reason, setReason] = useState(initialReason ?? "");
   const trpc = useTRPC();
@@ -26,8 +28,8 @@ export function AcceptRejectApplicationActions({
       onSuccess: (_, variables) => {
         toast.success(
           variables.action === "accept"
-            ? "Application accepted"
-            : "Application rejected",
+            ? t("acceptReject.toast.accepted")
+            : t("acceptReject.toast.rejected"),
         );
         setRejectOpen(false);
         queryClient.invalidateQueries(
@@ -36,7 +38,7 @@ export function AcceptRejectApplicationActions({
       },
       onError: (err) => {
         toast.error(
-          err instanceof Error ? err.message : "Could not review application",
+          err instanceof Error ? err.message : t("acceptReject.toast.error"),
         );
       },
     }),
@@ -58,7 +60,7 @@ export function AcceptRejectApplicationActions({
           }}
           disabled={mut.isPending}
         >
-          Accept
+          {t("acceptReject.acceptBtn")}
         </Button>
         <Button
           size="sm"
@@ -66,7 +68,7 @@ export function AcceptRejectApplicationActions({
           onClick={() => setRejectOpen((open) => !open)}
           disabled={mut.isPending}
         >
-          Reject
+          {t("acceptReject.rejectBtn")}
         </Button>
       </div>
       {rejectOpen && (
@@ -74,7 +76,7 @@ export function AcceptRejectApplicationActions({
           <Textarea
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Reason for rejection (optional)"
+            placeholder={t("acceptReject.reasonPlaceholder")}
             rows={3}
           />
           <Button
@@ -87,7 +89,7 @@ export function AcceptRejectApplicationActions({
             }
             disabled={mut.isPending}
           >
-            Confirm rejection
+            {t("acceptReject.confirmRejectionBtn")}
           </Button>
         </div>
       )}

@@ -1,3 +1,4 @@
+import { getI18n } from "@/locales/server";
 import { Button } from "@v1/ui/button";
 import {
   Sidebar,
@@ -9,7 +10,8 @@ import {
 import { Logo } from "../shared/logo";
 import SidebarItems from "./sidebar-items";
 
-const AppSidebar = () => {
+const AppSidebar = async () => {
+  const t = await getI18n();
   return (
     <Sidebar>
       <SidebarHeader>
@@ -23,10 +25,10 @@ const AppSidebar = () => {
       <SidebarFooter>
         <div className="flex items-center gap-2 justify-center">
           <Button variant="link" size="xs">
-            Terms of service
+            {t("sidebar.termsOfService")}
           </Button>
           <Button variant="link" size="xs">
-            Privacy policy
+            {t("sidebar.privacyPolicy")}
           </Button>
         </div>
       </SidebarFooter>

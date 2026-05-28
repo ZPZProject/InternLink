@@ -3,6 +3,7 @@
 import { Button } from "@v1/ui/button";
 import { Icons } from "@v1/ui/icons";
 import Link from "next/link";
+import { useI18n } from "@/locales/client";
 
 type StatusFilter = "all" | "pending" | "accepted" | "rejected" | "withdrawn";
 
@@ -19,12 +20,14 @@ export function ApplicationsHeader({
   isEmployer?: boolean;
   offerTitle?: string;
 }) {
-  const statusFilters: { value: StatusFilter; label: string }[] = [
-    { value: "all", label: "All" },
-    { value: "pending", label: "Pending" },
-    { value: "accepted", label: "Accepted" },
-    { value: "rejected", label: "Rejected" },
-    { value: "withdrawn", label: "Withdrawn" },
+  const t = useI18n();
+
+  const statusFilters: { value: StatusFilter; labelKey: string }[] = [
+    { value: "all", labelKey: "applicationsHeader.filter.all" },
+    { value: "pending", labelKey: "applicationsHeader.filter.pending" },
+    { value: "accepted", labelKey: "applicationsHeader.filter.accepted" },
+    { value: "rejected", labelKey: "applicationsHeader.filter.rejected" },
+    { value: "withdrawn", labelKey: "applicationsHeader.filter.withdrawn" },
   ];
 
   if (isEmployer) {
@@ -32,17 +35,19 @@ export function ApplicationsHeader({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            Applications for {offerTitle || "Offer"}
+            {t("applicationsHeader.employer.title", {
+              offerTitle: offerTitle ?? "Offer",
+            })}
           </h1>
           <p className="text-muted-foreground mt-1 text-sm">
             {total !== undefined
-              ? `${total} application${total !== 1 ? "s" : ""} received`
-              : "Track applications for this offer."}
+              ? t("applicationsHeader.employer.subtitleWithTotal", { total })
+              : t("applicationsHeader.employer.subtitleDefault")}
           </p>
         </div>
 
         <Button asChild variant="outline" size="sm">
-          <Link href="/employer/offers">← Back to offers</Link>
+          <Link href="/employer/offers">{t("employerApplications.backLink")}</Link>
         </Button>
       </div>
     );
@@ -53,19 +58,19 @@ export function ApplicationsHeader({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            My Applications
+            {t("applicationsHeader.student.title")}
           </h1>
           <p className="text-muted-foreground mt-1 text-sm">
             {total !== undefined
-              ? `You have ${total} application${total !== 1 ? "s" : ""}.`
-              : "Track the status of your internship applications."}
+              ? t("applicationsHeader.student.subtitleWithTotal", { total })
+              : t("applicationsHeader.student.subtitleDefault")}
           </p>
         </div>
 
         <Button asChild variant="outline">
           <Link href="/offers">
             <Icons.Briefcase className="mr-2 h-4 w-4" />
-            Browse Offers
+            {t("applicationsHeader.student.browseOffersBtn")}
           </Link>
         </Button>
       </div>
@@ -79,7 +84,7 @@ export function ApplicationsHeader({
               size="sm"
               onClick={() => onStatusChange(filter.value)}
             >
-              {filter.label}
+              {t(filter.labelKey as Parameters<typeof t>[0])}
             </Button>
           ))}
         </div>

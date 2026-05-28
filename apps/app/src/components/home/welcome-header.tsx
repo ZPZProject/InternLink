@@ -2,35 +2,41 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Card } from "@v1/ui/card";
+import { useI18n } from "@/locales/client";
 import { RoleBadge } from "@/components/role-badge";
 import { useTRPC } from "@/trpc/react";
 
 export function WelcomeHeader() {
+  const t = useI18n();
   const trpc = useTRPC();
   const { data: profile } = useSuspenseQuery(trpc.profile.me.queryOptions());
-  const { data: homeStats } = useSuspenseQuery(trpc.profile.homeStats.queryOptions());
+  const { data: homeStats } = useSuspenseQuery(
+    trpc.profile.homeStats.queryOptions(),
+  );
 
   const displayName = profile.first_name
     ? `${profile.first_name} ${profile.last_name ?? ""}`.trim()
     : profile.email ?? "User";
 
-  const roleMessages = {
-    student: "Find your perfect internship opportunity",
-    employer: "Manage your internship offers",
-    supervisor: "Oversee student internships",
-    admin: "Manage the platform",
-  };
+  const roleMessageKeys = {
+    student: "welcomeHeader.roleMessage.student",
+    employer: "welcomeHeader.roleMessage.employer",
+    supervisor: "welcomeHeader.roleMessage.supervisor",
+    admin: "welcomeHeader.roleMessage.admin",
+  } as const;
 
-  const message = roleMessages[profile.role] ?? "Welcome";
+  const messageKey =
+    roleMessageKeys[profile.role as keyof typeof roleMessageKeys] ??
+    "welcomeHeader.roleMessage.fallback";
 
   return (
     <Card className="p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight">
-            Welcome back, {displayName}
+            {t("welcomeHeader.greeting", { name: displayName })}
           </h1>
-          <p className="text-muted-foreground text-sm">{message}</p>
+          <p className="text-muted-foreground text-sm">{t(messageKey)}</p>
         </div>
         <div className="flex items-center gap-2">
           <RoleBadge role={profile.role} />
@@ -39,9 +45,9 @@ export function WelcomeHeader() {
       {!homeStats.onboardingComplete && profile.role === "student" && (
         <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/50 rounded-md border border-amber-200 dark:border-amber-800">
           <p className="text-sm text-amber-800 dark:text-amber-200">
-            Complete your profile to apply for internships.{" "}
+            {t("welcomeHeader.studentOnboardingBanner")}{" "}
             <a href="/student/onboarding" className="font-medium underline">
-              Complete onboarding
+              {t("welcomeHeader.studentOnboardingLink")}
             </a>
           </p>
         </div>
@@ -49,9 +55,9 @@ export function WelcomeHeader() {
       {!homeStats.hasCompany && profile.role === "employer" && (
         <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/50 rounded-md border border-amber-200 dark:border-amber-800">
           <p className="text-sm text-amber-800 dark:text-amber-200">
-            Register your company to post internship offers.{" "}
+            {t("welcomeHeader.employerOnboardingBanner")}{" "}
             <a href="/employer/onboarding" className="font-medium underline">
-              Register company
+              {t("welcomeHeader.employerOnboardingLink")}
             </a>
           </p>
         </div>
@@ -59,9 +65,9 @@ export function WelcomeHeader() {
       {!homeStats.hasSchool && profile.role === "supervisor" && (
         <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/50 rounded-md border border-amber-200 dark:border-amber-800">
           <p className="text-sm text-amber-800 dark:text-amber-200">
-            Register your school to supervise students.{" "}
+            {t("welcomeHeader.supervisorOnboardingBanner")}{" "}
             <a href="/supervisor/onboarding" className="font-medium underline">
-              Register school
+              {t("welcomeHeader.supervisorOnboardingLink")}
             </a>
           </p>
         </div>

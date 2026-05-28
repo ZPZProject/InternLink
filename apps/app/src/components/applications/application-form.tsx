@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useId } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 
 const schema = z.object({
@@ -34,6 +35,7 @@ export function ApplicationForm({
   offerId: string;
   onSuccess?: () => void;
 }) {
+  const t = useI18n();
   const formId = useId();
   const router = useRouter();
   const trpc = useTRPC();
@@ -46,7 +48,7 @@ export function ApplicationForm({
   const mut = useMutation(
     trpc.applications.create.mutationOptions({
       onSuccess: () => {
-        toast.success("Application submitted successfully");
+        toast.success(t("applicationForm.toast.success"));
         queryClient.invalidateQueries(
           trpc.applications.myList.queryOptions({ limit: 20, offset: 0 }),
         );
@@ -58,7 +60,9 @@ export function ApplicationForm({
       },
       onError: (err) => {
         toast.error(
-          err instanceof Error ? err.message : "Could not submit application",
+          err instanceof Error
+            ? err.message
+            : t("applicationForm.toast.error"),
         );
       },
     }),
@@ -86,11 +90,10 @@ export function ApplicationForm({
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid ? true : undefined}>
               <FieldLabel htmlFor={`${formId}-motivation`}>
-                Motivation letter
+                {t("applicationForm.motivationLabel")}
               </FieldLabel>
               <FieldDescription>
-                Explain why you want to do this internship and what makes you a
-                good candidate.
+                {t("applicationForm.motivationDescription")}
               </FieldDescription>
               <Textarea
                 {...field}
@@ -100,7 +103,7 @@ export function ApplicationForm({
                 disabled={busy}
                 aria-invalid={fieldState.invalid}
                 rows={6}
-                placeholder="I am interested in this position because..."
+                placeholder={t("applicationForm.motivationPlaceholder")}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -109,7 +112,9 @@ export function ApplicationForm({
       </FieldGroup>
       <div className="flex gap-2">
         <Button type="submit" disabled={busy}>
-          {busy ? "Submitting…" : "Submit application"}
+          {busy
+            ? t("applicationForm.submitBusy")
+            : t("applicationForm.submitIdle")}
         </Button>
       </div>
     </form>

@@ -1,3 +1,4 @@
+import { getI18n } from "@/locales/server";
 import { Badge } from "@v1/ui/badge";
 import { Button } from "@v1/ui/button";
 import {
@@ -18,6 +19,7 @@ type Props = { params: Promise<{ id: string }> };
 
 export default async function StudentApplicationDetailPage({ params }: Props) {
   const { id } = await params;
+  const t = await getI18n();
 
   const profile = await caller.profile.me();
   if (profile?.role !== "student") {
@@ -47,7 +49,9 @@ export default async function StudentApplicationDetailPage({ params }: Props) {
   return (
     <div className="space-y-6">
       <Button asChild variant="link" size="sm">
-        <Link href="/student/applications">← Back to applications</Link>
+        <Link href="/student/applications">
+          {t("studentApplicationDetail.backLink")}
+        </Link>
       </Button>
 
       <Card>
@@ -77,7 +81,9 @@ export default async function StudentApplicationDetailPage({ params }: Props) {
         </CardHeader>
         <CardContent>
           <Button asChild variant="outline" size="sm">
-            <Link href={`/offers/${offer.id}`}>View offer</Link>
+            <Link href={`/offers/${offer.id}`}>
+              {t("studentApplicationDetail.viewOffer")}
+            </Link>
           </Button>
         </CardContent>
       </Card>

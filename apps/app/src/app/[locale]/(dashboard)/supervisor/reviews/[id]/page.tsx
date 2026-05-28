@@ -1,3 +1,4 @@
+import { getI18n } from "@/locales/server";
 import { Badge } from "@v1/ui/badge";
 import { Button } from "@v1/ui/button";
 import {
@@ -16,6 +17,7 @@ type Props = { params: Promise<{ id: string }> };
 
 export default async function SupervisorReviewDetailPage({ params }: Props) {
   const { id } = await params;
+  const t = await getI18n();
 
   const application = await caller.applications.byId({ id }).catch(() => null);
 
@@ -28,7 +30,6 @@ export default async function SupervisorReviewDetailPage({ params }: Props) {
   });
 
   const offer = application.internship_offers;
-
   const student = application.student_profiles;
 
   const pendingCount = documents.filter(
@@ -38,7 +39,7 @@ export default async function SupervisorReviewDetailPage({ params }: Props) {
   return (
     <div className="space-y-6">
       <Button asChild variant="link" size="sm">
-        <Link href="/supervisor/reviews">← Back to review queue</Link>
+        <Link href="/supervisor/reviews">{t("reviewDetail.backLink")}</Link>
       </Button>
 
       <Card>
@@ -48,7 +49,8 @@ export default async function SupervisorReviewDetailPage({ params }: Props) {
             <Badge variant="secondary">{offer.companies.name}</Badge>
           </div>
           <CardDescription>
-            Student: {student.profiles.first_name} {student.profiles.last_name}
+            {t("reviewDetail.studentLabel")} {student.profiles.first_name}{" "}
+            {student.profiles.last_name}
             {student.index_number ? ` (${student.index_number})` : ""}
             {student.major ? ` — ${student.major}` : ""}
           </CardDescription>
@@ -57,8 +59,8 @@ export default async function SupervisorReviewDetailPage({ params }: Props) {
           <div className="text-sm text-muted-foreground">
             {student.profiles.email}
             {pendingCount > 0
-              ? ` — ${pendingCount} document(s) pending review`
-              : " — All documents reviewed"}
+              ? ` — ${t("reviewDetail.pendingDocs", { n: pendingCount })}`
+              : ` — ${t("reviewDetail.allReviewed")}`}
           </div>
         </CardContent>
       </Card>
@@ -69,7 +71,7 @@ export default async function SupervisorReviewDetailPage({ params }: Props) {
         ))}
         {documents.length === 0 && (
           <p className="text-sm text-muted-foreground">
-            No documents have been uploaded for this application.
+            {t("reviewDetail.noDocuments")}
           </p>
         )}
       </div>

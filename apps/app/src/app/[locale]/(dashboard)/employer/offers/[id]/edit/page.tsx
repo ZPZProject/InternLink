@@ -1,3 +1,4 @@
+import { getI18n } from "@/locales/server";
 import { Button } from "@v1/ui/button";
 import { parseISO } from "date-fns";
 import Link from "next/link";
@@ -9,9 +10,9 @@ type Props = { params: Promise<{ id: string }> };
 
 export default async function EditOfferPage({ params }: Props) {
   const { id } = await params;
+  const t = await getI18n();
 
   const membership = await caller.company.myMembership();
-
   const offer = await caller.offers.byId({ id });
 
   if (offer.company_id !== membership?.member.company_id) {
@@ -26,12 +27,14 @@ export default async function EditOfferPage({ params }: Props) {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <Button variant="link" asChild>
-        <Link href="/employer/offers">← Back to my offers</Link>
+        <Link href="/employer/offers">{t("editOffer.backLink")}</Link>
       </Button>
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Edit offer</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {t("editOffer.title")}
+        </h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          Update the listing or toggle visibility with the active checkbox.
+          {t("editOffer.subtitle")}
         </p>
       </div>
       <OfferForm

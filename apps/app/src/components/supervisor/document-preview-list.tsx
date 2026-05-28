@@ -14,15 +14,10 @@ import {
   TableRow,
 } from "@v1/ui/table";
 import { formatISO } from "date-fns";
+import { useI18n } from "@/locales/client";
 import { FileTypeIcon } from "@/components/documents/file-type-icon";
 import { useTRPC } from "@/trpc/react";
 import { ReviewActionBar } from "./review-action-bar";
-
-const typeLabel: Record<string, string> = {
-  contract: "Contract",
-  internship_log: "Internship log",
-  other: "Other",
-};
 
 const reviewVariant: Record<
   string,
@@ -51,7 +46,14 @@ export function DocumentPreviewList({
   document: Document;
   applicationId: string;
 }) {
+  const t = useI18n();
   const trpc = useTRPC();
+
+  const typeLabel: Record<string, string> = {
+    contract: t("documentPreview.type.contract"),
+    internship_log: t("documentPreview.type.internshipLog"),
+    other: t("documentPreview.type.other"),
+  };
 
   const signedUrl = useQuery(
     trpc.documents.getSignedReadUrl.queryOptions(
@@ -65,7 +67,7 @@ export function DocumentPreviewList({
     if (result.data?.signedUrl) {
       window.open(result.data.signedUrl, "_blank");
     } else {
-      toast.error("Could not generate download link");
+      toast.error(t("documentPreview.toast.downloadError"));
     }
   };
 
@@ -86,9 +88,9 @@ export function DocumentPreviewList({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>File</TableHead>
-              <TableHead>Size</TableHead>
-              <TableHead>Uploaded</TableHead>
+              <TableHead>{t("documentPreview.col.file")}</TableHead>
+              <TableHead>{t("documentPreview.col.size")}</TableHead>
+              <TableHead>{t("documentPreview.col.uploaded")}</TableHead>
               <TableHead />
             </TableRow>
           </TableHeader>
@@ -105,8 +107,12 @@ export function DocumentPreviewList({
               </TableCell>
               <TableCell>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={handleDownload}>
-                    Download
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleDownload}
+                  >
+                    {t("documentPreview.downloadBtn")}
                   </Button>
                   {document.review_status === "pending" ? (
                     <ReviewActionBar
@@ -115,7 +121,9 @@ export function DocumentPreviewList({
                     />
                   ) : document.rejection_reason ? (
                     <span className="text-muted-foreground inline-flex items-center text-xs">
-                      Reason: {document.rejection_reason}
+                      {t("documentPreview.rejectionReason", {
+                        reason: document.rejection_reason,
+                      })}
                     </span>
                   ) : null}
                 </div>

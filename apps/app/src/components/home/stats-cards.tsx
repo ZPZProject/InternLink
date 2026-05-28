@@ -3,18 +3,24 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@v1/ui/card";
 import { Icons } from "@v1/ui/icons";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 
 export function StatsCards() {
+  const t = useI18n();
   const trpc = useTRPC();
-  const { data: homeStats } = useSuspenseQuery(trpc.profile.homeStats.queryOptions());
+  const { data: homeStats } = useSuspenseQuery(
+    trpc.profile.homeStats.queryOptions(),
+  );
 
   if (homeStats.role === "student") {
     return (
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Applications</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("statsCards.student.totalApplications")}
+            </CardTitle>
             <Icons.User className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -25,7 +31,9 @@ export function StatsCards() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("statsCards.student.pending")}
+            </CardTitle>
             <Icons.Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -36,7 +44,9 @@ export function StatsCards() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Accepted</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("statsCards.student.accepted")}
+            </CardTitle>
             <Icons.Check className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -54,18 +64,20 @@ export function StatsCards() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Offers</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("statsCards.employer.totalOffers")}
+            </CardTitle>
             <Icons.Briefcase className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {homeStats.stats.totalOffers}
-            </div>
+            <div className="text-2xl font-bold">{homeStats.stats.totalOffers}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Offers</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("statsCards.employer.activeOffers")}
+            </CardTitle>
             <Icons.Check className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -76,7 +88,9 @@ export function StatsCards() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Applications</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("statsCards.employer.applications")}
+            </CardTitle>
             <Icons.User className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -94,7 +108,9 @@ export function StatsCards() {
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">School Status</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("statsCards.supervisor.schoolStatus")}
+            </CardTitle>
             <Icons.Building className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -104,11 +120,14 @@ export function StatsCards() {
                   {(homeStats.school as { name: string })?.name ?? "School"}
                 </p>
                 <p className="text-xs text-muted-foreground capitalize">
-                  {(homeStats.school as { approval_status: string })?.approval_status ?? "Unknown"}
+                  {(homeStats.school as { approval_status: string })
+                    ?.approval_status ?? "Unknown"}
                 </p>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">No school registered</p>
+              <p className="text-sm text-muted-foreground">
+                {t("statsCards.supervisor.noSchool")}
+              </p>
             )}
           </CardContent>
         </Card>
@@ -121,18 +140,20 @@ export function StatsCards() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("statsCards.admin.totalUsers")}
+            </CardTitle>
             <Icons.User className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {homeStats.stats.totalUsers}
-            </div>
+            <div className="text-2xl font-bold">{homeStats.stats.totalUsers}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Companies</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("statsCards.admin.pendingCompanies")}
+            </CardTitle>
             <Icons.Building className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -143,7 +164,9 @@ export function StatsCards() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Schools</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t("statsCards.admin.pendingSchools")}
+            </CardTitle>
             <Icons.Building className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>

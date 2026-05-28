@@ -11,16 +11,19 @@ import { useRouter } from "next/navigation";
 import { useId } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 
-const loginSchema = z.object({
-  email: z.email("Enter a valid email"),
-  password: z.string().min(1, "Password is required"),
-});
-
-type LoginValues = z.infer<typeof loginSchema>;
+type LoginValues = { email: string; password: string };
 
 export function LoginForm() {
+  const t = useI18n();
+
+  const loginSchema = z.object({
+    email: z.email(t("loginForm.error.invalidEmail")),
+    password: z.string().min(1, t("loginForm.error.passwordRequired")),
+  });
+
   const formId = useId();
   const router = useRouter();
   const trpc = useTRPC();
@@ -32,7 +35,7 @@ export function LoginForm() {
       },
       onError: (err) => {
         const message =
-          err instanceof Error ? err.message : "Could not sign in";
+          err instanceof Error ? err.message : t("loginForm.error.signInFailed");
         toast.error(message);
       },
     }),
@@ -63,7 +66,9 @@ export function LoginForm() {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid ? true : undefined}>
-              <FieldLabel htmlFor={`${formId}-email`}>Email</FieldLabel>
+              <FieldLabel htmlFor={`${formId}-email`}>
+                {t("loginForm.emailLabel")}
+              </FieldLabel>
               <Input
                 {...field}
                 id={`${formId}-email`}
@@ -71,7 +76,7 @@ export function LoginForm() {
                 autoComplete="email"
                 aria-invalid={fieldState.invalid}
                 disabled={busy}
-                placeholder="john.doe@example.com"
+                placeholder={t("loginForm.emailPlaceholder")}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -83,7 +88,9 @@ export function LoginForm() {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid ? true : undefined}>
-              <FieldLabel htmlFor={`${formId}-password`}>Password</FieldLabel>
+              <FieldLabel htmlFor={`${formId}-password`}>
+                {t("loginForm.passwordLabel")}
+              </FieldLabel>
               <Input
                 {...field}
                 id={`${formId}-password`}
@@ -91,7 +98,7 @@ export function LoginForm() {
                 autoComplete="current-password"
                 aria-invalid={fieldState.invalid}
                 disabled={busy}
-                placeholder="••••••••"
+                placeholder={t("loginForm.passwordPlaceholder")}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -100,12 +107,12 @@ export function LoginForm() {
       </FieldGroup>
 
       <Button type="submit" className="w-full" disabled={busy}>
-        {busy ? "Signing in…" : "Sign in"}
+        {busy ? t("loginForm.submitBusy") : t("loginForm.submitIdle")}
       </Button>
       <p className="text-muted-foreground text-center text-sm">
-        No account?{" "}
+        {t("loginForm.noAccount")}{" "}
         <Link className="text-primary underline" href="/register">
-          Register
+          {t("loginForm.registerLink")}
         </Link>
       </p>
     </form>

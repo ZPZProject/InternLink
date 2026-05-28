@@ -22,39 +22,60 @@ import { useRouter } from "next/navigation";
 import { useId } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 
-const registerSchema = z.object({
-  email: z.email("Enter a valid email"),
-  password: z.string().min(8, "At least 8 characters"),
-  first_name: z.string().trim().max(120).optional(),
-  last_name: z.string().trim().max(120).optional(),
-  role: z.enum(["student", "employer", "supervisor"]),
-});
-
-type RegisterValues = z.infer<typeof registerSchema>;
-
-const ROLE_OPTIONS = [
-  { value: "student" as const, title: "Student", Icon: Icons.Student },
-  { value: "employer" as const, title: "Employer", Icon: Icons.Employer },
-  { value: "supervisor" as const, title: "Supervisor", Icon: Icons.Supervisor },
-];
+type RegisterValues = {
+  email: string;
+  password: string;
+  first_name?: string;
+  last_name?: string;
+  role: "student" | "employer" | "supervisor";
+};
 
 export function RegisterForm() {
+  const t = useI18n();
+
+  const registerSchema = z.object({
+    email: z.email(t("registerForm.error.invalidEmail")),
+    password: z.string().min(8, t("registerForm.error.passwordTooShort")),
+    first_name: z.string().trim().max(120).optional(),
+    last_name: z.string().trim().max(120).optional(),
+    role: z.enum(["student", "employer", "supervisor"]),
+  });
   const formId = useId();
   const router = useRouter();
   const trpc = useTRPC();
+
+  const ROLE_OPTIONS = [
+    {
+      value: "student" as const,
+      title: t("registerForm.roleStudent"),
+      Icon: Icons.Student,
+    },
+    {
+      value: "employer" as const,
+      title: t("registerForm.roleEmployer"),
+      Icon: Icons.Employer,
+    },
+    {
+      value: "supervisor" as const,
+      title: t("registerForm.roleSupervisor"),
+      Icon: Icons.Supervisor,
+    },
+  ];
+
   const signUp = useMutation(
     trpc.auth.signUp.mutationOptions({
       onSuccess: () => {
-        toast.success(
-          "Check your email to confirm your account, or sign in if already confirmed.",
-        );
+        toast.success(t("registerForm.successToast"));
         router.push("/login");
       },
       onError: (err) => {
         const message =
-          err instanceof Error ? err.message : "Could not create account";
+          err instanceof Error
+            ? err.message
+            : t("registerForm.error.createFailed");
         toast.error(message);
       },
     }),
@@ -95,9 +116,11 @@ export function RegisterForm() {
           control={form.control}
           render={({ field, fieldState }) => (
             <FieldSet className="gap-3">
-              <FieldLegend variant="label">I am a</FieldLegend>
+              <FieldLegend variant="label">
+                {t("registerForm.roleFieldLegend")}
+              </FieldLegend>
               <FieldDescription>
-                Choose the account type that best describes you.
+                {t("registerForm.roleDescription")}
               </FieldDescription>
               <RadioGroup
                 className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3"
@@ -157,7 +180,7 @@ export function RegisterForm() {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
                 <FieldLabel htmlFor={`${formId}-first_name`}>
-                  First name
+                  {t("registerForm.firstNameLabel")}
                 </FieldLabel>
                 <Input
                   {...field}
@@ -165,7 +188,7 @@ export function RegisterForm() {
                   autoComplete="given-name"
                   aria-invalid={fieldState.invalid}
                   disabled={busy}
-                  placeholder="John"
+                  placeholder={t("registerForm.firstNamePlaceholder")}
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -179,7 +202,7 @@ export function RegisterForm() {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
                 <FieldLabel htmlFor={`${formId}-last_name`}>
-                  Last name
+                  {t("registerForm.lastNameLabel")}
                 </FieldLabel>
                 <Input
                   {...field}
@@ -187,7 +210,7 @@ export function RegisterForm() {
                   autoComplete="family-name"
                   aria-invalid={fieldState.invalid}
                   disabled={busy}
-                  placeholder="Doe"
+                  placeholder={t("registerForm.lastNamePlaceholder")}
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -202,7 +225,9 @@ export function RegisterForm() {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid ? true : undefined}>
-              <FieldLabel htmlFor={`${formId}-email`}>Email</FieldLabel>
+              <FieldLabel htmlFor={`${formId}-email`}>
+                {t("registerForm.emailLabel")}
+              </FieldLabel>
               <Input
                 {...field}
                 id={`${formId}-email`}
@@ -210,7 +235,7 @@ export function RegisterForm() {
                 autoComplete="email"
                 aria-invalid={fieldState.invalid}
                 disabled={busy}
-                placeholder="john.doe@example.com"
+                placeholder={t("registerForm.emailPlaceholder")}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -222,7 +247,9 @@ export function RegisterForm() {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid ? true : undefined}>
-              <FieldLabel htmlFor={`${formId}-password`}>Password</FieldLabel>
+              <FieldLabel htmlFor={`${formId}-password`}>
+                {t("registerForm.passwordLabel")}
+              </FieldLabel>
               <Input
                 {...field}
                 id={`${formId}-password`}
@@ -230,7 +257,7 @@ export function RegisterForm() {
                 autoComplete="new-password"
                 aria-invalid={fieldState.invalid}
                 disabled={busy}
-                placeholder="••••••••"
+                placeholder={t("registerForm.passwordPlaceholder")}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -239,12 +266,12 @@ export function RegisterForm() {
       </FieldGroup>
 
       <Button type="submit" className="w-full" disabled={busy}>
-        {busy ? "Creating account…" : "Create account"}
+        {busy ? t("registerForm.submitBusy") : t("registerForm.submitIdle")}
       </Button>
       <p className="text-muted-foreground text-center text-sm">
-        Already have an account?{" "}
+        {t("registerForm.alreadyHaveAccount")}{" "}
         <Link className="text-primary underline" href="/login">
-          Sign in
+          {t("registerForm.signInLink")}
         </Link>
       </p>
     </form>

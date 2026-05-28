@@ -23,6 +23,7 @@ import { Textarea } from "@v1/ui/textarea";
 import { useId } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 
 const schema = z.object({
@@ -41,21 +42,19 @@ export function EvaluationForm({
   studentName: string;
   onDone?: () => void;
 }) {
+  const t = useI18n();
   const formId = useId();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const form = useForm<Values>({
     resolver: standardSchemaResolver(schema),
-    defaultValues: {
-      score: "4",
-      comment: "",
-    },
+    defaultValues: { score: "4", comment: "" },
   });
 
   const createMutation = useMutation(
     trpc.evaluations.create.mutationOptions({
       onSuccess: async () => {
-        toast.success("Evaluation saved");
+        toast.success(t("evaluationForm.toast.success"));
         await queryClient.invalidateQueries(
           trpc.evaluations.listCompletable.queryOptions(),
         );
@@ -63,7 +62,9 @@ export function EvaluationForm({
       },
       onError: (error) => {
         toast.error(
-          error instanceof Error ? error.message : "Could not save evaluation",
+          error instanceof Error
+            ? error.message
+            : t("evaluationForm.toast.error"),
         );
       },
     }),
@@ -85,13 +86,17 @@ export function EvaluationForm({
       onSubmit={form.handleSubmit(onSubmit)}
     >
       <FieldGroup>
-        <FieldTitle>Evaluate {studentName}</FieldTitle>
+        <FieldTitle>
+          {t("evaluationForm.title", { studentName })}
+        </FieldTitle>
         <Controller
           name="score"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid ? true : undefined}>
-              <FieldLabel htmlFor={`${formId}-score`}>Score</FieldLabel>
+              <FieldLabel htmlFor={`${formId}-score`}>
+                {t("evaluationForm.scoreLabel")}
+              </FieldLabel>
               <Select
                 value={field.value}
                 onValueChange={field.onChange}
@@ -101,7 +106,9 @@ export function EvaluationForm({
                   id={`${formId}-score`}
                   className="w-full max-w-xs"
                 >
-                  <SelectValue placeholder="Select score" />
+                  <SelectValue
+                    placeholder={t("evaluationForm.scorePlaceholder")}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -123,13 +130,13 @@ export function EvaluationForm({
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid ? true : undefined}>
               <FieldLabel htmlFor={`${formId}-comment`}>
-                Comment (optional)
+                {t("evaluationForm.commentLabel")}
               </FieldLabel>
               <Textarea
                 {...field}
                 id={`${formId}-comment`}
                 rows={5}
-                placeholder="Summarize the student's internship performance."
+                placeholder={t("evaluationForm.commentPlaceholder")}
                 disabled={busy}
                 aria-invalid={fieldState.invalid}
               />
@@ -140,7 +147,7 @@ export function EvaluationForm({
       </FieldGroup>
       <div className="flex gap-2">
         <Button type="submit" disabled={busy}>
-          Save evaluation
+          {t("evaluationForm.saveBtn")}
         </Button>
         {onDone && (
           <Button
@@ -149,7 +156,7 @@ export function EvaluationForm({
             onClick={onDone}
             disabled={busy}
           >
-            Cancel
+            {t("evaluationForm.cancelBtn")}
           </Button>
         )}
       </div>

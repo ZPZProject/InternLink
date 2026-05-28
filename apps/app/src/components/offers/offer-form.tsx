@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { useId } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useI18n } from "@/locales/client";
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { useTRPC } from "@/trpc/react";
 import { CityLocationCombobox } from "./city-location-combobox";
@@ -62,6 +63,7 @@ export function OfferForm({
   offerId?: string;
   initial?: Partial<Values>;
 }) {
+  const t = useI18n();
   const formId = useId();
   const router = useRouter();
   const trpc = useTRPC();
@@ -74,12 +76,12 @@ export function OfferForm({
   const createMut = useMutation(
     trpc.offers.create.mutationOptions({
       onSuccess: () => {
-        toast.success("Offer created");
-        router.push(`/employer/offers`);
+        toast.success(t("offerForm.toast.created"));
+        router.push("/employer/offers");
       },
       onError: (err) => {
         toast.error(
-          err instanceof Error ? err.message : "Could not create offer",
+          err instanceof Error ? err.message : t("offerForm.toast.createError"),
         );
       },
     }),
@@ -88,14 +90,14 @@ export function OfferForm({
   const updateMut = useMutation(
     trpc.offers.update.mutationOptions({
       onSuccess: () => {
-        toast.success("Offer updated");
+        toast.success(t("offerForm.toast.updated"));
         queryClient.invalidateQueries(
           trpc.offers.listMine.queryOptions(EMPLOYER_OFFERS_LIST_QUERY),
         );
       },
       onError: (err) => {
         toast.error(
-          err instanceof Error ? err.message : "Could not update offer",
+          err instanceof Error ? err.message : t("offerForm.toast.updateError"),
         );
       },
     }),
@@ -154,7 +156,9 @@ export function OfferForm({
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
-                <FieldLabel htmlFor={`${formId}-title`}>Title</FieldLabel>
+                <FieldLabel htmlFor={`${formId}-title`}>
+                  {t("offerForm.titleLabel")}
+                </FieldLabel>
                 <Input
                   {...field}
                   id={`${formId}-title`}
@@ -172,12 +176,14 @@ export function OfferForm({
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
-                <FieldLabel htmlFor={`${formId}-desc`}>Description</FieldLabel>
+                <FieldLabel htmlFor={`${formId}-desc`}>
+                  {t("offerForm.descriptionLabel")}
+                </FieldLabel>
                 <RichTextEditor
                   id={`${formId}-desc`}
                   value={field.value}
                   onChange={field.onChange}
-                  placeholder="Describe the internship role, team, and expectations."
+                  placeholder={t("offerForm.descriptionPlaceholder")}
                   disabled={busy}
                   aria-invalid={fieldState.invalid}
                   minHeight="min-h-[180px]"
@@ -194,13 +200,13 @@ export function OfferForm({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
                 <FieldLabel htmlFor={`${formId}-req`}>
-                  Requirements (optional)
+                  {t("offerForm.requirementsLabel")}
                 </FieldLabel>
                 <RichTextEditor
                   id={`${formId}-req`}
                   value={field.value ?? ""}
                   onChange={field.onChange}
-                  placeholder="Skills, year of study, languages, etc."
+                  placeholder={t("offerForm.requirementsPlaceholder")}
                   disabled={busy}
                   aria-invalid={fieldState.invalid}
                   minHeight="min-h-[120px]"
@@ -216,7 +222,9 @@ export function OfferForm({
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
-                <FieldLabel htmlFor={`${formId}-loc`}>Location</FieldLabel>
+                <FieldLabel htmlFor={`${formId}-loc`}>
+                  {t("offerForm.locationLabel")}
+                </FieldLabel>
                 <CityLocationCombobox
                   id={`${formId}-loc`}
                   value={field.value}
@@ -239,9 +247,9 @@ export function OfferForm({
               <FieldLabel htmlFor="is_active">
                 <Field orientation="horizontal">
                   <FieldContent>
-                    <FieldTitle>Active</FieldTitle>
+                    <FieldTitle>{t("offerForm.activeLabel")}</FieldTitle>
                     <FieldDescription>
-                      Visible in the public offers list
+                      {t("offerForm.activeDescription")}
                     </FieldDescription>
                   </FieldContent>
                   <Switch
@@ -260,7 +268,7 @@ export function OfferForm({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
                 <FieldLabel htmlFor={`${formId}-num`}>
-                  Number of positions
+                  {t("offerForm.numberOfPositionsLabel")}
                 </FieldLabel>
                 <Input
                   {...field}
@@ -282,7 +290,9 @@ export function OfferForm({
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
-                <FieldLabel htmlFor={`${formId}-start`}>Start date</FieldLabel>
+                <FieldLabel htmlFor={`${formId}-start`}>
+                  {t("offerForm.startDateLabel")}
+                </FieldLabel>
                 <DatePicker
                   selected={field.value ? new Date(field.value) : undefined}
                   onSelect={field.onChange}
@@ -299,7 +309,9 @@ export function OfferForm({
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
-                <FieldLabel htmlFor={`${formId}-end`}>End date</FieldLabel>
+                <FieldLabel htmlFor={`${formId}-end`}>
+                  {t("offerForm.endDateLabel")}
+                </FieldLabel>
                 <DatePicker
                   selected={field.value ? new Date(field.value) : undefined}
                   onSelect={field.onChange}
@@ -317,7 +329,7 @@ export function OfferForm({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid ? true : undefined}>
                 <FieldLabel htmlFor={`${formId}-deadline`}>
-                  Application deadline (optional)
+                  {t("offerForm.deadlineLabel")}
                 </FieldLabel>
                 <DatePicker
                   selected={field.value ? new Date(field.value) : undefined}
@@ -333,7 +345,11 @@ export function OfferForm({
         </div>
       </FieldGroup>
       <Button type="submit" disabled={busy}>
-        {busy ? "Saving…" : mode === "create" ? "Create offer" : "Save changes"}
+        {busy
+          ? t("offerForm.submitBusy")
+          : mode === "create"
+            ? t("offerForm.submitCreate")
+            : t("offerForm.submitEdit")}
       </Button>
     </form>
   );

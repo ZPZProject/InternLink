@@ -5,6 +5,7 @@ import { Button } from "@v1/ui/button";
 import { toast } from "@v1/ui/sonner";
 import { Textarea } from "@v1/ui/textarea";
 import { useState } from "react";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 
 export function ReviewActionBar({
@@ -14,6 +15,7 @@ export function ReviewActionBar({
   documentId: string;
   applicationId: string;
 }) {
+  const t = useI18n();
   const [rejectOpen, setRejectOpen] = useState(false);
   const [reason, setReason] = useState("");
   const trpc = useTRPC();
@@ -24,8 +26,8 @@ export function ReviewActionBar({
       onSuccess: (_, variables) => {
         toast.success(
           variables.action === "approve"
-            ? "Document approved"
-            : "Document rejected",
+            ? t("reviewActionBar.toast.approved")
+            : t("reviewActionBar.toast.rejected"),
         );
         setRejectOpen(false);
         setReason("");
@@ -40,7 +42,7 @@ export function ReviewActionBar({
       },
       onError: (err) => {
         toast.error(
-          err instanceof Error ? err.message : "Could not review document",
+          err instanceof Error ? err.message : t("reviewActionBar.toast.error"),
         );
       },
     }),
@@ -54,14 +56,11 @@ export function ReviewActionBar({
           variant="default"
           onClick={() => {
             setRejectOpen(false);
-            mut.mutate({
-              document_id: documentId,
-              action: "approve",
-            });
+            mut.mutate({ document_id: documentId, action: "approve" });
           }}
           disabled={mut.isPending}
         >
-          Approve
+          {t("reviewActionBar.approveBtn")}
         </Button>
         <Button
           size="sm"
@@ -69,7 +68,7 @@ export function ReviewActionBar({
           onClick={() => setRejectOpen((open) => !open)}
           disabled={mut.isPending}
         >
-          Reject
+          {t("reviewActionBar.rejectBtn")}
         </Button>
       </div>
       {rejectOpen && (
@@ -77,7 +76,7 @@ export function ReviewActionBar({
           <Textarea
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Reason for rejection (optional)"
+            placeholder={t("reviewActionBar.reasonPlaceholder")}
             rows={3}
           />
           <Button
@@ -91,7 +90,7 @@ export function ReviewActionBar({
             }
             disabled={mut.isPending}
           >
-            Confirm rejection
+            {t("reviewActionBar.confirmRejectionBtn")}
           </Button>
         </div>
       )}

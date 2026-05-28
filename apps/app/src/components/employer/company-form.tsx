@@ -1,3 +1,5 @@
+"use client";
+
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@v1/ui/button";
@@ -8,6 +10,7 @@ import { Textarea } from "@v1/ui/textarea";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 
 const createCompanySchema = z.object({
@@ -20,6 +23,7 @@ const createCompanySchema = z.object({
 type CreateCompanyValues = z.infer<typeof createCompanySchema>;
 
 export const CompanyForm = () => {
+  const t = useI18n();
   const router = useRouter();
   const trpc = useTRPC();
   const createForm = useForm<CreateCompanyValues>({
@@ -34,13 +38,13 @@ export const CompanyForm = () => {
   const createMutation = useMutation(
     trpc.company.create.mutationOptions({
       onSuccess: () => {
-        toast.success("Company created — pending admin approval");
+        toast.success(t("companyForm.toast.success"));
         router.refresh();
         router.push("/home");
       },
       onError: (err) => {
         toast.error(
-          err instanceof Error ? err.message : "Could not create company",
+          err instanceof Error ? err.message : t("companyForm.toast.error"),
         );
       },
     }),
@@ -65,7 +69,9 @@ export const CompanyForm = () => {
           control={createForm.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid ? true : undefined}>
-              <FieldLabel htmlFor="name">Company name</FieldLabel>
+              <FieldLabel htmlFor="name">
+                {t("companyForm.nameLabel")}
+              </FieldLabel>
               <Input
                 {...field}
                 id="name"
@@ -81,7 +87,9 @@ export const CompanyForm = () => {
           control={createForm.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid ? true : undefined}>
-              <FieldLabel htmlFor="tax_id">Tax ID (optional)</FieldLabel>
+              <FieldLabel htmlFor="tax_id">
+                {t("companyForm.taxIdLabel")}
+              </FieldLabel>
               <Input
                 {...field}
                 id="tax_id"
@@ -97,7 +105,9 @@ export const CompanyForm = () => {
           control={createForm.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid ? true : undefined}>
-              <FieldLabel htmlFor="address">Address (optional)</FieldLabel>
+              <FieldLabel htmlFor="address">
+                {t("companyForm.addressLabel")}
+              </FieldLabel>
               <Textarea
                 {...field}
                 id="address"
@@ -115,7 +125,7 @@ export const CompanyForm = () => {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid ? true : undefined}>
               <FieldLabel htmlFor="contact_person">
-                Contact person (optional)
+                {t("companyForm.contactPersonLabel")}
               </FieldLabel>
               <Input
                 {...field}
@@ -129,7 +139,7 @@ export const CompanyForm = () => {
         />
       </FieldGroup>
       <Button type="submit" className="w-full" disabled={busyCreate}>
-        {busyCreate ? "Creating…" : "Create company"}
+        {busyCreate ? t("companyForm.submitBusy") : t("companyForm.submitIdle")}
       </Button>
     </form>
   );

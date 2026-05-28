@@ -1,7 +1,6 @@
 import { use } from "react";
 import { OffersFilters } from "@/components/offers/offers-filters";
 import { OffersHeader } from "@/components/offers/offers-header";
-import { OffersStats } from "@/components/offers/offers-stats";
 import { OffersPublicList } from "@/components/offers/offers-public-list";
 import { offersPublicListInput } from "@/components/offers/offers-public-list-query";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
@@ -23,7 +22,6 @@ export default function OffersPage({
     <HydrateClient>
       <div className="space-y-6">
         <OffersHeader />
-        <OffersStats />
         <OffersFilters />
         <OffersPublicList search={sp.q} location={sp.location} />
       </div>

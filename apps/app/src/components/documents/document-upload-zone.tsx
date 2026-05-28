@@ -13,6 +13,7 @@ import {
 } from "@v1/ui/select";
 import { toast } from "@v1/ui/sonner";
 import { useId, useRef, useState } from "react";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 import { UploadProgress } from "./upload-progress";
 
@@ -60,26 +61,6 @@ function putFileWithProgress(
   });
 }
 
-function validateFile(file: File): string | null {
-  if (file.size > MAX_BYTES) {
-    return "File must be 10 MB or smaller.";
-  }
-  const mime = file.type;
-  if (mime && !ALLOWED_MIMES.has(mime)) {
-    return "Only PDF and DOCX files are allowed.";
-  }
-  const lower = file.name.toLowerCase();
-  if (!lower.endsWith(".pdf") && !lower.endsWith(".docx")) {
-    return "Use a .pdf or .docx file.";
-  }
-  if (!mime) {
-    if (!lower.endsWith(".pdf") && !lower.endsWith(".docx")) {
-      return "Only PDF and DOCX files are allowed.";
-    }
-  }
-  return null;
-}
-
 function mimeForUpload(file: File): string {
   if (file.type && ALLOWED_MIMES.has(file.type)) {
     return file.type;
@@ -90,19 +71,14 @@ function mimeForUpload(file: File): string {
   return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 }
 
-const DOC_TYPES = [
-  { value: "contract", label: "Contract" },
-  { value: "internship_log", label: "Internship log" },
-  { value: "other", label: "Other" },
-] as const;
-
-type DocType = (typeof DOC_TYPES)[number]["value"];
+type DocType = "contract" | "internship_log" | "other";
 
 export function DocumentUploadZone({
   applicationId,
 }: {
   applicationId: string;
 }) {
+  const t = useI18n();
   const formId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const trpc = useTRPC();
@@ -111,6 +87,23 @@ export function DocumentUploadZone({
   const [dragActive, setDragActive] = useState(false);
   const [uploadPercent, setUploadPercent] = useState<number | null>(null);
   const [uploadBusy, setUploadBusy] = useState(false);
+
+  const DOC_TYPES: { value: DocType; labelKey: string }[] = [
+    { value: "contract", labelKey: "uploadZone.type.contract" },
+    { value: "internship_log", labelKey: "uploadZone.type.internshipLog" },
+    { value: "other", labelKey: "uploadZone.type.other" },
+  ];
+
+  function validateFile(file: File): string | null {
+    if (file.size > MAX_BYTES) return t("uploadZone.error.tooLarge");
+    const mime = file.type;
+    if (mime && !ALLOWED_MIMES.has(mime)) return t("uploadZone.error.wrongType");
+    const lower = file.name.toLowerCase();
+    if (!lower.endsWith(".pdf") && !lower.endsWith(".docx")) {
+      return t("uploadZone.error.wrongExt");
+    }
+    return null;
+  }
 
   const intentMutation = useMutation(
     trpc.documents.createUploadIntent.mutationOptions(),
@@ -139,14 +132,16 @@ export function DocumentUploadZone({
       });
 
       await putFileWithProgress(intent.signedUrl, file, setUploadPercent);
-      toast.success("File uploaded");
+      toast.success(t("uploadZone.toast.success"));
       await queryClient.invalidateQueries(
         trpc.documents.listByApplication.queryOptions({
           application_id: applicationId,
         }),
       );
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Upload failed. Try again.");
+      toast.error(
+        e instanceof Error ? e.message : t("uploadZone.toast.uploadFailed"),
+      );
     } finally {
       setUploadPercent(null);
       setUploadBusy(false);
@@ -162,25 +157,23 @@ export function DocumentUploadZone({
     <div className="space-y-4">
       <FieldGroup className="gap-4">
         <Field>
-          <FieldLabel htmlFor={`${formId}-type`}>Document type</FieldLabel>
-          <FieldDescription>
-            Choose what you are uploading (e.g. contract or internship log).
-          </FieldDescription>
+          <FieldLabel htmlFor={`${formId}-type`}>
+            {t("uploadZone.typeLabel")}
+          </FieldLabel>
+          <FieldDescription>{t("uploadZone.typeDescription")}</FieldDescription>
           <Select
             value={docType}
             disabled={busy}
-            onValueChange={(value) =>
-              setDocType(value as (typeof DOC_TYPES)[number]["value"])
-            }
+            onValueChange={(value) => setDocType(value as DocType)}
           >
             <SelectTrigger id={`${formId}-type`} className="w-full max-w-md">
-              <SelectValue placeholder="Document type" />
+              <SelectValue placeholder={t("uploadZone.typePlaceholder")} />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                {DOC_TYPES.map((t) => (
-                  <SelectItem key={t.value} value={t.value}>
-                    {t.label}
+                {DOC_TYPES.map((dt) => (
+                  <SelectItem key={dt.value} value={dt.value}>
+                    {t(dt.labelKey as Parameters<typeof t>[0])}
                   </SelectItem>
                 ))}
               </SelectGroup>
@@ -218,7 +211,7 @@ export function DocumentUploadZone({
         }}
       >
         <p className="text-muted-foreground text-sm">
-          Drag and drop a PDF or DOCX here, or choose a file (max 10 MB).
+          {t("uploadZone.dragDropHint")}
         </p>
         <input
           ref={inputRef}
@@ -240,7 +233,7 @@ export function DocumentUploadZone({
           disabled={busy}
           onClick={() => inputRef.current?.click()}
         >
-          {busy ? "Uploading…" : "Choose file"}
+          {busy ? t("uploadZone.uploadingBtn") : t("uploadZone.chooseFileBtn")}
         </Button>
       </div>
 

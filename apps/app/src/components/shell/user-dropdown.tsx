@@ -14,10 +14,12 @@ import { Icons } from "@v1/ui/icons";
 import { Skeleton } from "@v1/ui/skeleton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 import { RoleBadge } from "../role-badge";
 
 const UserDropdown = () => {
+  const t = useI18n();
   const router = useRouter();
   const trpc = useTRPC();
   const { data: profile } = useQuery(trpc.profile.me.queryOptions());
@@ -63,19 +65,19 @@ const UserDropdown = () => {
         <DropdownMenuItem asChild>
           <Link href="/profile">
             <Icons.User className="h-4 w-4" />
-            Profile
+            {t("userDropdown.profile")}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/profile">
             <Icons.Settings className="h-4 w-4" />
-            Settings
+            {t("userDropdown.settings")}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive" onClick={() => signOut()}>
           <Icons.LogOut className="h-4 w-4" />
-          Log out
+          {t("userDropdown.logOut")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -1,7 +1,10 @@
+import { getI18n } from "@/locales/server";
 import { UserAdminTable } from "@/components/admin/user-admin-table";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 
 export default async function AdminUsersPage() {
+  const t = await getI18n();
+
   await prefetch(
     trpc.admin.users.list.queryOptions({
       query: "",
@@ -16,9 +19,11 @@ export default async function AdminUsersPage() {
     <HydrateClient>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {t("adminUsers.title")}
+          </h1>
           <p className="text-muted-foreground mt-1 text-sm">
-            Review accounts and control whether users can access the platform.
+            {t("adminUsers.subtitle")}
           </p>
         </div>
 

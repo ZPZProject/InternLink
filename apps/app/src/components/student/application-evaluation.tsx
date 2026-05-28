@@ -1,3 +1,4 @@
+import { getI18n } from "@/locales/server";
 import { Badge } from "@v1/ui/badge";
 import {
   Card,
@@ -18,18 +19,20 @@ type Evaluation = {
   } | null;
 } | null;
 
-export function ApplicationEvaluation({
+export async function ApplicationEvaluation({
   evaluation,
 }: {
   evaluation: Evaluation;
 }) {
+  const t = await getI18n();
+
   if (!evaluation) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Evaluation</CardTitle>
+          <CardTitle>{t("applicationEvaluation.title")}</CardTitle>
           <CardDescription>
-            Your supervisor has not submitted an evaluation yet.
+            {t("applicationEvaluation.notYetSubmitted")}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -39,23 +42,31 @@ export function ApplicationEvaluation({
   const supervisorName =
     `${evaluation.supervisor?.first_name ?? ""} ${evaluation.supervisor?.last_name ?? ""}`.trim();
 
+  const dateStr = new Date(evaluation.created_at).toLocaleDateString();
+  const byName = supervisorName || evaluation.supervisor?.email || null;
+
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center gap-2">
-          <CardTitle>Evaluation</CardTitle>
-          <Badge variant="blue">Score: {evaluation.score}</Badge>
+          <CardTitle>{t("applicationEvaluation.title")}</CardTitle>
+          <Badge variant="blue">
+            {t("applicationEvaluation.scoreLabel", {
+              score: evaluation.score,
+            })}
+          </Badge>
         </div>
         <CardDescription>
-          Submitted on {new Date(evaluation.created_at).toLocaleDateString()}
-          {supervisorName || evaluation.supervisor?.email
-            ? ` by ${supervisorName || evaluation.supervisor?.email}`
+          {t("applicationEvaluation.submittedOn", { date: dateStr })}
+          {byName
+            ? ` ${t("applicationEvaluation.submittedBy", { name: byName })}`
             : ""}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <p className="text-sm leading-6 text-muted-foreground">
-          {evaluation.comment?.trim() || "No comment provided."}
+          {evaluation.comment?.trim() ||
+            t("applicationEvaluation.noComment")}
         </p>
       </CardContent>
     </Card>

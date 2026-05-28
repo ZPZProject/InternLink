@@ -10,6 +10,7 @@ import {
   ComboboxList,
 } from "@v1/ui/combobox";
 import { useState } from "react";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 
 export function CompanyCombobox({
@@ -19,6 +20,7 @@ export function CompanyCombobox({
   value?: string;
   onChange?: (value?: string) => void;
 }) {
+  const t = useI18n();
   const trpc = useTRPC();
   const [search, setSearch] = useState("");
 
@@ -43,13 +45,9 @@ export function CompanyCombobox({
   const selectedItem = items.find((item) => item.value === value) ?? null;
 
   const getEmptyMessage = () => {
-    if (listQuery.isError) {
-      return "Could not load companies.";
-    }
-    if (listQuery.isPending) {
-      return "Loading…";
-    }
-    return "No companies found.";
+    if (listQuery.isError) return t("companyCombobox.loadError");
+    if (listQuery.isPending) return t("companyCombobox.loading");
+    return t("companyCombobox.noResults");
   };
 
   return (
@@ -69,7 +67,7 @@ export function CompanyCombobox({
       <ComboboxInput
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        placeholder="Select a company"
+        placeholder={t("companyCombobox.placeholder")}
       />
       <ComboboxContent>
         <ComboboxEmpty>{getEmptyMessage()}</ComboboxEmpty>

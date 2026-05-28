@@ -13,14 +13,9 @@ import {
   TableRow,
 } from "@v1/ui/table";
 import { formatISO } from "date-fns";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 import { FileTypeIcon } from "./file-type-icon";
-
-const typeLabel: Record<string, string> = {
-  contract: "Contract",
-  internship_log: "Internship log",
-  other: "Other",
-};
 
 const reviewVariant: Record<
   string,
@@ -32,8 +27,15 @@ const reviewVariant: Record<
 };
 
 export function DocumentList({ applicationId }: { applicationId: string }) {
+  const t = useI18n();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+
+  const typeLabel: Record<string, string> = {
+    contract: t("documentList.type.contract"),
+    internship_log: t("documentList.type.internshipLog"),
+    other: t("documentList.type.other"),
+  };
 
   const { data: items, isLoading } = useQuery(
     trpc.documents.listByApplication.queryOptions({
@@ -44,7 +46,7 @@ export function DocumentList({ applicationId }: { applicationId: string }) {
   const del = useMutation(
     trpc.documents.delete.mutationOptions({
       onSuccess: async () => {
-        toast.success("Document removed");
+        toast.success(t("documentList.toast.deleted"));
         await queryClient.invalidateQueries(
           trpc.documents.listByApplication.queryOptions({
             application_id: applicationId,
@@ -52,19 +54,25 @@ export function DocumentList({ applicationId }: { applicationId: string }) {
         );
       },
       onError: (err) => {
-        toast.error(err instanceof Error ? err.message : "Could not delete");
+        toast.error(
+          err instanceof Error ? err.message : t("documentList.toast.deleteError"),
+        );
       },
     }),
   );
 
   if (isLoading) {
-    return <p className="text-muted-foreground text-sm">Loading documents…</p>;
+    return (
+      <p className="text-muted-foreground text-sm">
+        {t("documentList.loading")}
+      </p>
+    );
   }
 
   if (!items?.length) {
     return (
       <p className="text-muted-foreground py-6 text-center text-sm">
-        No documents uploaded yet.
+        {t("documentList.empty")}
       </p>
     );
   }
@@ -74,11 +82,11 @@ export function DocumentList({ applicationId }: { applicationId: string }) {
       <TableHeader>
         <TableRow>
           <TableHead className="w-10" />
-          <TableHead>Type</TableHead>
-          <TableHead>File</TableHead>
-          <TableHead>Size</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Uploaded</TableHead>
+          <TableHead>{t("documentList.col.type")}</TableHead>
+          <TableHead>{t("documentList.col.file")}</TableHead>
+          <TableHead>{t("documentList.col.size")}</TableHead>
+          <TableHead>{t("documentList.col.status")}</TableHead>
+          <TableHead>{t("documentList.col.uploaded")}</TableHead>
           <TableHead />
         </TableRow>
       </TableHeader>
@@ -91,9 +99,7 @@ export function DocumentList({ applicationId }: { applicationId: string }) {
             <TableCell className="font-medium">
               {typeLabel[doc.type] ?? doc.type}
             </TableCell>
-            <TableCell className="max-w-[200px] truncate">
-              {doc.file_name}
-            </TableCell>
+            <TableCell className="max-w-[200px] truncate">{doc.file_name}</TableCell>
             <TableCell className="text-muted-foreground text-sm">
               {(doc.file_size_bytes / 1024).toFixed(1)} KB
             </TableCell>
@@ -115,7 +121,7 @@ export function DocumentList({ applicationId }: { applicationId: string }) {
                   disabled={del.isPending}
                   onClick={() => del.mutate({ id: doc.id })}
                 >
-                  Delete
+                  {t("documentList.deleteBtn")}
                 </Button>
               ) : null}
             </TableCell>

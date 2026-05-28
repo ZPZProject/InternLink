@@ -1,3 +1,5 @@
+"use client";
+
 import { Badge } from "@v1/ui/badge";
 import { Button } from "@v1/ui/button";
 import {
@@ -9,6 +11,7 @@ import {
   TableRow,
 } from "@v1/ui/table";
 import Link from "next/link";
+import { useI18n } from "@/locales/client";
 
 type QueueItem = {
   application_id: string;
@@ -29,16 +32,13 @@ type QueueItem = {
   pending_documents: number;
 };
 
-export function DocumentReviewTable({
-  items,
-}: {
-  items: QueueItem[];
-}) {
+export function DocumentReviewTable({ items }: { items: QueueItem[] }) {
+  const t = useI18n();
+
   if (items.length === 0) {
     return (
       <p className="text-muted-foreground py-12 text-center text-sm">
-        No documents pending review. When students upload documents, they will
-        appear here.
+        {t("reviewTable.empty")}
       </p>
     );
   }
@@ -47,10 +47,10 @@ export function DocumentReviewTable({
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Student</TableHead>
-          <TableHead>Offer</TableHead>
-          <TableHead>Company</TableHead>
-          <TableHead>Documents</TableHead>
+          <TableHead>{t("reviewTable.col.student")}</TableHead>
+          <TableHead>{t("reviewTable.col.offer")}</TableHead>
+          <TableHead>{t("reviewTable.col.company")}</TableHead>
+          <TableHead>{t("reviewTable.col.documents")}</TableHead>
           <TableHead />
         </TableRow>
       </TableHeader>
@@ -67,15 +67,16 @@ export function DocumentReviewTable({
             <TableCell>{item.offer.companies.name}</TableCell>
             <TableCell>
               <Badge variant={item.pending_documents > 0 ? "amber" : "blue"}>
-                {item.pending_documents} / {item.total_documents} pending
+                {t("reviewTable.pendingBadge", {
+                  pending: item.pending_documents,
+                  total: item.total_documents,
+                })}
               </Badge>
             </TableCell>
             <TableCell>
               <Button asChild size="sm" variant="outline">
-                <Link
-                  href={`/supervisor/reviews/${item.application_id}`}
-                >
-                  Review
+                <Link href={`/supervisor/reviews/${item.application_id}`}>
+                  {t("reviewTable.reviewBtn")}
                 </Link>
               </Button>
             </TableCell>

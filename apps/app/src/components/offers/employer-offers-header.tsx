@@ -4,9 +4,11 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button } from "@v1/ui/button";
 import { Icons } from "@v1/ui/icons";
 import Link from "next/link";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 
 export function EmployerOffersHeader() {
+  const t = useI18n();
   const trpc = useTRPC();
   const { data: stats } = useSuspenseQuery(trpc.offers.getStats.queryOptions());
 
@@ -15,16 +17,18 @@ export function EmployerOffersHeader() {
   return (
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">My offers</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {t("employerOffersHeader.title")}
+        </h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          Manage internship listings for your company. You have {total} offer{total !== 1 ? "s" : ""}.
+          {t("employerOffersHeader.subtitle", { total })}
         </p>
       </div>
 
       <Button asChild>
         <Link href="/employer/offers/new">
           <Icons.Plus className="mr-2 h-4 w-4" />
-          New offer
+          {t("employerOffersHeader.newOfferBtn")}
         </Link>
       </Button>
     </div>

@@ -1,3 +1,4 @@
+import { getI18n } from "@/locales/server";
 import { Button } from "@v1/ui/button";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -10,6 +11,7 @@ type Props = { params: Promise<{ id: string }> };
 
 export default async function EmployerOfferApplicationsPage({ params }: Props) {
   const { id } = await params;
+  const t = await getI18n();
 
   const membership = await caller.company.myMembership();
   const offer = await caller.offers.byId({ id });
@@ -21,13 +23,10 @@ export default async function EmployerOfferApplicationsPage({ params }: Props) {
   return (
     <div className="space-y-6">
       <Button asChild variant="link" size="sm">
-        <Link href="/employer/offers">← Back to my offers</Link>
+        <Link href="/employer/offers">{t("employerApplications.backLink")}</Link>
       </Button>
 
-      <ApplicationsHeader
-        isEmployer
-        offerTitle={offer.title}
-      />
+      <ApplicationsHeader isEmployer offerTitle={offer.title} />
 
       <EmployerApplicationList offerId={offer.id} />
     </div>

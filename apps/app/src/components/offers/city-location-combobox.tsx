@@ -10,6 +10,7 @@ import {
   ComboboxList,
 } from "@v1/ui/combobox";
 import { useEffect, useMemo, useState } from "react";
+import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 
 export function CityLocationCombobox({
@@ -17,7 +18,7 @@ export function CityLocationCombobox({
   value,
   onChange,
   disabled,
-  placeholder = "Search city or town in Poland",
+  placeholder,
   "aria-invalid": ariaInvalid,
 }: {
   id?: string;
@@ -27,13 +28,14 @@ export function CityLocationCombobox({
   placeholder?: string;
   "aria-invalid"?: boolean;
 }) {
+  const t = useI18n();
   const trpc = useTRPC();
   const [search, setSearch] = useState(value);
   const [debounced, setDebounced] = useState("");
 
   useEffect(() => {
-    const t = setTimeout(() => setDebounced(search.trim()), 300);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setDebounced(search.trim()), 300);
+    return () => clearTimeout(timer);
   }, [search]);
 
   useEffect(() => {
@@ -67,16 +69,10 @@ export function CityLocationCombobox({
     : (items.find((i) => i.label === value) ?? null);
 
   const emptyMessage = () => {
-    if (debounced.length < 2) {
-      return "Type at least 2 characters to search.";
-    }
-    if (listQuery.isError) {
-      return "Could not load suggestions.";
-    }
-    if (listQuery.isPending) {
-      return "Loading…";
-    }
-    return "No matching places in Poland.";
+    if (debounced.length < 2) return t("cityCombobox.typeToSearch");
+    if (listQuery.isError) return t("cityCombobox.loadError");
+    if (listQuery.isPending) return t("cityCombobox.loading");
+    return t("cityCombobox.noResults");
   };
 
   return (
@@ -101,7 +97,7 @@ export function CityLocationCombobox({
           setSearch(v);
           onChange(v);
         }}
-        placeholder={placeholder}
+        placeholder={placeholder ?? t("cityCombobox.defaultPlaceholder")}
         disabled={disabled}
         aria-invalid={ariaInvalid}
       />
