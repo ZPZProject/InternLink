@@ -210,25 +210,6 @@ export const offersRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Offer not found" });
       }
 
-      if (!data.is_active) {
-        const { data: member } = await ctx.supabase
-          .from("company_members")
-          .select("company_id")
-          .eq("profile_id", ctx.user.id)
-          .maybeSingle();
-
-        const canSee =
-          member !== null &&
-          member.company_id === (data as { company_id: string }).company_id;
-
-        if (!canSee) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Offer not found",
-          });
-        }
-      }
-
       return data;
     }),
 
