@@ -21,7 +21,6 @@ const MAX_BYTES = 10 * 1024 * 1024;
 
 const ALLOWED_MIMES = new Set([
   "application/pdf",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ]);
 
 function putFileWithProgress(
@@ -61,16 +60,6 @@ function putFileWithProgress(
   });
 }
 
-function mimeForUpload(file: File): string {
-  if (file.type && ALLOWED_MIMES.has(file.type)) {
-    return file.type;
-  }
-  if (file.name.toLowerCase().endsWith(".pdf")) {
-    return "application/pdf";
-  }
-  return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-}
-
 type DocType = "cv" | "contract" | "internship_log" | "other";
 
 export function DocumentUploadZone({
@@ -100,7 +89,7 @@ export function DocumentUploadZone({
     const mime = file.type;
     if (mime && !ALLOWED_MIMES.has(mime)) return t("uploadZone.error.wrongType");
     const lower = file.name.toLowerCase();
-    if (!lower.endsWith(".pdf") && !lower.endsWith(".docx")) {
+    if (!lower.endsWith(".pdf")) {
       return t("uploadZone.error.wrongExt");
     }
     return null;
@@ -117,7 +106,6 @@ export function DocumentUploadZone({
       return;
     }
 
-    const mime_type = mimeForUpload(file);
     setUploadPercent(null);
     setUploadBusy(true);
 
@@ -126,9 +114,7 @@ export function DocumentUploadZone({
         application_id: applicationId,
         type: docType,
         file_name: file.name,
-        mime_type: mime_type as
-          | "application/pdf"
-          | "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        mime_type: "application/pdf",
         file_size_bytes: file.size,
       });
 
@@ -217,7 +203,7 @@ export function DocumentUploadZone({
         <input
           ref={inputRef}
           type="file"
-          accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          accept=".pdf,application/pdf"
           className="hidden"
           disabled={busy}
           onChange={(e) => {

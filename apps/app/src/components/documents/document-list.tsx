@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@v1/ui/badge";
 import { Button } from "@v1/ui/button";
+import { Icons } from "@v1/ui/icons";
 import { toast } from "@v1/ui/sonner";
 import {
   Table,
@@ -13,6 +14,7 @@ import {
   TableRow,
 } from "@v1/ui/table";
 import { formatISO } from "date-fns";
+import { useState } from "react";
 import { useI18n } from "@/locales/client";
 import { useTRPC } from "@/trpc/react";
 import { FileTypeIcon } from "./file-type-icon";
@@ -30,6 +32,7 @@ export function DocumentList({ applicationId }: { applicationId: string }) {
   const t = useI18n();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+  const [previewing, setPreviewing] = useState<string | null>(null);
 
   const typeLabel: Record<string, string> = {
     cv: t("documentList.type.cv"),
@@ -61,6 +64,20 @@ export function DocumentList({ applicationId }: { applicationId: string }) {
       },
     }),
   );
+
+  async function handlePreview(documentId: string) {
+    setPreviewing(documentId);
+    try {
+      const { signedUrl } = await queryClient.fetchQuery(
+        trpc.documents.preview.queryOptions({ document_id: documentId }),
+      );
+      window.open(signedUrl, "_blank");
+    } catch {
+      toast.error(t("documentList.toast.previewError"));
+    } finally {
+      setPreviewing(null);
+    }
+  }
 
   if (isLoading) {
     return (
@@ -113,18 +130,32 @@ export function DocumentList({ applicationId }: { applicationId: string }) {
               {formatISO(doc.uploaded_at, { representation: "date" })}
             </TableCell>
             <TableCell>
-              {doc.review_status === "pending" ? (
+              <div className="flex items-center gap-1">
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="text-destructive"
-                  disabled={del.isPending}
-                  onClick={() => del.mutate({ id: doc.id })}
+                  className="h-7 w-7 p-0"
+                  disabled={previewing === doc.id}
+                  onClick={() => handlePreview(doc.id)}
+                  title={t("documentList.previewBtn")}
                 >
-                  {t("documentList.deleteBtn")}
+                  <Icons.Eye className="size-4" />
                 </Button>
-              ) : null}
+                {doc.review_status === "pending" ? (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 w-7 p-0 text-destructive"
+                    disabled={del.isPending}
+                    onClick={() => del.mutate({ id: doc.id })}
+                    title={t("documentList.deleteBtn")}
+                  >
+                    <Icons.X className="size-4" />
+                  </Button>
+                ) : null}
+              </div>
             </TableCell>
           </TableRow>
         ))}

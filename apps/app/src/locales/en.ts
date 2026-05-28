@@ -275,7 +275,7 @@ export default {
     "I am interested in this position because...",
   "applicationForm.cvLabel": "CV / Resume (optional)",
   "applicationForm.cvDescription":
-    "Upload your CV as a PDF or DOCX file (max 10 MB).",
+    "Upload your CV as a PDF file (max 10 MB).",
   "applicationForm.cvDropHint":
     "Drag and drop your CV here, or choose a file",
   "applicationForm.cvChooseFile": "Choose file",
@@ -488,14 +488,14 @@ export default {
   "uploadZone.type.internshipLog": "Internship log",
   "uploadZone.type.other": "Other",
   "uploadZone.dragDropHint":
-    "Drag and drop a PDF or DOCX here, or choose a file (max 10 MB).",
+    "Drag and drop a PDF here, or choose a file (max 10 MB).",
   "uploadZone.chooseFileBtn": "Choose file",
   "uploadZone.uploadingBtn": "Uploading…",
   "uploadZone.toast.success": "File uploaded",
   "uploadZone.toast.uploadFailed": "Upload failed. Try again.",
   "uploadZone.error.tooLarge": "File must be 10 MB or smaller.",
-  "uploadZone.error.wrongType": "Only PDF and DOCX files are allowed.",
-  "uploadZone.error.wrongExt": "Use a .pdf or .docx file.",
+  "uploadZone.error.wrongType": "Only PDF files are allowed.",
+  "uploadZone.error.wrongExt": "Use a .pdf file.",
   "uploadZone.error.networkError": "Network error",
   "uploadZone.error.uploadFailed": "Upload failed ({status})",
 
@@ -512,7 +512,9 @@ export default {
   "documentList.type.contract": "Contract",
   "documentList.type.internshipLog": "Internship log",
   "documentList.type.other": "Other",
+  "documentList.previewBtn": "Preview",
   "documentList.deleteBtn": "Delete",
+  "documentList.toast.previewError": "Could not open document preview",
   "documentList.toast.deleted": "Document removed",
   "documentList.toast.deleteError": "Could not delete",
 

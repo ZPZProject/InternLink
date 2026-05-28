@@ -389,6 +389,45 @@ export const documentsRouter = createTRPCRouter({
       return { signedUrl: signed.signedUrl, expiresIn: 300 };
     }),
 
+  preview: studentProcedure
+    .input(documentsGetSignedReadUrlSchema)
+    .query(async ({ ctx, input }) => {
+      const { data: doc, error } = await ctx.supabase
+        .from("documents")
+        .select("id, storage_path, application_id")
+        .eq("id", input.document_id)
+        .maybeSingle();
+
+      if (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      }
+      if (!doc) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Document not found",
+        });
+      }
+
+      await assertStudentOwnsApplication(ctx, doc.application_id);
+
+      const { data: signed, error: signError } =
+        await ctx.supabaseServiceRole.storage
+          .from(BUCKET)
+          .createSignedUrl(doc.storage_path, 300);
+
+      if (signError) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: signError?.message ?? "Could not create preview URL",
+        });
+      }
+
+      return { signedUrl: signed.signedUrl, expiresIn: 300 };
+    }),
+
   reviewQueue: supervisorProcedure.query(async ({ ctx }) => {
     const { data: applications, error } = await ctx.supabase
       .from("applications")

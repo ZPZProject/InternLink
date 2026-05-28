@@ -2,10 +2,9 @@ import { z } from "zod/v4";
 
 export const DOCUMENT_TYPES = ["cv", "contract", "internship_log", "other"] as const;
 
-/** PDF and DOCX only (spec). */
+/** PDF only. */
 export const ALLOWED_DOCUMENT_MIMES = [
   "application/pdf",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ] as const;
 
 export const MAX_DOCUMENT_BYTES = 10 * 1024 * 1024;

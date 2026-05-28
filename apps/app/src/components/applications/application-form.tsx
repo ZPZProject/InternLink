@@ -23,7 +23,6 @@ import { useTRPC } from "@/trpc/react";
 const MAX_CV_BYTES = 10 * 1024 * 1024;
 const ALLOWED_CV_MIMES = [
   "application/pdf",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
 
 const schema = z.object({
@@ -98,9 +97,7 @@ export function ApplicationForm({
               application_id: application.id,
               type: "cv",
               file_name: cvFile.name,
-              mime_type: cvFile.type as
-                | "application/pdf"
-                | "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+              mime_type: "application/pdf",
               file_size_bytes: cvFile.size,
             });
             await putFileWithProgress(intent.signedUrl, cvFile);
@@ -152,7 +149,7 @@ export function ApplicationForm({
       return;
     }
     if (!ALLOWED_CV_MIMES.includes(file.type)) {
-      setCvError("Only PDF and DOCX files are allowed.");
+      setCvError("Only PDF files are allowed.");
       setCvFile(null);
       return;
     }
@@ -252,7 +249,7 @@ export function ApplicationForm({
             id={cvInputId}
             ref={fileInputRef}
             type="file"
-            accept=".pdf,.docx"
+            accept=".pdf,application/pdf"
             className="hidden"
             onChange={handleCvSelect}
             disabled={busy}

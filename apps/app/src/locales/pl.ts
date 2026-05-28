@@ -276,7 +276,7 @@ export default {
     "Interesuję się tą ofertą, ponieważ...",
   "applicationForm.cvLabel": "CV / Życiorys (opcjonalnie)",
   "applicationForm.cvDescription":
-    "Prześlij swoje CV w formacie PDF lub DOCX (max 10 MB).",
+    "Prześlij swoje CV w formacie PDF (max 10 MB).",
   "applicationForm.cvDropHint":
     "Przeciągnij i upuść CV tutaj lub wybierz plik",
   "applicationForm.cvChooseFile": "Wybierz plik",
@@ -489,14 +489,14 @@ export default {
   "uploadZone.type.internshipLog": "Dziennik praktyk",
   "uploadZone.type.other": "Inne",
   "uploadZone.dragDropHint":
-    "Przeciągnij plik PDF lub DOCX tutaj albo wybierz plik (maks. 10 MB).",
+    "Przeciągnij plik PDF tutaj albo wybierz plik (maks. 10 MB).",
   "uploadZone.chooseFileBtn": "Wybierz plik",
   "uploadZone.uploadingBtn": "Przesyłanie…",
   "uploadZone.toast.success": "Plik przesłany",
   "uploadZone.toast.uploadFailed": "Przesyłanie nie powiodło się. Spróbuj ponownie.",
   "uploadZone.error.tooLarge": "Plik musi mieć maksymalnie 10 MB.",
-  "uploadZone.error.wrongType": "Dozwolone są tylko pliki PDF i DOCX.",
-  "uploadZone.error.wrongExt": "Użyj pliku .pdf lub .docx.",
+  "uploadZone.error.wrongType": "Dozwolone są tylko pliki PDF.",
+  "uploadZone.error.wrongExt": "Użyj pliku .pdf.",
   "uploadZone.error.networkError": "Błąd sieci",
   "uploadZone.error.uploadFailed": "Przesyłanie nie powiodło się ({status})",
 
@@ -513,7 +513,9 @@ export default {
   "documentList.type.contract": "Umowa",
   "documentList.type.internshipLog": "Dziennik praktyk",
   "documentList.type.other": "Inne",
+  "documentList.previewBtn": "Podgląd",
   "documentList.deleteBtn": "Usuń",
+  "documentList.toast.previewError": "Nie udało się otworzyć podglądu dokumentu",
   "documentList.toast.deleted": "Dokument usunięty",
   "documentList.toast.deleteError": "Nie udało się usunąć",
 
