@@ -1,10 +1,10 @@
-import { getI18n } from "@/locales/server";
 import { EvaluationList } from "@/components/supervisor/evaluation-list";
+import { getI18n } from "@/locales/server";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 
 export default async function SupervisorEvaluationsPage() {
   const t = await getI18n();
-  await prefetch(trpc.evaluations.listCompletable.queryOptions());
+  prefetch(trpc.evaluations.listCompletable.queryOptions());
 
   return (
     <HydrateClient>

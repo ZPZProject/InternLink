@@ -1,11 +1,11 @@
-import { getI18n } from "@/locales/server";
 import { UserAdminTable } from "@/components/admin/user-admin-table";
+import { getI18n } from "@/locales/server";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 
 export default async function AdminUsersPage() {
   const t = await getI18n();
 
-  await prefetch(
+  prefetch(
     trpc.admin.users.list.queryOptions({
       query: "",
       role: "all",

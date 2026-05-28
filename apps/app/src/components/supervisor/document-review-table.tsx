@@ -1,7 +1,9 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@v1/ui/badge";
 import { Button } from "@v1/ui/button";
+import { Skeleton } from "@v1/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -12,30 +14,26 @@ import {
 } from "@v1/ui/table";
 import Link from "next/link";
 import { useI18n } from "@/locales/client";
+import { useTRPC } from "@/trpc/react";
 
-type QueueItem = {
-  application_id: string;
-  student: {
-    profiles: {
-      first_name: string | null;
-      last_name: string | null;
-      email: string | null;
-    };
-    index_number: string | null;
-    major: string | null;
-  };
-  offer: {
-    title: string;
-    companies: { name: string };
-  };
-  total_documents: number;
-  pending_documents: number;
-};
-
-export function DocumentReviewTable({ items }: { items: QueueItem[] }) {
+export function DocumentReviewTable() {
   const t = useI18n();
+  const trpc = useTRPC();
+  const { data: items, isLoading } = useQuery(
+    trpc.documents.reviewQueue.queryOptions(),
+  );
 
-  if (items.length === 0) {
+  if (isLoading) {
+    return (
+      <div className="space-y-2">
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-8 w-full" />
+      </div>
+    );
+  }
+
+  if (!items || items.length === 0) {
     return (
       <p className="text-muted-foreground py-12 text-center text-sm">
         {t("reviewTable.empty")}

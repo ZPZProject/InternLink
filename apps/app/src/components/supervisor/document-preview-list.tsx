@@ -50,6 +50,7 @@ export function DocumentPreviewList({
   const trpc = useTRPC();
 
   const typeLabel: Record<string, string> = {
+    cv: t("documentPreview.type.cv"),
     contract: t("documentPreview.type.contract"),
     internship_log: t("documentPreview.type.internshipLog"),
     other: t("documentPreview.type.other"),
