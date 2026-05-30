@@ -235,8 +235,41 @@ export const applicationsRouter = createTRPCRouter({
         });
       }
 
+      const items = data ?? [];
+
+      if (items.length === 0) {
+        return { items, total: count ?? 0 };
+      }
+
+      const appIds = items.map((item) => item.id);
+      const { data: cvDocs, error: cvError } = await ctx.supabaseServiceRole
+        .from("documents")
+        .select(
+          "id, application_id, file_name, file_size_bytes, mime_type, uploaded_at",
+        )
+        .in("application_id", appIds)
+        .eq("type", "cv")
+        .order("uploaded_at", { ascending: false });
+
+      if (cvError) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: cvError.message,
+        });
+      }
+
+      const cvByApplication = new Map<string, (typeof cvDocs)[number]>();
+      for (const doc of cvDocs ?? []) {
+        if (!cvByApplication.has(doc.application_id)) {
+          cvByApplication.set(doc.application_id, doc);
+        }
+      }
+
       return {
-        items: data ?? [],
+        items: items.map((item) => ({
+          ...item,
+          cv: cvByApplication.get(item.id) ?? null,
+        })),
         total: count ?? 0,
       };
     }),

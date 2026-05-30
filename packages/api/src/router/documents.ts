@@ -9,7 +9,7 @@ import {
 } from "../schemas/documents";
 import {
   createTRPCRouter,
-  protectedProcedure,
+  employerProcedure,
   studentProcedure,
   supervisorProcedure,
 } from "../trpc";
@@ -96,6 +96,50 @@ async function assertStudentOwnsApplication(
       message: "You do not have access to this application",
     });
   }
+  return app;
+}
+
+async function assertEmployerOwnsApplication(
+  ctx: {
+    supabase: Client;
+    user: { id: string };
+  },
+  applicationId: string,
+) {
+  const { data: member, error: memberError } = await ctx.supabase
+    .from("company_members")
+    .select("company_id")
+    .eq("profile_id", ctx.user.id)
+    .maybeSingle();
+
+  if (memberError || !member) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "You must belong to a company",
+    });
+  }
+
+  const { data: app, error: appError } = await ctx.supabase
+    .from("applications")
+    .select("id, internship_offers(company_id)")
+    .eq("id", applicationId)
+    .maybeSingle();
+
+  if (appError || !app) {
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "Application not found",
+    });
+  }
+
+  const companyId = (app.internship_offers as { company_id: string }).company_id;
+  if (companyId !== member.company_id) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "This application does not belong to your company",
+    });
+  }
+
   return app;
 }
 
@@ -373,6 +417,51 @@ export const documentsRouter = createTRPCRouter({
           message: "Document not found",
         });
       }
+
+      const { data: signed, error: signError } =
+        await ctx.supabaseServiceRole.storage
+          .from(BUCKET)
+          .createSignedUrl(doc.storage_path, 300);
+
+      if (signError) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: signError?.message ?? "Could not create download URL",
+        });
+      }
+
+      return { signedUrl: signed.signedUrl, expiresIn: 300 };
+    }),
+
+  employerGetSignedReadUrl: employerProcedure
+    .input(documentsGetSignedReadUrlSchema)
+    .query(async ({ ctx, input }) => {
+      const { data: doc, error: fetchError } = await ctx.supabaseServiceRole
+        .from("documents")
+        .select("id, storage_path, application_id, type")
+        .eq("id", input.document_id)
+        .maybeSingle();
+
+      if (fetchError) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: fetchError.message,
+        });
+      }
+      if (!doc) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Document not found",
+        });
+      }
+      if (doc.type !== "cv") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Employers can only access CV documents",
+        });
+      }
+
+      await assertEmployerOwnsApplication(ctx, doc.application_id);
 
       const { data: signed, error: signError } =
         await ctx.supabaseServiceRole.storage

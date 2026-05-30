@@ -259,8 +259,18 @@ export default {
   "employerApplicationList.yearLabel": "Year {n}",
   "employerApplicationList.indexLabel": "#{n}",
   "employerApplicationList.appliedOn": "Applied {date}",
+  "employerApplicationList.reviewedOn": "Reviewed {date}",
   "employerApplicationList.rejectionReasonLabel": "Rejection reason:",
   "employerApplicationList.fallbackStudent": "Student",
+  "employerApplicationList.motivationLabel": "Motivation letter",
+  "employerApplicationList.noMotivation": "No motivation letter provided.",
+  "employerApplicationList.cvLabel": "CV / Resume",
+  "employerApplicationList.noCv": "No CV uploaded.",
+  "employerApplicationList.downloadCv": "Download",
+  "employerApplicationList.cvDownloadError": "Could not generate download link",
+  "employerApplicationList.expandApplication": "Show application details for {name}",
+  "employerApplicationList.collapseApplication":
+    "Hide application details for {name}",
 
   "applyButton.loading": "Loading...",
   "applyButton.completeProfile": "Complete profile to apply",
